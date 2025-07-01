@@ -1,5 +1,5 @@
-#ifndef SINGUPVIEW_H
-#define SINGUPVIEW_H
+#ifndef SIGNUPVIEW_H
+#define SIGNUPVIEW_H
 
 #include <QWidget>
 
@@ -23,4 +23,4 @@ signals:
     void goToLogin();
 };
 
-#endif // SINGUPVIEW_H
+#endif // SIGNUPVIEW_H

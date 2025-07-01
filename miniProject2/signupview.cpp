@@ -1,5 +1,5 @@
-#include "singupview.h"
-#include "ui_singupview.h"
+#include "signupview.h"
+#include "ui_signupview.h"
 
 SingupView::SingupView(QWidget *parent)
     : QWidget(parent)

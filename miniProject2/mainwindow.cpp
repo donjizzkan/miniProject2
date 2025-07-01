@@ -7,7 +7,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
     ui->setupUi(this);
-    ui->testwidget->setStyleSheet("background-color: lightblue;");
+    ui->tradingwidget->setStyleSheet("background-color: lightblue;");
+    ui->chatwidget->setStyleSheet("background-color: lightgreen;");
 }
 
 MainWindow::~MainWindow()

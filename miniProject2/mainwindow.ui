@@ -14,16 +14,17 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="testwidget" native="true">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>20</y>
-      <width>401</width>
-      <height>361</height>
-     </rect>
-    </property>
-   </widget>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Orientation::Horizontal</enum>
+      </property>
+      <widget class="QWidget" name="tradingwidget" native="true"/>
+      <widget class="QWidget" name="chatwidget" native="true"/>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -38,6 +39,8 @@
     <property name="title">
      <string>거래</string>
     </property>
+    <addaction name="actiontestfile"/>
+    <addaction name="actiontest2"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -65,6 +68,16 @@
     <bool>false</bool>
    </attribute>
   </widget>
+  <action name="actiontestfile">
+   <property name="text">
+    <string>testfile</string>
+   </property>
+  </action>
+  <action name="actiontest2">
+   <property name="text">
+    <string>test2</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

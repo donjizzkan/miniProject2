@@ -80,7 +80,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="signin_Button">
+      <widget class="QPushButton" name="signup_Button">
        <property name="text">
         <string>가입하기</string>
        </property>

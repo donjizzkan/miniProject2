@@ -6,6 +6,8 @@ SingupView::SingupView(QWidget *parent)
     , ui(new Ui::SingupView)
 {
     ui->setupUi(this);
+
+    connect(ui->cancel_Button, &QPushButton::clicked, this, &SingupView::goToLogin);
 }
 
 SingupView::~SingupView()

@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include "loginview.h"
-#include "singupview.h"
+#include "signupview.h"
 #include "mainview.h"
 
 MainWindow::MainWindow(QWidget *parent)

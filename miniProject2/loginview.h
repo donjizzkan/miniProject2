@@ -21,6 +21,7 @@ private:
 // 메인윈도우에게 알릴 신호
 signals:
     void goToSignup();
+    void goToMain();
 };
 
 #endif // LOGINVIEW_H

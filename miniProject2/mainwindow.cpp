@@ -29,6 +29,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(loginPage, &LoginView::goToSignup, this, [=]() {
         ui->mainStackedWidget->setCurrentWidget(singupPage);
     });
+    connect(singupPage, &SingupView::goToLogin, this, [=]() {
+        ui->mainStackedWidget->setCurrentWidget(loginPage);
+    });
 
 
 }

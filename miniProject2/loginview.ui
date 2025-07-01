@@ -59,7 +59,7 @@
       <property name="orientation">
        <enum>Qt::Orientation::Horizontal</enum>
       </property>
-      <widget class="QPushButton" name="signupButton">
+      <widget class="QPushButton" name="signup_Button">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -82,7 +82,7 @@
         <string>signup</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="loginButton">
+      <widget class="QPushButton" name="login_Button">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>0</horstretch>

@@ -8,6 +8,7 @@ LoginView::LoginView(QWidget *parent)
     ui->setupUi(this);
 
     connect(ui->signup_Button, &QPushButton::clicked, this, &LoginView::goToSignup);
+    connect(ui->login_Button, &QPushButton::clicked, this, &LoginView::goToMain);
 
 }
 

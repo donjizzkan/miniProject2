@@ -3,6 +3,7 @@
 
 #include "loginview.h"
 #include "singupview.h"
+#include "mainview.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -10,27 +11,34 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    LoginView *loginPage = new LoginView;
-    SingupView *singupPage = new SingupView;
+    LoginView *loginView = new LoginView;
+    SingupView *singupView = new SingupView;
+    MainView *mainView = new MainView;
 
-    loginPage->setStyleSheet("background-color: lightblue;");
-    singupPage->setStyleSheet("background-color: lightgreen;");
+    loginView->setStyleSheet("background-color: lightblue;");
+    singupView->setStyleSheet("background-color: lightgreen;");
+    mainView->setStyleSheet("background-color: #afaf;");
 
-    ui->mainStackedWidget->setStyleSheet("background-color: lightgray;");
+    // ui->mainStackedWidget->setStyleSheet("background-color: lightgray;");
 
-    ui -> mainStackedWidget -> addWidget(loginPage); // index 0
-    ui -> mainStackedWidget -> addWidget(singupPage); // index 1
+    ui -> mainStackedWidget -> addWidget(loginView); // index 0
+    ui -> mainStackedWidget -> addWidget(singupView); // index 1
+    ui -> mainStackedWidget -> addWidget(mainView); // index 1
 
     // 0번째 먼저 보여주도록 세팅
     ui->mainStackedWidget->setCurrentIndex(0);
 
-
     // 시그널 연결
-    connect(loginPage, &LoginView::goToSignup, this, [=]() {
-        ui->mainStackedWidget->setCurrentWidget(singupPage);
+    connect(loginView, &LoginView::goToSignup, this, [=]() {
+        ui->mainStackedWidget->setCurrentWidget(singupView);
     });
-    connect(singupPage, &SingupView::goToLogin, this, [=]() {
-        ui->mainStackedWidget->setCurrentWidget(loginPage);
+    connect(loginView, &LoginView::goToMain, this, [=]() {
+        ui->mainStackedWidget->setCurrentWidget(mainView);
+    });
+
+
+    connect(singupView, &SingupView::goToLogin, this, [=]() {
+        ui->mainStackedWidget->setCurrentWidget(loginView);
     });
 
 

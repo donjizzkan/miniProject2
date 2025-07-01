@@ -11,16 +11,19 @@ CONFIG += c++17
 SOURCES += \
     loginview.cpp \
     main.cpp \
+    mainview.cpp \
     mainwindow.cpp \
     singupview.cpp
 
 HEADERS += \
     loginview.h \
+    mainview.h \
     mainwindow.h \
     singupview.h
 
 FORMS += \
     loginview.ui \
+    mainview.ui \
     mainwindow.ui \
     singupview.ui
 

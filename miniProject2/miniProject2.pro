@@ -11,15 +11,18 @@ CONFIG += c++17
 SOURCES += \
     loginview.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    singupview.cpp
 
 HEADERS += \
     loginview.h \
-    mainwindow.h
+    mainwindow.h \
+    singupview.h
 
 FORMS += \
     loginview.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    singupview.ui
 
 TRANSLATIONS += \
     miniProject2_ko_KR.ts

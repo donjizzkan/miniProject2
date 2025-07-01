@@ -17,6 +17,10 @@ public:
 
 private:
     Ui::LoginView *ui;
+
+// 메인윈도우에게 알릴 신호
+signals:
+    void goToSignup();
 };
 
 #endif // LOGINVIEW_H

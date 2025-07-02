@@ -3,20 +3,20 @@
 
 #include <QWidget>
 
-namespace Ui {
-class SingupView;
+namespace Ui {  
+class SignupView;
 }
 
-class SingupView : public QWidget
+class SignupView : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit SingupView(QWidget *parent = nullptr);
-    ~SingupView();
+    explicit SignupView(QWidget *parent = nullptr);
+    ~SignupView();
 
 private:
-    Ui::SingupView *ui;
+    Ui::SignupView *ui;
 
 // 메인윈도우에게 알릴 신호
 signals:

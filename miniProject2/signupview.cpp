@@ -1,17 +1,17 @@
 #include "signupview.h"
 #include "ui_signupview.h"
 
-SingupView::SingupView(QWidget *parent)
+SignupView::SignupView(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::SingupView)
+    , ui(new Ui::SignupView)
 {
     ui->setupUi(this);
 
-    connect(ui->cancel_Button, &QPushButton::clicked, this, &SingupView::goToLogin);
-    connect(ui->signup_Button, &QPushButton::clicked, this, &SingupView::goToLogin);
+    connect(ui->cancel_Button, &QPushButton::clicked, this, &SignupView::goToLogin);
+    connect(ui->signup_Button, &QPushButton::clicked, this, &SignupView::goToLogin);
 }
 
-SingupView::~SingupView()
+SignupView::~SignupView()
 {
     delete ui;
 }

@@ -6,6 +6,8 @@ MainView::MainView(QWidget *parent)
     , ui(new Ui::MainView)
 {
     ui->setupUi(this);
+
+    setStyleSheet("background-color: lightblue;");
 }
 
 MainView::~MainView()

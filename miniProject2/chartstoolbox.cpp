@@ -1,11 +1,6 @@
 #include "chartstoolbox.h"
 
-#include <QToolBox>
-
-#include <QFile>
-#include <QJsonDocument>
-#include <QJsonArray>
-#include <QJsonObject>
+#include <QDebug>
 
 ChartsToolBox::ChartsToolBox(QWidget *parent)
     : QWidget{parent}
@@ -37,17 +32,51 @@ ChartsToolBox::ChartsToolBox(QWidget *parent)
 
     // QToolBox 생성
     QToolBox *chartsToolBox = new QToolBox;
+    // 화면 크기 자동으로 늘어나면 늘어나도록 Expanding
     chartsToolBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 
-    // QChart 라인 그래프 생성
-    QChart *chart = new QChart();
+    // QChart 라인 그래프
+    chart = new QChart();
+    jsonData = array;
+    // 데이터 세팅
     chartData = chartDataSetting();
+    
+    // 데이터를 차트에 넣어주기
+    chart->addSeries(chartData);
+    
+    // 차트 축 세팅
+    chartSettingX();
+    chartSettingY();
 
+
+    // 차트 뷰 생성
+    QChartView *chartView = new QChartView(chart);
+    // 안티앨리어싱 옵션 선택 ( 부드럽게 )
+    chartView->setRenderHint(QPainter::Antialiasing);
+    chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    // QToolBox 탭 부분에 Line Chart 추가
+    chartsToolBox->addItem(chartView, "Line Chart");
+
+    // ChartsToolBox 위젯 자체에 layout 설정해서 chartsToolBox를 포함
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    // 여백 제거
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->addWidget(chartsToolBox);
+    setLayout(layout);
+    
+    // 업데이트
+    chartUpdate();
+}
+
+// 데이터 세팅
+QLineSeries* ChartsToolBox::chartDataSetting(){
+    QLineSeries *chartData = new QLineSeries();
 
     // JSON 배열 반복하면서 값 추가
-    for (int i = 0; i < array.size(); ++i) {
-        const QJsonObject obj = array[i].toObject();
+    for (int i = 0; i < jsonData.size(); ++i) {
+        const QJsonObject obj = jsonData[i].toObject();
 
         int today = obj["today"].toInt();   // x값
         double price = obj["price"].toDouble();    // y값
@@ -56,82 +85,121 @@ ChartsToolBox::ChartsToolBox(QWidget *parent)
         chartData->append(today, price);
     }
 
-
-    // 차트 축 세팅
-    chartSettingX(*chart, chartData);
-    chartSettingY(*chart, chartData);
-
-
-    QChartView *chartView = new QChartView(chart);
-    chartView->setRenderHint(QPainter::Antialiasing);
-    chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-
-
-    // QToolBox에 탭 추가
-    chartsToolBox->addItem(chartView, "Line Chart");
-
-    chart -> addSeries(chartData);
-
-
-    // ChartsToolBox 위젯 자체에 layout 설정해서 chartsToolBox를 포함
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setContentsMargins(0, 0, 0, 0);  // 여백 제거
-    layout->addWidget(chartsToolBox);
-    setLayout(layout);
-}
-
-// 데이터 세팅
-QLineSeries* ChartsToolBox::chartDataSetting(){
-    QLineSeries *chartData = new QLineSeries();
-
     return chartData;
 }
 
 // x축 설정
-void ChartsToolBox::chartSettingX(QChart &chart, QLineSeries *chartData){
+void ChartsToolBox::chartSettingX(){
+    // 안전하게 축 처리 - 기존 축이 있으면 범위만 업데이트
+    QList<QAbstractAxis*> axes = chart->axes(Qt::Horizontal);
+    if (!axes.isEmpty()) {
+        QCategoryAxis *existingAxisX = qobject_cast<QCategoryAxis*>(axes.first());
+        if (existingAxisX) {
+            // 기존 축의 범위만 업데이트
+            QTime now = QTime::currentTime();
+            int nowSecs = QTime(0, 0).secsTo(now);
+            int start = qMax(0, nowSecs - 11 * 3600);
+            int end = qMin(86399, nowSecs + 1 * 3600);
+            existingAxisX->setRange(start, end);
+            return;
+        }
+    }
 
+    // 처음 생성하는 경우에만 새 축 생성
     QCategoryAxis *axisX = new QCategoryAxis();
-    // 1시간 간격
-    axisX->append("00:00", 0);
-    axisX->append("01:00", 3600);
-    axisX->append("02:00", 7200);
-    axisX->append("03:00", 10800);
-    axisX->append("04:00", 14400);
-    axisX->append("05:00", 18000);
-    axisX->append("06:00", 21600);
-    axisX->append("07:00", 25200);
-    axisX->append("08:00", 28800);
-    axisX->append("09:00", 32400);
-    axisX->append("10:00", 36000);
-    axisX->append("11:00", 39600);
-    axisX->append("12:00", 43200);
-    axisX->append("13:00", 46800);
-    axisX->append("14:00", 50400);
-    axisX->append("15:00", 54000);
-    axisX->append("16:00", 57600);
-    axisX->append("17:00", 61200);
-    axisX->append("18:00", 64800);
-    axisX->append("19:00", 68400);
-    axisX->append("20:00", 72000);
-    axisX->append("21:00", 75600);
-    axisX->append("22:00", 79200);
-    axisX->append("23:00", 82800);
-    axisX->append("00:00", 86399);
-    axisX->setRange(0, 86400);
-    // axisX->setTitleText("시간");
 
-    chart.addAxis(axisX, Qt::AlignBottom);
+    // 현재 시간
+    QTime now = QTime::currentTime();
+    int nowSecs = QTime(0, 0).secsTo(now);
+    // 시작과 끝의 범위 11시간 전 ~ 1시간후
+    int start = qMax(0, nowSecs - 11 * 3600);
+    int end = qMin(86399, nowSecs + 1 * 3600);
+
+    // 범위 넣어주기
+    axisX->setRange(start, end);
+
+    // 시간별로 그래프 넣어주기
+    for (int s = start; s <= end; s += 3600) {
+        QString label = QTime(0, 0).addSecs(s).toString("HH:mm");
+        axisX->append(label, s);
+    }
+
+    chart->addAxis(axisX, Qt::AlignBottom);
     chartData->attachAxis(axisX);
 }
 
 // y축 설정
-void ChartsToolBox::chartSettingY(QChart &chart, QLineSeries *chartData){
+void ChartsToolBox::chartSettingY(){
+    if (!chartData || chartData->points().isEmpty())
+        return;
+
+    // chartData에서 최소/최대 y값 찾기
+    qreal minY = std::numeric_limits<qreal>::max();
+    qreal maxY = std::numeric_limits<qreal>::lowest();
+
+    const QVector<QPointF> &points = chartData->points();
+    for (const QPointF &point : points) {
+        minY = qMin(minY, point.y());
+        maxY = qMax(maxY, point.y());
+    }
+
+    const qreal margin = 2.0;
+    qreal lower = minY - margin;
+    qreal upper = maxY + margin;
+
+    // 이미 존재하는 Y축이 있으면 setRange만 갱신
+    QList<QAbstractAxis*> axes = chart->axes(Qt::Vertical);
+    for (QAbstractAxis *axis : std::as_const(axes)) {
+        QValueAxis *valueAxis = qobject_cast<QValueAxis*>(axis);
+        if (valueAxis) {
+            valueAxis->setRange(lower, upper);
+            return;
+        }
+    }
+
+    // Y축이 없을 경우 새로 생성
     QValueAxis *axisY = new QValueAxis();
-    axisY->setRange(28000, 30000);
-    // axisY->setTitleText("가격");
-
-
-    chart.addAxis(axisY, Qt::AlignLeft);
+    axisY->setRange(lower, upper);
+    chart->addAxis(axisY, Qt::AlignLeft);
     chartData->attachAxis(axisY);
+}
+
+void ChartsToolBox::chartUpdate(){
+    // 타이머로 실시간 x축 업데이트
+    updateTimer = new QTimer(this);
+    connect(updateTimer, &QTimer::timeout, this, [this]() {
+        // 현재 시간 기준으로 x축 범위만 업데이트
+        QTime now = QTime::currentTime();
+        int nowSecs = QTime(0, 0).secsTo(now);
+        int start = qMax(0, nowSecs - 1 * 3600 /60);
+        int end = qMin(86399, nowSecs + 1 * 3600 /60);
+        // int start = qMax(0, nowSecs - 1 * 3600);
+        // int end = qMin(86399, nowSecs + 1 * 3600);
+
+        // 데이터 업데이트
+        QList<QPointF> points;
+        for (const auto &val : std::as_const(jsonData)) {
+            QJsonObject obj = val.toObject();
+            int t = obj["today"].toInt();
+            double p = obj["price"].toDouble();
+            if (t >= start && t <= end) {
+                points.append(QPointF(t, p));
+            }
+        }
+        chartData->replace(points);
+        
+        // x축이 있는지 확인하고 범위만 업데이트
+        QList<QAbstractAxis*> axes = chart->axes(Qt::Horizontal);
+        if (!axes.isEmpty()) {
+            QCategoryAxis *axisX = qobject_cast<QCategoryAxis*>(axes.first());
+            if (axisX) {
+                axisX->setRange(start, end);
+            }
+        }
+        // Y도 갱신
+        chartSettingY();
+    });
+    // 30초마다 실행 (적당한 간격)
+    // updateTimer->start(30000);
+    updateTimer->start(1000);
 }

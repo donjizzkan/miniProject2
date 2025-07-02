@@ -3,6 +3,14 @@
 
 #include <QWidget>
 #include <QtCharts>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QTime>
+#include <QTimer>
+#include <QVBoxLayout>
+#include <QToolBox>
 
 class ChartsToolBox : public QWidget
 {
@@ -12,14 +20,17 @@ public:
     void getChartsNUM();
 
 private:
+    QChart *chart;
     QLineSeries *chartData;
     QJsonArray jsonData;
-
-
+    QTimer *updateTimer;
 
     QLineSeries* chartDataSetting();
-    void chartSettingX(QChart &chart, QLineSeries *chartData);
-    void chartSettingY(QChart &chart, QLineSeries *chartData);
+    void chartSettingX();
+    void chartSettingY();
+
+    // 실시간 차트 업데이트
+    void chartUpdate();
 
 signals:
 };

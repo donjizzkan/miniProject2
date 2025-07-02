@@ -14,21 +14,21 @@ SOURCES += \
     main.cpp \
     mainview.cpp \
     mainwindow.cpp \
-    singupview.cpp
+    signupview.cpp
 
 HEADERS += \
     linechart.h \
     loginview.h \
     mainview.h \
     mainwindow.h \
-    singupview.h
+    signupview.h
 
 FORMS += \
     linechart.ui \
     loginview.ui \
     mainview.ui \
     mainwindow.ui \
-    singupview.ui
+    signupview.ui
 
 TRANSLATIONS += \
     miniProject2_ko_KR.ts

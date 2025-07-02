@@ -2,7 +2,7 @@
 #define SIGNUPVIEW_H
 
 #include <QWidget>
-
+#include "userManage.h"
 namespace Ui {  
 class SignupView;
 }
@@ -14,6 +14,10 @@ class SignupView : public QWidget
 public:
     explicit SignupView(QWidget *parent = nullptr);
     ~SignupView();
+
+    // line Edit에 입력된 정보 받아오기
+    userInfo getUserInfo();
+
 
 private:
     Ui::SignupView *ui;

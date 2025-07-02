@@ -9,22 +9,23 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    linechart.cpp \
+    chartstoolbox.cpp \
     loginview.cpp \
     main.cpp \
     mainview.cpp \
     mainwindow.cpp \
-    signupview.cpp
+    signupview.cpp \
+    splashview.cpp
 
 HEADERS += \
-    linechart.h \
+    chartstoolbox.h \
     loginview.h \
     mainview.h \
     mainwindow.h \
-    signupview.h
+    signupview.h \
+    splashview.h
 
 FORMS += \
-    linechart.ui \
     loginview.ui \
     mainview.ui \
     mainwindow.ui \
@@ -39,3 +40,6 @@ CONFIG += embed_translations
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    resource.qrc

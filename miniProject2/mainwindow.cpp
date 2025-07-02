@@ -17,9 +17,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     loginView->setStyleSheet("background-color: lightblue;");
     signupView->setStyleSheet("background-color: lightgreen;");
-    mainView->setStyleSheet("background-color: #afaf;");
-
-    // ui->mainStackedWidget->setStyleSheet("background-color: lightgray;");
 
     ui -> mainStackedWidget -> addWidget(loginView); // index 0
     ui -> mainStackedWidget -> addWidget(signupView); // index 1

@@ -13,13 +13,15 @@ SOURCES += \
     main.cpp \
     mainview.cpp \
     mainwindow.cpp \
-    signupview.cpp
+    signupview.cpp \
+    userManage.cpp
 
 HEADERS += \
     loginview.h \
     mainview.h \
     mainwindow.h \
-    signupview.h
+    signupview.h \
+    userManage.h
 
 FORMS += \
     loginview.ui \

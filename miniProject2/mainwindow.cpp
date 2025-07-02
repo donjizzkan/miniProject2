@@ -1,9 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
 #include "loginview.h"
 #include "signupview.h"
 #include "mainview.h"
+#include "userManage.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -28,19 +28,24 @@ MainWindow::MainWindow(QWidget *parent)
     // 0번째 먼저 보여주도록 세팅
     ui->mainStackedWidget->setCurrentIndex(0);
 
-    // 시그널 연결
-    connect(loginView, &LoginView::goToSignup, this, [=]() {
+
+    //=========================================
+    //              시그널 연결
+    //=========================================
+    connect(loginView, &LoginView::goToSignup, this, [=]() {                // 로그인 화면에서 goToSignup 시그널 발생할 경우 처리
         ui->mainStackedWidget->setCurrentWidget(signupView);
     });
-    connect(loginView, &LoginView::goToMain, this, [=]() {
+    connect(loginView, &LoginView::goToMain, this, [=]() {                  // 로그인 화면에서 goToMain 시그널 발생할 경우 처리
         ui->mainStackedWidget->setCurrentWidget(mainView);
     });
-
-
-    connect(signupView, &SignupView::goToLogin, this, [=]() {
+    connect(signupView, &SignupView::goToLogin, this, [=]() {               // 회원가입 화면에서 goToLogin 시그널 발생할 경우 처리
         ui->mainStackedWidget->setCurrentWidget(loginView);
     });
-
+    connect(signupView, &SignupView::doSignUp, this,[=](){                  // 회원가입 화면에서 doSignUp 시그널 처리
+        userManage manage;
+        manage.signUp();            // signUp 실행
+        ui->mainStackedWidget->setCurrentWidget(loginView);
+    });
 
 }
 

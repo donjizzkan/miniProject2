@@ -22,13 +22,23 @@ public:
     QString name;           // 이름
     QString ID;             // 아이디
     QString PW;             // 비밀번호
-    int phoneNum;           // 전화번호
+    QString phoneNum;           // 전화번호
 
 
-    //========== 거래관련 정보
-    QDateTime tradeDate;      // 거래 일시
+    //========== 보유 자산
     int coinCnt;              // 코인 개수
     int payment;              // 매입 금액 (매수하는데에 쓴 총액)
+    int money;                // 보유 현금
+
+
+    //========== 거래 관련 정보
+    struct tradeInfo{
+        QDateTime tradeDate;      // 거래 일시
+        int tradeCnt;             // 거래 코인수량
+        int tradePrice;           // 거래당시 코인금액
+    };
+
+    QList<tradeInfo> tradingHis;    // 거래시마다 위 구조체 저장할 QList
 };
 
 
@@ -43,14 +53,12 @@ public:
     ~userManage();
 
     //========== 기능 구현 함수
-    void signUp();              // 회원가입 기능 구현
-    void signIn();              // 로그인 기능 구현
+    void signUp(userInfo& info);                    // 회원가입 기능 구현
+    bool signIn(QString& ID, QString& PW);          // 로그인 기능 구현, 로그인 성공여부에 따라 참,거짓값 반환하므로 bool
 
 
     //========== 시그널
 signals:
-    void doSignUp();            // signUp 함수 호출 시그널
-    void doSignIn();            // signIn 함수 호출 시그널
 
 };
 

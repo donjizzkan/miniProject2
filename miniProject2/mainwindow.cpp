@@ -16,14 +16,11 @@ MainWindow::MainWindow(QWidget *parent)
     SignupView *signupView = new SignupView;
     MainView *mainView = new MainView;
 
-    loginView->setStyleSheet("background-color: lightblue;");
-    signupView->setStyleSheet("background-color: lightgreen;");
+    ui -> mainStackedWidget -> addWidget(loginView); // index 0 - devwooms
+    ui -> mainStackedWidget -> addWidget(signupView); // index 1 - devwooms
+    ui -> mainStackedWidget -> addWidget(mainView); // index 2 - devwooms
 
-    ui -> mainStackedWidget -> addWidget(loginView); // index 0
-    ui -> mainStackedWidget -> addWidget(signupView); // index 1
-    ui -> mainStackedWidget -> addWidget(mainView); // index 1
-
-    // 0번째 먼저 보여주도록 세팅
+    // 0번째 먼저 보여주도록 세팅 - devwooms
     ui->mainStackedWidget->setCurrentIndex(0);
 
 

@@ -10,6 +10,8 @@ CONFIG += c++17
 
 SOURCES += \
     chartstoolbox.cpp \
+    chattinglistmanager.cpp \
+    chattingwindow.cpp \
     loginview.cpp \
     main.cpp \
     mainview.cpp \
@@ -21,6 +23,8 @@ SOURCES += \
 
 HEADERS += \
     chartstoolbox.h \
+    chattinglistmanager.h \
+    chattingwindow.h \
     loginview.h \
     mainview.h \
     mainwindow.h \
@@ -31,6 +35,7 @@ HEADERS += \
     splashview.h
 
 FORMS += \
+    chattingwindow.ui \
     loginview.ui \
     mainview.ui \
     mainwindow.ui \

@@ -24,7 +24,7 @@ private:
     QTcpServer *tcpServer;
     QList<QTcpSocket*> *clientSocketList;
     
-    QString getExternalIP();
+    QString getMyIP();
 
 private slots:
     void clientConnect();

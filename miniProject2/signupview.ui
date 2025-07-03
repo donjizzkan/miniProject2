@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SignupView</class>
+ <widget class="QWidget" name="SignupView">
+  <property name="geometry">        
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>621</width>
+    <height>537</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="name_Layout">
+     <item>
+      <widget class="QLabel" name="name_Label">
+       <property name="text">
+        <string>이름 : </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="name_LineEdit"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="id_Layout">
+     <item>
+      <widget class="QLabel" name="id_Label">
+       <property name="text">
+        <string>아이디 :</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="id_LineEdit"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="pw_Layout">
+     <item>
+      <widget class="QLabel" name="pw_Label">
+       <property name="text">
+        <string>비밀번호 :</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="pw_LineEdit"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="phoneNUM_Layout">
+     <item>
+      <widget class="QLabel" name="phoneNUM_Label">
+       <property name="text">
+        <string>전화번호 :</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="phoneNUM_LineEdit"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="button_Layout">
+     <item>
+      <widget class="QPushButton" name="cancel_Button">
+       <property name="text">
+        <string>취소</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="signup_Button">
+       <property name="text">
+        <string>가입하기</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

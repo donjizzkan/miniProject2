@@ -7,7 +7,7 @@ ChartsToolBox::ChartsToolBox(QWidget *parent)
 {
 
     // ==============================
-    // testdata - 시작
+    // testdata - 시작 - devwooms
     // ==============================
 
     //
@@ -27,75 +27,78 @@ ChartsToolBox::ChartsToolBox(QWidget *parent)
     QJsonArray array = doc.array();
 
     // ==============================
-    // testdata -끝
+    // testdata -끝 - devwooms
     // ==============================
 
-    // QToolBox 생성
+    // QToolBox 생성 - devwooms
     QToolBox *chartsToolBox = new QToolBox;
-    // 화면 크기 자동으로 늘어나면 늘어나도록 Expanding
+    // 화면 크기 자동으로 늘어나면 늘어나도록 Expanding - devwooms
     chartsToolBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 
-    // QChart 라인 그래프
+    // QChart 라인 그래프 - devwooms
     chart = new QChart();
     jsonData = array;
-    // 데이터 세팅
+    // 데이터 세팅 - devwooms
     chartData = chartDataSetting();
     
-    // 데이터를 차트에 넣어주기
+    // 데이터를 차트에 넣어주기 - devwooms
     chart->addSeries(chartData);
     
-    // 차트 축 세팅
+    // 차트 축 세팅 - devwooms
     chartSettingX();
     chartSettingY();
 
 
-    // 차트 뷰 생성
+    // 차트 뷰 생성 - devwooms
     QChartView *chartView = new QChartView(chart);
-    // 안티앨리어싱 옵션 선택 ( 부드럽게 )
+    // 안티앨리어싱 옵션 선택 ( 부드럽게 ) - devwooms
     chartView->setRenderHint(QPainter::Antialiasing);
     chartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    // QToolBox 탭 부분에 Line Chart 추가
+    // QToolBox 탭 부분에 Line Chart 추가 - devwooms
     chartsToolBox->addItem(chartView, "Line Chart");
 
-    // ChartsToolBox 위젯 자체에 layout 설정해서 chartsToolBox를 포함
+    // ChartsToolBox 위젯 자체에 layout 설정해서 chartsToolBox를 포함 - devwooms
     QVBoxLayout *layout = new QVBoxLayout(this);
-    // 여백 제거
+    // 여백 제거 - devwooms
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(chartsToolBox);
     setLayout(layout);
     
-    // 업데이트
+    // 업데이트 - devwooms
     chartUpdate();
 }
 
-// 데이터 세팅
+// 데이터 세팅 - devwooms
 QLineSeries* ChartsToolBox::chartDataSetting(){
     QLineSeries *chartData = new QLineSeries();
+    chartData->setName("비트 코인");
 
-    // JSON 배열 반복하면서 값 추가
+    // JSON 배열 반복하면서 값 추가 - devwooms
     for (int i = 0; i < jsonData.size(); ++i) {
         const QJsonObject obj = jsonData[i].toObject();
 
-        int today = obj["today"].toInt();   // x값
-        double price = obj["price"].toDouble();    // y값
+        // X축  - devwooms
+        int today = obj["today"].toInt();
+        // Y축  - devwooms
+        double price = obj["price"].toDouble();
 
-        // x축 : 날짜, y축 : 가격
+        // x축 : 날짜, y축 : 가격 - devwooms
         chartData->append(today, price);
     }
 
     return chartData;
 }
 
-// x축 설정
+// x축 설정 - devwooms
 void ChartsToolBox::chartSettingX(){
-    // 안전하게 축 처리 - 기존 축이 있으면 범위만 업데이트
+    // 안전하게 축 처리 - 기존 축이 있으면 범위만 업데이트 - devwooms
     QList<QAbstractAxis*> axes = chart->axes(Qt::Horizontal);
     if (!axes.isEmpty()) {
         QCategoryAxis *existingAxisX = qobject_cast<QCategoryAxis*>(axes.first());
         if (existingAxisX) {
-            // 기존 축의 범위만 업데이트
+            // 기존 축의 범위만 업데이트 - devwooms
             QTime now = QTime::currentTime();
             int nowSecs = QTime(0, 0).secsTo(now);
             int start = qMax(0, nowSecs - 11 * 3600);
@@ -105,20 +108,20 @@ void ChartsToolBox::chartSettingX(){
         }
     }
 
-    // 처음 생성하는 경우에만 새 축 생성
+    // 처음 생성하는 경우에만 새 축 생성 - devwooms
     QCategoryAxis *axisX = new QCategoryAxis();
 
-    // 현재 시간
+    // 현재 시간 - devwooms
     QTime now = QTime::currentTime();
     int nowSecs = QTime(0, 0).secsTo(now);
-    // 시작과 끝의 범위 11시간 전 ~ 1시간후
+    // 시작과 끝의 범위 11시간 전 ~ 1시간후 - devwooms
     int start = qMax(0, nowSecs - 11 * 3600);
     int end = qMin(86399, nowSecs + 1 * 3600);
 
-    // 범위 넣어주기
+    // 범위 넣어주기 - devwooms
     axisX->setRange(start, end);
 
-    // 시간별로 그래프 넣어주기
+    // 시간별로 그래프 넣어주기 - devwooms
     for (int s = start; s <= end; s += 3600) {
         QString label = QTime(0, 0).addSecs(s).toString("HH:mm");
         axisX->append(label, s);
@@ -128,12 +131,12 @@ void ChartsToolBox::chartSettingX(){
     chartData->attachAxis(axisX);
 }
 
-// y축 설정
+// y축 설정 - devwooms
 void ChartsToolBox::chartSettingY(){
     if (!chartData || chartData->points().isEmpty())
         return;
 
-    // chartData에서 최소/최대 y값 찾기
+    // chartData에서 최소/최대 y값 찾기 - devwooms
     qreal minY = std::numeric_limits<qreal>::max();
     qreal maxY = std::numeric_limits<qreal>::lowest();
 
@@ -147,7 +150,7 @@ void ChartsToolBox::chartSettingY(){
     qreal lower = minY - margin;
     qreal upper = maxY + margin;
 
-    // 이미 존재하는 Y축이 있으면 setRange만 갱신
+    // 이미 존재하는 Y축이 있으면 setRange만 갱신 - devwooms
     QList<QAbstractAxis*> axes = chart->axes(Qt::Vertical);
     for (QAbstractAxis *axis : std::as_const(axes)) {
         QValueAxis *valueAxis = qobject_cast<QValueAxis*>(axis);
@@ -157,7 +160,7 @@ void ChartsToolBox::chartSettingY(){
         }
     }
 
-    // Y축이 없을 경우 새로 생성
+    // Y축이 없을 경우 새로 생성 - devwooms
     QValueAxis *axisY = new QValueAxis();
     axisY->setRange(lower, upper);
     chart->addAxis(axisY, Qt::AlignLeft);
@@ -165,10 +168,10 @@ void ChartsToolBox::chartSettingY(){
 }
 
 void ChartsToolBox::chartUpdate(){
-    // 타이머로 실시간 x축 업데이트
+    // 타이머로 실시간 x축 업데이트 - devwooms
     updateTimer = new QTimer(this);
     connect(updateTimer, &QTimer::timeout, this, [this]() {
-        // 현재 시간 기준으로 x축 범위만 업데이트
+        // 현재 시간 기준으로 x축 범위만 업데이트 - devwooms
         QTime now = QTime::currentTime();
         int nowSecs = QTime(0, 0).secsTo(now);
         int start = qMax(0, nowSecs - 1 * 3600 /60);
@@ -176,7 +179,7 @@ void ChartsToolBox::chartUpdate(){
         // int start = qMax(0, nowSecs - 1 * 3600);
         // int end = qMin(86399, nowSecs + 1 * 3600);
 
-        // 데이터 업데이트
+        // 데이터 업데이트 - devwooms
         QList<QPointF> points;
         for (const auto &val : std::as_const(jsonData)) {
             QJsonObject obj = val.toObject();
@@ -188,7 +191,7 @@ void ChartsToolBox::chartUpdate(){
         }
         chartData->replace(points);
         
-        // x축이 있는지 확인하고 범위만 업데이트
+        // x축이 있는지 확인하고 범위만 업데이트 - devwooms
         QList<QAbstractAxis*> axes = chart->axes(Qt::Horizontal);
         if (!axes.isEmpty()) {
             QCategoryAxis *axisX = qobject_cast<QCategoryAxis*>(axes.first());
@@ -196,10 +199,10 @@ void ChartsToolBox::chartUpdate(){
                 axisX->setRange(start, end);
             }
         }
-        // Y도 갱신
+        // Y도 갱신 - devwooms
         chartSettingY();
     });
-    // 30초마다 실행 (적당한 간격)
-    // updateTimer->start(30000);
+
+    // 1초 마다 실행  - devwooms
     updateTimer->start(1000);
 }

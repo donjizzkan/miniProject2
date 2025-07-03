@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/charts/test">
+        <file>btc_price.json</file>
+    </qresource>
+    <qresource prefix="/assets">
+        <file>assets/bitAnimation.gif</file>
+    </qresource>
+</RCC>

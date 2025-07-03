@@ -72,6 +72,12 @@
          <height>50</height>
         </size>
        </property>
+       <property name="maximumSize">
+        <size>
+         <width>200</width>
+         <height>50</height>
+        </size>
+       </property>
        <property name="font">
         <font>
          <pointsize>30</pointsize>
@@ -90,6 +96,12 @@
         </sizepolicy>
        </property>
        <property name="minimumSize">
+        <size>
+         <width>200</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="maximumSize">
         <size>
          <width>200</width>
          <height>50</height>

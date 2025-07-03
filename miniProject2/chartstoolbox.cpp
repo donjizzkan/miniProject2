@@ -73,6 +73,7 @@ ChartsToolBox::ChartsToolBox(QWidget *parent)
 // 데이터 세팅 - devwooms
 QLineSeries* ChartsToolBox::chartDataSetting(){
     QLineSeries *chartData = new QLineSeries();
+    chartData->setName("비트 코인");
 
     // JSON 배열 반복하면서 값 추가 - devwooms
     for (int i = 0; i < jsonData.size(); ++i) {

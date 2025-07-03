@@ -15,6 +15,11 @@ public:
     explicit LoginView(QWidget *parent = nullptr);
     ~LoginView();
 
+    // 입력받은 아이디와 패스워드 가져오는 함수
+    QString getInsertedID();
+    QString getInsertedPW();
+
+
 private:
     Ui::LoginView *ui;
 
@@ -22,6 +27,7 @@ private:
 signals:
     void goToSignup();
     void goToMain();
+    void doSignIn();            // signIn 함수 호출 시그널
 };
 
 #endif // LOGINVIEW_H

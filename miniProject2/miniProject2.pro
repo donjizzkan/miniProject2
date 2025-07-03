@@ -15,7 +15,8 @@ SOURCES += \
     mainview.cpp \
     mainwindow.cpp \
     signupview.cpp \
-    userManage.cpp
+    userManage.cpp \
+    splashview.cpp
 
 HEADERS += \
     chartstoolbox.h \
@@ -23,7 +24,8 @@ HEADERS += \
     mainview.h \
     mainwindow.h \
     signupview.h \
-    userManage.h
+    userManage.h \
+    splashview.h
 
 FORMS += \
     loginview.ui \

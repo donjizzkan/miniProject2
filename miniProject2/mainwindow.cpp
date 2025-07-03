@@ -4,6 +4,7 @@
 #include "signupview.h"
 #include "mainview.h"
 #include "userManage.h"
+#include "sendingManage.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -30,25 +31,19 @@ MainWindow::MainWindow(QWidget *parent)
     connect(loginView, &LoginView::goToSignup, this, [=]() {                // 로그인 화면에서 goToSignup 시그널 발생할 경우 처리
         ui->mainStackedWidget->setCurrentWidget(signupView);
     });
-    /*connect(loginView, &LoginView::goToMain, this, [=]() {                  // 로그인 화면에서 goToMain 시그널 발생할 경우 처리
-        ui->mainStackedWidget->setCurrentWidget(mainView);                    // 로그인 기능 구현함에 따라 주석처리
-    });*/
+    connect(loginView, &LoginView::goToMain, this, [=]() {                  // 로그인 화면에서 goToMain 시그널 발생할 경우 처리
+        ui->mainStackedWidget->setCurrentWidget(mainView);
+    });
     connect(loginView, &LoginView::doSignIn,this,[=](){
-        userManage manage;
+        sendingManage sending;
         QString ID, PW;
-        bool val;
+        bool val = true;
 
 
         // 입력받은 ID, PW값 가져옴
         ID = loginView->getInsertedID();
         PW = loginView->getInsertedPW();
-        val = manage.signIn(ID,PW);
-        if (val == true){
-            ui->mainStackedWidget->setCurrentWidget(mainView);
-        }
-        else{
-            ui->mainStackedWidget->setCurrentWidget(loginView);
-        }
+        sending.sendLogIn(ID,PW);       //로그인 요청 전송
     });
 
 
@@ -57,11 +52,11 @@ MainWindow::MainWindow(QWidget *parent)
         ui->mainStackedWidget->setCurrentWidget(loginView);
     });
     connect(signupView, &SignupView::doSignUp, this,[=](){                  // 회원가입 화면에서 doSignUp 시그널 처리
-        userManage manage;
+        sendingManage sending;
         userInfo info;
 
         info = signupView->getUserInfo();                                   // 입력창에 입력했던 내용 받아오기
-        manage.signUp(info);                                                // 입력받은 내용 등록
+        sending.sendSignUp(info.name,info.ID,info.PW,info.phoneNum);        // 회원가입 요청
         ui->mainStackedWidget->setCurrentWidget(loginView);                 // 로그인 화면으로 이동
     });
 

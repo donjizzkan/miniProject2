@@ -12,8 +12,7 @@ public:
     }
     socketManage() {}
     QTcpSocket m_socket;
-    QTcpSocket* socket(){return &m_socket;}                  // 소켓
-    void connectToSever(const QString& host, quint16 port);
+    QTcpSocket* socket(){return &m_socket;}
 };
 
 #endif // SOCKETMANAGE_H

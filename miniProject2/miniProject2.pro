@@ -14,8 +14,8 @@ SOURCES += \
     main.cpp \
     mainview.cpp \
     mainwindow.cpp \
+    sendingManage.cpp \
     signupview.cpp \
-    socketManage.cpp \
     userManage.cpp \
     splashview.cpp
 
@@ -24,6 +24,7 @@ HEADERS += \
     loginview.h \
     mainview.h \
     mainwindow.h \
+    sendingManage.h \
     signupview.h \
     socketManage.h \
     userManage.h \

@@ -1,4 +1,4 @@
-QT       += core gui charts
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -9,32 +9,17 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    chartstoolbox.cpp \
-    loginview.cpp \
     main.cpp \
-    mainview.cpp \
-    mainwindow.cpp \
-    signupview.cpp \
-    userManage.cpp \
-    splashview.cpp
+    mainwindow.cpp
 
 HEADERS += \
-    chartstoolbox.h \
-    loginview.h \
-    mainview.h \
-    mainwindow.h \
-    signupview.h \
-    userManage.h \
-    splashview.h
+    mainwindow.h
 
 FORMS += \
-    loginview.ui \
-    mainview.ui \
-    mainwindow.ui \
-    signupview.ui
+    mainwindow.ui
 
 TRANSLATIONS += \
-    miniProject2_ko_KR.ts
+    miniProjcet2_Server_ko_KR.ts
 CONFIG += lrelease
 CONFIG += embed_translations
 
@@ -44,4 +29,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    resource.qrc
+    resorce.qrc

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "usermanage.h"
 
 #include <QMessageBox>
 #include <QDebug>
@@ -100,6 +101,71 @@ void MainWindow::clientConnect()
         clientSocket->deleteLater();
     });
     
+    // 클라이언트에서 정보 읽어오기 - donjizzkan
+    connect(clientSocket, &QTcpSocket::readyRead,this,[this,clientSocket](){
+        QByteArray recvData = clientSocket->readAll();                  // 소켓에서 받은 Data 변수
+        QJsonParseError err;                                            // error 날 경우 저장할 변수
+        QJsonDocument doc = QJsonDocument::fromJson(recvData,&err);     // 소켓에서 받은 Data를 document로 변환하고 실패시 &err에 저장
+
+        if(err.error != QJsonParseError::NoError){
+            qDebug() << "클라이언트에서 받은 정보 Json 파싱 에러 발생";
+        }
+
+        // ==============================
+        //          type별 대응
+        // ==============================
+        userManage usermanage;
+        if(doc.isObject()){
+            QJsonObject obj = doc.object();
+            QString type = obj.value("type").toString();        // type이 뭘로 정의되어있는지 읽어옴
+
+            // 로그인일 때
+            if (type == "login") {
+                bool val;
+                QString ID = obj.value("ID").toString();
+                QString PW = obj.value("PW").toString();
+
+                val = usermanage.signIn(ID,PW);                 // 리스트에 회원이 있을경우 true, 없을경우 false 반환받음
+                if(val == true){                                // 로그인 성공시
+                    QJsonObject JsonResponse;
+                    JsonResponse["type"] = "response";          // type은 "response"
+                    JsonResponse["result"] = "success";         // 내용물은 "성공"
+                    QJsonDocument respDoc(JsonResponse);
+                    QByteArray respData = respDoc.toJson(QJsonDocument::Compact);
+                    clientSocket->write(respData);              // 로그인 요청한 클라이언트로 전송
+                }
+                else{                                           // 로그인 실패시
+                    QJsonObject JsonResponse;
+                    JsonResponse["type"] = "response";          // type은 "response"
+                    JsonResponse["result"] = "fail";            // 내용물은 "실패"
+                    QJsonDocument respDoc(JsonResponse);
+                    QByteArray respData = respDoc.toJson(QJsonDocument::Compact);
+                    clientSocket->write(respData);              // 로그인 요청한 클라이언트로 전송
+                }
+
+
+            }
+
+            // 회원가입일 때
+            else if (type == "signup") {
+                // 회원가입 데이터 받기
+                QString name = obj.value("Name").toString();
+                QString id = obj.value("ID").toString();
+                QString pw = obj.value("PW").toString();
+                QString phone = obj.value("Phone").toString();
+
+                userInfo info;
+                info.name = name;
+                info.ID = id;
+                info.PW = pw;
+                info.phoneNum = phone;
+
+                // 해당 정보 회원가입 처리(파일에 추가)
+                usermanage.signUp(info);
+            }
+        }
+
+    });
 
     qDebug() << "새로운 클라이언트 연결됨 / 총 클라이언트 수 : " << clientSocketList->size();
 }

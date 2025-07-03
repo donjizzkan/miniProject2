@@ -4,6 +4,7 @@
 #include "signupview.h"
 #include "mainview.h"
 #include "userManage.h"
+#include "sendingManage.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -38,14 +39,17 @@ MainWindow::MainWindow(QWidget *parent)
     });*/
     connect(loginView, &LoginView::doSignIn,this,[=](){
         userManage manage;
+        sendingManage sending;
         QString ID, PW;
-        bool val;
+        bool val = true;
 
 
         // 입력받은 ID, PW값 가져옴
         ID = loginView->getInsertedID();
         PW = loginView->getInsertedPW();
-        val = manage.signIn(ID,PW);
+        sending.sendLogIn(ID,PW);       //로그인 요청 전송
+        // ================================================여기에 서버 응답 대기 추가
+        //val =
         if (val == true){
             ui->mainStackedWidget->setCurrentWidget(mainView);
         }
@@ -61,10 +65,11 @@ MainWindow::MainWindow(QWidget *parent)
     });
     connect(signupView, &SignupView::doSignUp, this,[=](){                  // 회원가입 화면에서 doSignUp 시그널 처리
         userManage manage;
+        sendingManage sending;
         userInfo info;
 
         info = signupView->getUserInfo();                                   // 입력창에 입력했던 내용 받아오기
-        manage.signUp(info);                                                // 입력받은 내용 등록
+        sending.sendSignUp(info.name,info.ID,info.PW,info.phoneNum);        // 회원가입 요청
         ui->mainStackedWidget->setCurrentWidget(loginView);                 // 로그인 화면으로 이동
     });
 

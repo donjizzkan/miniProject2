@@ -14,16 +14,14 @@ SOURCES += \
     main.cpp \
     mainview.cpp \
     mainwindow.cpp \
-    signupview.cpp \
-    splashview.cpp
+    signupview.cpp
 
 HEADERS += \
     chartstoolbox.h \
     loginview.h \
     mainview.h \
     mainwindow.h \
-    signupview.h \
-    splashview.h
+    signupview.h
 
 FORMS += \
     loginview.ui \

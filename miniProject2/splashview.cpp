@@ -13,14 +13,14 @@ SplashView::SplashView(QWidget *parent)
     resize(400, 400);
 
     auto *layout = new QVBoxLayout(this);
-    // Qt에서 텍스트나 이미지 또는 애니메이션을 표시할 수 있는 기본 위젯
-    // 해서 애니메이션을 표현하기 위해서 QMovie의 화면으로씀
+    // Qt에서 텍스트나 이미지 또는 애니메이션을 표시할 수 있는 기본 위젯 - devwooms
+    // 해서 애니메이션을 표현하기 위해서 QMovie의 화면으로씀 - devwooms
     QLabel *gifLabel = new QLabel(this);
-    // 배경을 투명으로
+    // 배경을 투명으로 - devwooms
     gifLabel->setAttribute(Qt::WA_TranslucentBackground);
     gifLabel->setStyleSheet("background: transparent;");
 
-    // 리소스에 등록한 gif
+    // 리소스에 등록한 gif - devwooms
     QMovie *movie = new QMovie(":/assets/assets/bitAnimation.gif");
     gifLabel->setMovie(movie);
     movie->start();

@@ -1,4 +1,8 @@
 #include "servermanager.h"
+#include <QJsonDocument>    // Json관련 라이브러리
+#include <QJsonArray>       // Json관련 라이브러리
+#include <QJsonObject>      // Json관련 라이브러리
+#include <QDebug>
 
 ServerManager::ServerManager() {
 
@@ -87,6 +91,5 @@ void ServerManager::clientConnect()
         clientSocket->deleteLater();
     });
 
-
-    qDebug() << "새로운 클라이언트 연결됨 / 총 클라이언트 수 : " << clientSocketList->size();
+    qDebug() << "새로운 클라이언트 연결됨 / 총 클라이언트 수 : " << clientSocketList->size();    
 }

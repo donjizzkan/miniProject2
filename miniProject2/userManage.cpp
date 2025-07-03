@@ -10,6 +10,10 @@ userManage::~userManage(){
 //=========================================
 bool userManage::signIn(QString& ID, QString& PW){
     QFile file("userInfo.json");                        // userInfo 파일 가져오기
+    if (!file.open(QIODevice::ReadOnly)) {
+        qWarning() << "파일 열기 실패:" << file.errorString();
+        return false;
+    }
     QByteArray data = file.readAll();                   // 가져온 파일 내용물 다 읽어옴
     file.close();                                       // 파일 닫기
     QJsonDocument doc = QJsonDocument::fromJson(data);
@@ -38,6 +42,7 @@ bool userManage::signIn(QString& ID, QString& PW){
 //                 회원 가입
 //=========================================
 void userManage::signUp(userInfo& info){
+    // 파일 생성 오류를 대비한 경로 설정
     QFile file("userInfo.json");        // userInfo 파일 가져오기
 
     // userInfo 파일이 없을 경우 생성
@@ -87,6 +92,5 @@ void userManage::signUp(userInfo& info){
         file.write(newDoc.toJson());
         file.close();
         qDebug()<<info.name<<" 가입완료";
-        qDebug() << "파일 경로:" << QFileInfo(file).absoluteFilePath();
     }
 }

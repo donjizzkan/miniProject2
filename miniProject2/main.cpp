@@ -26,7 +26,8 @@ int main(int argc, char *argv[])
     SplashView *splash = new SplashView;
     splash -> show();
 
-    QTimer::singleShot(2500, [&]() {  // 2.5초 후 전환
+    // 2초 후 전환
+    QTimer::singleShot(2000, [&]() {
         splash -> close();
         w.show();
     });

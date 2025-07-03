@@ -23,5 +23,10 @@ private:
 
     QTcpServer *tcpServer;
     QList<QTcpSocket*> *clientSocketList;
+    
+    QString getExternalIP();
+
+private slots:
+    void clientConnect();
 };
 #endif // MAINWINDOW_H

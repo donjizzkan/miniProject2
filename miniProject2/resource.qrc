@@ -4,5 +4,6 @@
     </qresource>
     <qresource prefix="/assets">
         <file>assets/bitAnimation.gif</file>
+        <file>assets/close.svg</file>
     </qresource>
 </RCC>

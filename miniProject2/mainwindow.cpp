@@ -34,11 +34,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(loginView, &LoginView::goToSignup, this, [=]() {                // 로그인 화면에서 goToSignup 시그널 발생할 경우 처리
         ui->mainStackedWidget->setCurrentWidget(signupView);
     });
-    /*connect(loginView, &LoginView::goToMain, this, [=]() {                  // 로그인 화면에서 goToMain 시그널 발생할 경우 처리
-        ui->mainStackedWidget->setCurrentWidget(mainView);                    // 로그인 기능 구현함에 따라 주석처리
-    });*/
+    connect(loginView, &LoginView::goToMain, this, [=]() {                  // 로그인 화면에서 goToMain 시그널 발생할 경우 처리
+        ui->mainStackedWidget->setCurrentWidget(mainView);
+    });
     connect(loginView, &LoginView::doSignIn,this,[=](){
-        userManage manage;
         sendingManage sending;
         QString ID, PW;
         bool val = true;
@@ -48,14 +47,6 @@ MainWindow::MainWindow(QWidget *parent)
         ID = loginView->getInsertedID();
         PW = loginView->getInsertedPW();
         sending.sendLogIn(ID,PW);       //로그인 요청 전송
-        // ================================================여기에 서버 응답 대기 추가
-        //val =
-        if (val == true){
-            ui->mainStackedWidget->setCurrentWidget(mainView);
-        }
-        else{
-            ui->mainStackedWidget->setCurrentWidget(loginView);
-        }
     });
 
 
@@ -64,7 +55,6 @@ MainWindow::MainWindow(QWidget *parent)
         ui->mainStackedWidget->setCurrentWidget(loginView);
     });
     connect(signupView, &SignupView::doSignUp, this,[=](){                  // 회원가입 화면에서 doSignUp 시그널 처리
-        userManage manage;
         sendingManage sending;
         userInfo info;
 

@@ -34,4 +34,7 @@ void sendingManage::sendSignUp(QString& Name, QString& ID, QString& PW, QString&
 
     QTcpSocket* socket = socketManage::instance().socket();
     socket->write(sendingArray);
+    qDebug() << "회원가입용 데이터:" << sendingArray;
+    qDebug() << "회원가입용 소켓 상태:" << socket->state();
+
 }

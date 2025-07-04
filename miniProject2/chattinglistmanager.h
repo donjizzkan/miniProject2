@@ -17,13 +17,12 @@ public:
     void settingOneByOneListWidget(QListWidget *oneByone_listWidget);
     void settingOneByMoreListWidget(QListWidget *oneByMore_listWidget);
 
-    void updateConnectListWidget();
-    void updateOneByOneListWidget();
-    void updateOneByMoreListWidget();
-
     void doubleClickActionConnectListWidget(QListWidgetItem *item);
     void doubleClickActionOneByOneListWidget(QListWidgetItem *item);
     void doubleClickActionOneByMoreListWidget(QListWidgetItem *item);
+
+    void updateData(QListWidget *qListWidget, QList<QString> list);
+    void dragAnddrop(QListWidget *qListWidget);
 
 private:
     QToolBox *chattingToolBox;

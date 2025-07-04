@@ -16,6 +16,7 @@ class ServerManager : public QObject
     Q_OBJECT
 public:
     ServerManager();
+
 private:
     void run();
     QTcpServer *tcpServer;

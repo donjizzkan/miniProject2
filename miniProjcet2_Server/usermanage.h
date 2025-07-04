@@ -1,6 +1,8 @@
 #ifndef USERMANAGE_H
 #define USERMANAGE_H
 
+#include <QObject>
+#include <QDateTime>
 #include <QMainWindow>
 #include <QDateTime>        // 날짜 및 시간 관련 라이브러리
 #include <QFile>            // 파일 관련 라이브러리
@@ -10,9 +12,6 @@
 #include <QDebug>           // 디버깅 출력 라이브러리
 
 using namespace std;
-
-
-
 
 // 유저 정보 저장
 class userInfo {
@@ -41,7 +40,21 @@ public:
     QList<tradeInfo> tradingHis;    // 거래시마다 위 구조체 저장할 QList
 };
 
+// 유저 관리 기능 구현
+class userManage : public QObject {
+    Q_OBJECT
+public:
+    userManage(QObject* parent = nullptr);
+    ~userManage();
 
-//=====userManage 클래스는 서버 프로젝트로 이전되었습니다.
+    //========== 기능 구현 함수
+    void signUp(userInfo& info);                    // 회원가입 기능 구현
+    bool signIn(QString& ID, QString& PW);          // 로그인 기능 구현, 로그인 성공여부에 따라 참,거짓값 반환하므로 bool
+
+
+    //========== 시그널
+signals:
+
+};
 
 #endif // USERMANAGE_H

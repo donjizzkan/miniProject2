@@ -1,6 +1,8 @@
 #ifndef CHATTINGWINDOW_H
 #define CHATTINGWINDOW_H
 
+#include "dropwidget.h"
+
 #include <QWidget>
 #include <QDebug>
 #include <QJsonDocument>    // Json관련 라이브러리
@@ -13,7 +15,7 @@ namespace Ui {
 class ChattingWindow;
 }
 
-class ChattingWindow : public QWidget
+class ChattingWindow : public DropWidget
 {
     Q_OBJECT
 

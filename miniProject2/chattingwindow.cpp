@@ -5,7 +5,7 @@
 //        채팅방 기능 구현
 //==================================
 ChattingWindow::ChattingWindow(const QString& name, QWidget *parent)
-    : QWidget(parent), chatName(name)          // name 변수를 chatName에....
+    : DropWidget(parent), chatName(name)          // name 변수를 chatName에....
     , ui(new Ui::ChattingWindow)
 {
     ui->setupUi(this);

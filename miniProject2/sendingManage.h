@@ -16,6 +16,9 @@ public:
 
     // 회원가입 화면 정보 서버에 전달
     void sendSignUp(QString& Name, QString& ID, QString& PW, QString& PhoneNum);
+
+    // 채팅창이름과 메세지내용을 전달
+    void sendMessage(QString& chatName, QString& textMessage);
 };
 
 #endif // SENDINGMANAGE_H

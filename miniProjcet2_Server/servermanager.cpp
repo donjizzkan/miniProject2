@@ -1,4 +1,5 @@
 #include "servermanager.h"
+#include "clientHandler.cpp"
 #include <QJsonDocument>    // Json관련 라이브러리
 #include <QJsonArray>       // Json관련 라이브러리
 #include <QJsonObject>      // Json관련 라이브러리
@@ -82,6 +83,7 @@ void ServerManager::clientConnect()
     // 서버와 연결된 클라이언트의 소켓을 반환해줌 ( nextPendingConnection() ) - devwooms
     QTcpSocket *clientSocket = tcpServer->nextPendingConnection();
 
+/*  =================== 멀티스레드로 변환하여 주석처리
     // 클라이언트 소켓 리스트에 추가 - devwooms
     clientSocketList->append(clientSocket);
 
@@ -90,6 +92,20 @@ void ServerManager::clientConnect()
         clientSocketList->removeOne(clientSocket);
         clientSocket->deleteLater();
     });
+*/
 
-    qDebug() << "새로운 클라이언트 연결됨 / 총 클라이언트 수 : " << clientSocketList->size();    
+    // Qthread 및 핸들러 생성
+    // handler의 모든 이벤트를 thread 스레드에서 실행하게 옮김
+    QThread *thread = new QThread;
+    ClientHandler *handler = new ClientHandler(clientSocket);
+    handler->moveToThread(thread);
+
+    // 스레드 시작시 클라이언트 시작
+    connect(thread, &QThread::started, handler, &ClientHandler::start);
+
+    // 소켓이 종료되면, 스레드도 종료 및 정리
+    connect(clientSocket, &QTcpSocket::disconnected,thread,&QThread::quit);
+    connect(thread, &QThread::finished,thread,&QThread::deleteLater);
+
+    thread->start();
 }

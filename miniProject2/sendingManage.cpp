@@ -1,6 +1,8 @@
 #include "sendingManage.h"
 
-// 무언가 전달할 때 무조건 메세지 타입 포함해서!!!
+// 무언가 전달할 때 무조건 메세지 type 포함해서!!!
+// 메세지 type의 종류(모두 소문자로 작성할것)
+// login, signup, response(success,fail만 result에 대입), messagesend
 
 //==========================
 //       ID, PW 전달
@@ -16,6 +18,7 @@ void sendingManage::sendLogIn(QString& ID, QString& PW){
 
     QTcpSocket* socket = socketManage::instance().socket();
     socket->write(sendingArray);
+    qDebug() << "서버로 로그인 요청";
 }
 
 
@@ -34,7 +37,21 @@ void sendingManage::sendSignUp(QString& Name, QString& ID, QString& PW, QString&
 
     QTcpSocket* socket = socketManage::instance().socket();
     socket->write(sendingArray);
-    qDebug() << "회원가입용 데이터:" << sendingArray;
-    qDebug() << "회원가입용 소켓 상태:" << socket->state();
+    qDebug() << "서버로 회원가입 요청";
+}
 
+//==========================
+//      채팅메세지 전송
+//==========================
+void sendingManage::sendMessage(QString& chatName, QString& textMessage){
+    QJsonObject sendingObj;
+    sendingObj["type"] = "messagesend";
+    sendingObj["chatName"] = chatName;
+    sendingObj["textMessage"] = textMessage;
+    QJsonDocument doc(sendingObj);
+    QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
+
+    QTcpSocket* socket = socketManage::instance().socket();
+    socket->write(sendingArray);
+    qDebug()<< chatName << "메세지 전송";
 }

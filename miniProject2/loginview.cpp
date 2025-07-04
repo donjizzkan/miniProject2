@@ -43,6 +43,7 @@ LoginView::LoginView(QWidget *parent)
             }
         }
     });
+
     connect(ui->signup_Button, &QPushButton::clicked, this, &LoginView::goToSignup);
     connect(ui->login_Button, &QPushButton::clicked, this, &LoginView::doSignIn);
 }

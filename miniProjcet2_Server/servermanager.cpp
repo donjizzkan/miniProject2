@@ -81,8 +81,6 @@ void ServerManager::clientConnect()
 {
     // 서버와 연결된 클라이언트의 소켓을 반환해줌 ( nextPendingConnection() ) - devwooms
     QTcpSocket *clientSocket = tcpServer->nextPendingConnection();
-    ClientHandler* client = new ClientHandler(clientSocket);
-
 /*  =================== 멀티스레드로 변환하여 주석처리
     // 클라이언트 소켓 리스트에 추가 - devwooms
     clientSocketList->append(clientSocket);

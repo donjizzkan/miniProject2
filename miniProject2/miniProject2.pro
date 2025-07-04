@@ -12,6 +12,7 @@ SOURCES += \
     chartstoolbox.cpp \
     chattinglistmanager.cpp \
     chattingwindow.cpp \
+    dropwidget.cpp \
     loginview.cpp \
     main.cpp \
     mainview.cpp \
@@ -25,6 +26,7 @@ HEADERS += \
     chartstoolbox.h \
     chattinglistmanager.h \
     chattingwindow.h \
+    dropwidget.h \
     loginview.h \
     mainview.h \
     mainwindow.h \

@@ -16,6 +16,7 @@ SOURCES += \
     usermanage.cpp
 
 HEADERS += \
+    clientHandler.h \
     mainwindow.h \
     servermanager.h \
     usermanage.h

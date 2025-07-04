@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-
+#include "servermanager.h"
 #include <QApplication>
 #include <QSystemTrayIcon>
 #include <QMenu>
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
     // ==============================
     // 서버
     // ==============================
-
+    ServerManager server;
 
 
 

@@ -20,10 +20,10 @@ public:
 
 private:
     Ui::MainWindow *ui;
-
+    /*
     QTcpServer *tcpServer;
     QList<QTcpSocket*> *clientSocketList;
-    
+    */
     QString getMyIP();
 
 private slots:

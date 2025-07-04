@@ -6,21 +6,26 @@
 #include <QTranslator>
 #include <QTimer>
 
+#include <mainview.h>
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;
 
 
-    // 스플레쉬 뷰 - devwooms
-    SplashView *splash = new SplashView;
-    splash -> show();
+    // // 스플레쉬 뷰 - devwooms
+    // SplashView *splash = new SplashView;
+    // splash -> show();
 
-    // 2초 후 전환 - devwooms
-    QTimer::singleShot(2000, [&]() {
-        splash -> close();
-        w.show();
-    });
+    // // 2초 후 전환 - devwooms
+    // QTimer::singleShot(2000, [&]() {
+    //     splash -> close();
+    //     w.show();
+    // });
+
+    MainView *testview = new MainView;
+    testview->show();
 
     return a.exec();
 }

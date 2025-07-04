@@ -2,6 +2,8 @@
 
 #include <QDebug>
 
+int lastXAxisUpdateSec = -60;
+
 ChartsToolBox::ChartsToolBox(QWidget *parent)
     : QWidget{parent}
 {
@@ -101,8 +103,9 @@ void ChartsToolBox::chartSettingX(){
             // 기존 축의 범위만 업데이트 - devwooms
             QTime now = QTime::currentTime();
             int nowSecs = QTime(0, 0).secsTo(now);
-            int start = qMax(0, nowSecs - 11 * 3600);
-            int end = qMin(86399, nowSecs + 1 * 3600);
+            //  전부터 현재까지 - devwooms
+            int end = nowSecs;
+            int start = qMax(0, end - 1 * 100);
             existingAxisX->setRange(start, end);
             return;
         }
@@ -110,19 +113,19 @@ void ChartsToolBox::chartSettingX(){
 
     // 처음 생성하는 경우에만 새 축 생성 - devwooms
     QCategoryAxis *axisX = new QCategoryAxis();
-
+    axisX->setLabelsAngle(-90);
     // 현재 시간 - devwooms
     QTime now = QTime::currentTime();
     int nowSecs = QTime(0, 0).secsTo(now);
-    // 시작과 끝의 범위 11시간 전 ~ 1시간후 - devwooms
-    int start = qMax(0, nowSecs - 11 * 3600);
-    int end = qMin(86399, nowSecs + 1 * 3600);
+    //  전부터 현재까지 - devwooms
+    int end = nowSecs;
+    int start = qMax(0, end - 1 * 100);
 
     // 범위 넣어주기 - devwooms
     axisX->setRange(start, end);
 
-    // 시간별로 그래프 넣어주기 - devwooms
-    for (int s = start; s <= end; s += 3600) {
+    // X축 그래프 분류 넣어주기 - devwooms
+    for (int s = start; s <= end; s += 100) {
         QString label = QTime(0, 0).addSecs(s).toString("HH:mm");
         axisX->append(label, s);
     }
@@ -174,10 +177,10 @@ void ChartsToolBox::chartUpdate(){
         // 현재 시간 기준으로 x축 범위만 업데이트 - devwooms
         QTime now = QTime::currentTime();
         int nowSecs = QTime(0, 0).secsTo(now);
-        int start = qMax(0, nowSecs - 1 * 3600 /60);
-        int end = qMin(86399, nowSecs + 1 * 3600 /60);
-        // int start = qMax(0, nowSecs - 1 * 3600);
-        // int end = qMin(86399, nowSecs + 1 * 3600);
+        // int start = qMax(0, nowSecs - 1 * 3600 /60);
+        // int end = qMin(86399, nowSecs + 1 * 3600 /60);
+        int end = nowSecs;
+        int start = qMax(0, end - 1 * 100);
 
         // 데이터 업데이트 - devwooms
         QList<QPointF> points;
@@ -199,6 +202,9 @@ void ChartsToolBox::chartUpdate(){
                 axisX->setRange(start, end);
             }
         }
+
+
+
         // Y도 갱신 - devwooms
         chartSettingY();
     });

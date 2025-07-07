@@ -20,7 +20,7 @@ LoginView::LoginView(QWidget *parent)
     // 소켓 연결
     // 192.168.2.235 => devwooms
     // 192.168.56.1 => donjizzkan
-    socket->connectToHost("192.168.56.1",51234);
+    socket->connectToHost("192.168.2.235",51234);
     connect(socket, &QTcpSocket::connected, this, [](){
         qDebug("서버 연결 완료");
     });

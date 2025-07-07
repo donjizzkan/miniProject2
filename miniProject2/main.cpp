@@ -1,8 +1,6 @@
 #include "mainwindow.h"
 #include "splashview.h"
 
-#include "mainview.h"
-
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
@@ -20,7 +18,7 @@ int main(int argc, char *argv[])
     splash -> show();
 
     // 2초 후 전환 - devwooms
-    QTimer::singleShot(2000, [&]() {
+    QTimer::singleShot(2000, &w, [&]() {
         splash -> close();
         w.show();
     });

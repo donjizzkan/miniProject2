@@ -1,6 +1,8 @@
 #include "chattingwindow.h"
 #include "ui_chattingwindow.h"
 
+#include <QFileDialog>
+
 //==================================
 //        채팅방 기능 구현
 //==================================
@@ -31,6 +33,17 @@ ChattingWindow::ChattingWindow(const QString& name, QWidget *parent)
         QString message = ui->lineEdit->text();
         ui->lineEdit->clear();
         sender.sendMessage(chatName,message);
+    });
+
+    //==========================
+    //   버튼 클릭시 파일
+    //==========================
+    connect(ui->pushButton, &QPushButton::pressed, this, [this](){
+        QString filePath = QFileDialog::getOpenFileName(this, "파일 선택", "", "모든 파일 (*)");
+        if (!filePath.isEmpty()) {
+            qDebug() << "선택된 파일:" << filePath;
+            // 파일 처리 코드...
+        }
     });
 }
 

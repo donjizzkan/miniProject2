@@ -5,6 +5,11 @@
     <qresource prefix="/assets">
         <file>assets/bitAnimation.gif</file>
         <file>assets/close.svg</file>
-        <file>assets/icon.png</file>
+        <file>assets/Bitcoin.png</file>
+        <file>assets/Dogecoin.svg</file>
+        <file>assets/Ethereum.jpg</file>
+        <file>assets/PEPE.jpg</file>
+        <file>assets/XRP.png</file>
+        <file>assets/AddFile.png</file>
     </qresource>
 </RCC>

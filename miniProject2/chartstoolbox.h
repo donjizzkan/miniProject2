@@ -1,6 +1,9 @@
 #ifndef CHARTSTOOLBOX_H
 #define CHARTSTOOLBOX_H
 
+#include "linechart.h"
+#include "candlechart.h"
+
 #include <QWidget>
 #include <QtCharts>
 #include <QFile>
@@ -12,25 +15,25 @@
 #include <QVBoxLayout>
 #include <QToolBox>
 
+class LineChart; // forward declaration
+
 class ChartsToolBox : public QWidget
 {
     Q_OBJECT
 public:
     explicit ChartsToolBox(QWidget *parent = nullptr);
     void getChartsNUM();
+    LineChart* getLineChart(); // LineChart 인스턴스 접근 함수 - devwooms
+    CandleChart* getCandleChart();
 
 private:
-    QChart *chart;
-    QLineSeries *chartData;
     QJsonArray jsonData;
-    QTimer *updateTimer;
 
-    QLineSeries* chartDataSetting();
-    void chartSettingX();
-    void chartSettingY();
-
-    // 실시간 차트 업데이트
-    void chartUpdate();
+    QToolBox *chartsToolBox;
+    QVBoxLayout *chartsToolBoxLayout;
+    
+    LineChart *lineChart; // LineChart 인스턴스 - devwooms
+    CandleChart *candleChart; // LineChart 인스턴스 - devwooms
 
 signals:
 };

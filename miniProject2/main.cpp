@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "splashview.h"
 
+#include "mainview.h"
+
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
@@ -22,6 +24,9 @@ int main(int argc, char *argv[])
         splash -> close();
         w.show();
     });
+
+    // MainView *testcode = new MainView();  // 중복 생성 제거 - devwooms
+    // testcode->show();
 
     return a.exec();
 }

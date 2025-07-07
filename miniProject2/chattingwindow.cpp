@@ -36,7 +36,7 @@ ChattingWindow::ChattingWindow(const QString& name, QWidget *parent)
     });
 
     //==========================
-    //   버튼 클릭시 파일
+    //   버튼 클릭시 파일 - devwooms
     //==========================
     connect(ui->pushButton, &QPushButton::pressed, this, [this](){
         QString filePath = QFileDialog::getOpenFileName(this, "파일 선택", "", "모든 파일 (*)");

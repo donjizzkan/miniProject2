@@ -75,6 +75,19 @@ void ClientHandler::onReadyRead() {
             // 회원 정보 파일에 추가
             usermanage.signUp(info);
         }
+        // 메세지 전송일 때
+        else if (type == "messegesend"){
+            // "chatName" 을 가진 방으로 전송
+            QString name = obj.value("chatName").toString();
+            QString text = obj.value("textMessage").toString();
+            QString sendString = "["+name+"] : " + text;
+
+            QJsonObject sendObj;
+            sendObj["type"] = "messegesend";
+            sendObj["textMessage"] = sendString;
+            QJsonDocument sendDoc(sendObj);
+            QByteArray sending = sendDoc.toJson(QJsonDocument::Compact);
+        }
     }
 }
 

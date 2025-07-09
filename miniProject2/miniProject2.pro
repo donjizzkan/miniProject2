@@ -24,7 +24,8 @@ SOURCES += \
     sendingManage.cpp \
     signupview.cpp \
     userManage.cpp \
-    splashview.cpp
+    splashview.cpp \
+    userinfostorage.cpp
 
 HEADERS += \
     candlechart.h \
@@ -42,7 +43,8 @@ HEADERS += \
     signupview.h \
     socketManage.h \
     userManage.h \
-    splashview.h
+    splashview.h \
+    userinfostorage.h
 
 FORMS += \
     chattingwindow.ui \

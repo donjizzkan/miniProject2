@@ -19,15 +19,15 @@ LoginView::LoginView(QWidget *parent)
 
     // 소켓 연결
     // 192.168.2.235 => devwooms
-    // 192.168.56.1 => donjizzkan
-    socket->connectToHost("192.168.2.235",51234);
+    // 192.168.137.1 => donjizzkan
+    socket->connectToHost("192.168.137.1",51234);
     connect(socket, &QTcpSocket::connected, this, [](){
         qDebug("서버 연결 완료");
     });
 
-    //==========================
+    //===========================
     // 통과 신호 받으면 메인화면으로
-    //==========================
+    //===========================
     connect(socket, &QTcpSocket::readyRead, this, [this, socket]() {        // 소켓 읽게하기
         QByteArray data = socket->readAll();
         QJsonParseError err;

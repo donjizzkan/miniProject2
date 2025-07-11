@@ -36,9 +36,10 @@ LoginView::LoginView(QWidget *parent)
             QJsonObject obj = doc.object();
             if (obj.value("type").toString() == "response") {
                 QString result = obj.value("result").toString();
-                // 로그인 성공/실패에 따라 UI 전환
+                // 로그인 성공/실패에 따라 행동 분기
                 if (result == "success") {
-                emit goToMain();               // 로그인 화면으로 이동
+                    QString nickName = obj.value()
+                    emit goToMain();               // 로그인 화면으로 이동
                 } else {
                     QMessageBox::warning(this, "로그인 실패", "ID 또는 PW가 틀렸습니다!");
                 }

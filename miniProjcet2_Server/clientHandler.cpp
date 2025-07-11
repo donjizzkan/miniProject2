@@ -53,6 +53,7 @@ void ClientHandler::onReadyRead() {
             QJsonObject JsonResponse;
             JsonResponse["type"] = "response";                // type은 "response"
             JsonResponse["result"] = val ? "success" : "fail";// 결과 대입
+            JsonResponse["name"] ="";
             QJsonDocument respDoc(JsonResponse);
             QByteArray respData = respDoc.toJson(QJsonDocument::Compact);
 

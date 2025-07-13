@@ -9,7 +9,7 @@ userManage::~userManage(){
 //=========================================
 //                  로그인
 //=========================================
-bool userManage::signIn(QString& ID, QString& PW){
+bool userManage::signIn(QString& ID, QString& PW, QString& nameOut){
     QFile file("userInfo.json");                        // userInfo 파일 가져오기
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning() << "파일 열기 실패:" << file.errorString();
@@ -25,8 +25,10 @@ bool userManage::signIn(QString& ID, QString& PW){
 
         QString listedID = userObj["ID"].toString();
         QString listedPW = userObj["PW"].toString();
+        QString listedName = userObj["name"].toString();
         if(ID==listedID && PW==listedPW){
             qDebug() << "ID : "<<ID<<" 님이 입장하셨습니다.";
+            nameOut = listedName;       // 이름 반환
             return true;
         }
     }

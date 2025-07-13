@@ -78,10 +78,12 @@ void ClientHandler::onReadyRead() {
         }
         // 메세지 전송일 때
         else if (type == "messegesend"){
-            // "chatName" 을 가진 방으로 전송
-            QString name = obj.value("chatName").toString();
+            // "senderName"이 보낸 "testMessage"를 모든 클라이언트로 전송
+            // 클라이언트에서는 "chatViewName" 을 가진 방에만 받음
+            QString senderName = obj.value("senderName").toString();
+            QString chatViewName = obj.value("chatViewName").toString();
             QString text = obj.value("textMessage").toString();
-            QString sendString = "["+name+"] : " + text;
+            QString sendString = "[" + senderName + "] : " + text;
 
             QJsonObject sendObj;
             sendObj["type"] = "messegesend";

@@ -46,13 +46,14 @@ void ClientHandler::onReadyRead() {
         if (type == "login") {
             QString ID = obj.value("ID").toString();
             QString PW = obj.value("PW").toString();
-
+            QString nameOut;
             // 리스트에 회원이 있을 경우 true, 없을 경우 false 반환
-            bool val = usermanage.signIn(ID, PW);
+            bool val = usermanage.signIn(ID, PW, nameOut);
 
             QJsonObject JsonResponse;
-            JsonResponse["type"] = "response";                // type은 "response"
-            JsonResponse["result"] = val ? "success" : "fail";// 결과 대입
+            JsonResponse["type"] = "response";                  // type은 "response"
+            JsonResponse["result"] = val ? "success" : "fail";  // 결과 대입
+            JsonResponse["name"] = nameOut;                     // 이름 전달
             QJsonDocument respDoc(JsonResponse);
             QByteArray respData = respDoc.toJson(QJsonDocument::Compact);
 

@@ -43,15 +43,16 @@ void sendingManage::sendSignUp(QString& Name, QString& ID, QString& PW, QString&
 //==========================
 //      채팅메세지 전송
 //==========================
-void sendingManage::sendMessage(QString& chatName, QString& textMessage){
+void sendingManage::sendMessage(QString& chatViewName, QString& senderName , QString& textMessage){
     QJsonObject sendingObj;
     sendingObj["type"] = "messagesend";
-    sendingObj["chatName"] = chatName;
+    sendingObj["chatViewName"] = chatViewName;
+    sendingObj["senderName"] = senderName;
     sendingObj["textMessage"] = textMessage;
     QJsonDocument doc(sendingObj);
     QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
 
     QTcpSocket* socket = socketManage::instance().socket();
     socket->write(sendingArray);
-    qDebug()<< chatName << "메세지 전송";
+    qDebug()<< chatViewName << "으로" << senderName << "의 메세지 전송";
 }

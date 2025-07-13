@@ -43,7 +43,7 @@ void sendingManage::sendSignUp(QString& Name, QString& ID, QString& PW, QString&
 //==========================
 //      채팅메세지 전송
 //==========================
-void sendingManage::sendMessage(QString& chatViewName, QString& senderName , QString& textMessage){
+void sendingManage::sendMessage(QString& chatViewName, QString& textMessage){
     QJsonObject sendingObj;
     sendingObj["type"] = "messagesend";
     sendingObj["chatViewName"] = chatViewName;

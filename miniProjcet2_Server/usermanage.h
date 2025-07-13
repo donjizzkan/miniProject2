@@ -49,7 +49,7 @@ public:
 
     //========== 기능 구현 함수
     void signUp(userInfo& info);                    // 회원가입 기능 구현
-    bool signIn(QString& ID, QString& PW);          // 로그인 기능 구현, 로그인 성공여부에 따라 참,거짓값 반환하므로 bool
+    bool signIn(QString& ID, QString& PW, QString& nameOut);          // 로그인 기능 구현, 로그인 성공여부에 따라 참,거짓값 반환하므로 bool
 
 
     //========== 시그널

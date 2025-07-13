@@ -30,7 +30,7 @@ ChattingWindow::ChattingWindow(const QString& name, QWidget *parent)
         sendingManage sender;
         QString message = ui->lineEdit->text();
         ui->lineEdit->clear();
-        sender.sendMessage(chatViewName, senderName, message);
+        sender.sendMessage(chatViewName, message);
     });
 }
 

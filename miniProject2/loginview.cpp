@@ -2,6 +2,7 @@
 #include "qjsonobject.h"
 #include "ui_loginview.h"
 #include "socketManage.h"
+#include "sendingManage.h"
 
 LoginView::LoginView(QWidget *parent)
     : QWidget(parent)
@@ -36,7 +37,14 @@ LoginView::LoginView(QWidget *parent)
                 QString result = obj.value("result").toString();
                 // 로그인 성공/실패에 따라 UI 전환
                 if (result == "success") {
-                emit goToMain();               // 로그인 화면으로 이동
+                    // 해당 로그인 정보에 해당하는 이름 받아 옴
+                    QString senderName = obj.value("name").toString();
+
+                    // sendingManage에 있는 이름 setter로 내 이름 저장
+                    // 파일이나 메세지 전송시 저장된 senderName 불러옴
+                    sendingManage* sender = new sendingManage;
+                    sender->setSenderName(senderName);
+                    emit goToMain();               // 로그인 화면으로 이동
                 } else {
                     QMessageBox::warning(this, "로그인 실패", "ID 또는 PW가 틀렸습니다!");
                 }

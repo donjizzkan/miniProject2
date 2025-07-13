@@ -18,7 +18,14 @@ public:
     void sendSignUp(QString& Name, QString& ID, QString& PW, QString& PhoneNum);
 
     // 채팅창이름과 메세지내용을 전달
-    void sendMessage(QString& chatName, QString& textMessage);
+    void sendMessage(QString& chatViewName, QString& textMessage);
+
+    // 전송자 이름(senderName 변수 setter)
+    void setSenderName(QString& name) {senderName = name;}
+
+
+private:
+    QString senderName;
 };
 
 #endif // SENDINGMANAGE_H

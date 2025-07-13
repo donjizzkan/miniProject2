@@ -81,6 +81,7 @@ void ServerManager::clientConnect()
 {
     // 서버와 연결된 클라이언트의 소켓을 반환해줌 ( nextPendingConnection() ) - devwooms
     QTcpSocket *clientSocket = tcpServer->nextPendingConnection();
+
 /*  =================== 멀티스레드로 변환하여 주석처리
     // 클라이언트 소켓 리스트에 추가 - devwooms
     clientSocketList->append(clientSocket);
@@ -91,9 +92,10 @@ void ServerManager::clientConnect()
         clientSocket->deleteLater();
     });
 */
+
     // Qthread 및 핸들러 생성
     QThread *thread = new QThread;
-    ClientHandler *handler = new ClientHandler(clientSocket);
+    ClientHandler *handler = new ClientHandler(clientSocket, clientSocketList);
     handler->moveToThread(thread);
 
     // 스레드 시작시 클라이언트 시작

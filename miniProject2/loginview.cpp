@@ -19,7 +19,7 @@ LoginView::LoginView(QWidget *parent)
     // 소켓 연결
     // 192.168.2.235 => devwooms
     // 192.168.56.1 => donjizzkan
-    socket->connectToHost("192.168.56.1",51234);
+    socket->connectToHost("192.168.1.44",51234);
     connect(socket, &QTcpSocket::connected, this, [](){
         qDebug("서버 연결 완료");
     });
@@ -39,11 +39,10 @@ LoginView::LoginView(QWidget *parent)
                 if (result == "success") {
                     // 해당 로그인 정보에 해당하는 이름 받아 옴
                     QString senderName = obj.value("name").toString();
-
+                    qDebug() << senderName << "으로 로그인";
                     // sendingManage에 있는 이름 setter로 내 이름 저장
                     // 파일이나 메세지 전송시 저장된 senderName 불러옴
-                    sendingManage* sender = new sendingManage;
-                    sender->setSenderName(senderName);
+                    sendingManage::instance()->setSenderName(senderName);
                     emit goToMain();               // 로그인 화면으로 이동
                 } else {
                     QMessageBox::warning(this, "로그인 실패", "ID 또는 PW가 틀렸습니다!");

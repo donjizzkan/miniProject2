@@ -9,16 +9,15 @@
 
 // 클라이언트와 연결될 때 멀티 스레드 처리
 
-ClientHandler::ClientHandler(QTcpSocket* socket, QObject* parent)
-    : QObject(parent), socket(socket) {}
-// 클라이언트 시작
-void ClientHandler::start() {
+ClientHandler::ClientHandler(qintptr socketDescriptor,QList<QTcpSocket*> *clientList, QObject* parent)
+    : QObject(parent), socket(nullptr), socketDescriptor(socketDescriptor), clientList(clientList) {}
 
-    qDebug() <<"클라이언트 시작";
-    // 데이터 수신 시 onReadyRead 호출
+void ClientHandler::start() {
+    socket = new QTcpSocket();
+    socket->setSocketDescriptor(socketDescriptor);
     connect(socket, &QTcpSocket::readyRead, this, &ClientHandler::onReadyRead);
-    // 연결 해제 시 onDisconnected 호출
     connect(socket, &QTcpSocket::disconnected, this, &ClientHandler::onDisconnected);
+    qDebug() << "클라이언트 스레드에서 소켓 세팅 완료";
 }
 
 // 데이터 수신 처리
@@ -77,19 +76,26 @@ void ClientHandler::onReadyRead() {
             usermanage.signUp(info);
         }
         // 메세지 전송일 때
-        else if (type == "messegesend"){
+        else if (type == "messagesend"){
             // "senderName"이 보낸 "testMessage"를 모든 클라이언트로 전송
             // 클라이언트에서는 "chatViewName" 을 가진 방에만 받음
+            qDebug()<<"message 전달받음";
             QString senderName = obj.value("senderName").toString();
             QString chatViewName = obj.value("chatViewName").toString();
             QString text = obj.value("textMessage").toString();
             QString sendString = "[" + senderName + "] : " + text;
 
             QJsonObject sendObj;
-            sendObj["type"] = "messegesend";
+            sendObj["type"] = "messagesend";
             sendObj["textMessage"] = sendString;
             QJsonDocument sendDoc(sendObj);
             QByteArray sending = sendDoc.toJson(QJsonDocument::Compact);
+
+            for(QTcpSocket *cli : qAsConst(*clientList)){
+                if(cli->state()==QAbstractSocket::ConnectedState){
+                    cli->write(sending);
+                }
+            }
         }
     }
 }

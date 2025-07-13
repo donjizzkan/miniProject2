@@ -5,11 +5,11 @@
 //        채팅방 기능 구현
 //==================================
 ChattingWindow::ChattingWindow(const QString& name, QWidget *parent)
-    : DropWidget(parent), chatName(name)          // name 변수를 chatName에....
+    : DropWidget(parent), chatViewName(name)          // name 변수를 chatViewName에....
     , ui(new Ui::ChattingWindow)
 {
     ui->setupUi(this);
-    this->setWindowTitle(chatName);
+    this->setWindowTitle(chatViewName);
 
     QTcpSocket* socket = socketManage::instance().socket();
 
@@ -30,7 +30,7 @@ ChattingWindow::ChattingWindow(const QString& name, QWidget *parent)
         sendingManage sender;
         QString message = ui->lineEdit->text();
         ui->lineEdit->clear();
-        sender.sendMessage(chatName,message);
+        sender.sendMessage(chatViewName, senderName, message);
     });
 }
 

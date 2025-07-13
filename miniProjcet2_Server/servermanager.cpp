@@ -77,35 +77,23 @@ QString ServerManager::getMyIP()
 }
 
 // 클라이언트 연결 시 실행 함수 - devwooms
+// servermanager.cpp
 void ServerManager::clientConnect()
 {
-    // 서버와 연결된 클라이언트의 소켓을 반환해줌 ( nextPendingConnection() ) - devwooms
     QTcpSocket *clientSocket = tcpServer->nextPendingConnection();
-
-/*  =================== 멀티스레드로 변환하여 주석처리
-    // 클라이언트 소켓 리스트에 추가 - devwooms
     clientSocketList->append(clientSocket);
+    qintptr socketDescriptor = clientSocket->socketDescriptor();
 
-    // 클라이언트 소켓이 disconnected(연결 해제)시 클라이언트 소켓에서 해당 소켓을 지우고 메모리에서 삭제 - devwooms
-    connect(clientSocket, &QTcpSocket::disconnected, this, [this, clientSocket](){
-        clientSocketList->removeOne(clientSocket);
-        clientSocket->deleteLater();
-    });
-*/
-
-    // Qthread 및 핸들러 생성
+    qintptr sd = clientSocket->socketDescriptor();
     QThread *thread = new QThread;
-    ClientHandler *handler = new ClientHandler(clientSocket, clientSocketList);
+    ClientHandler *handler = new ClientHandler(sd,clientSocketList);
+
     handler->moveToThread(thread);
 
-    // 스레드 시작시 클라이언트 시작
     connect(thread, &QThread::started, handler, &ClientHandler::start);
-
-    // 소켓이 종료되면, 스레드도 종료 및 정리
     connect(thread, &QThread::finished, thread, &QThread::deleteLater);
     connect(thread, &QThread::finished, handler, &QObject::deleteLater);
 
-    qDebug()<<"Client connect 함수 실행";
-
     thread->start();
 }
+

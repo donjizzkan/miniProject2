@@ -18,19 +18,36 @@ ChattingWindow::ChattingWindow(const QString& name, QWidget *parent)
     //==========================
     connect(socket, &QTcpSocket::readyRead, this, [this, socket]() {        // 소켓 읽게하기
         QByteArray data = socket->readAll();
-        //===========================================================================
-        // 메세지 전달받는 기능 구현해야대
-        //==========================================================================
+
+        // error 있거나 전달받지 못했을 때 처리
+        QJsonParseError err;
+        QJsonDocument doc = QJsonDocument::fromJson(data, &err);
+        if(err.error != QJsonParseError::NoError || !doc.isObject()){
+            qDebug() << "메세지 전달 받기 실패";
+            return;
+        }
+
+        // Json 파일 해부
+        QJsonObject obj = doc.object();
+        QString type = obj["type"].toString();
+
+        if(type == "messagesend"){
+            QString chatName = obj["chatViewName"].toString();
+            QString text = obj["textMessage"].toString();
+
+            if(chatName == this->chatViewName){
+                ui->textBrowser->append(text);
+            }
+        }
     });
 
     //==========================
     //    서버로 메세지 전송
     //==========================
     connect(ui->pushButton_2, &QPushButton::pressed,this,[this,socket](){
-        sendingManage sender;
         QString message = ui->lineEdit->text();
         ui->lineEdit->clear();
-        sender.sendMessage(chatViewName, message);
+        sendingManage::instance()->sendMessage(chatViewName, message);
     });
 }
 

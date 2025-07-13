@@ -18,6 +18,7 @@ void sendingManage::sendLogIn(QString& ID, QString& PW){
 
     QTcpSocket* socket = socketManage::instance().socket();
     socket->write(sendingArray);
+    socket->flush();
     qDebug() << "서버로 로그인 요청";
 }
 
@@ -56,3 +57,23 @@ void sendingManage::sendMessage(QString& chatViewName, QString& textMessage){
     socket->write(sendingArray);
     qDebug()<< chatViewName << "으로" << senderName << "의 메세지 전송";
 }
+
+sendingManage* sendingManage::m_instance = nullptr;
+sendingManage::sendingManage(){
+
+}
+sendingManage* sendingManage::instance(){
+    if(!m_instance){
+        m_instance = new sendingManage;
+        return m_instance;
+    }
+    return m_instance;
+}
+
+void sendingManage::setSenderName(QString& name) {
+    senderName = name;
+}
+
+
+
+

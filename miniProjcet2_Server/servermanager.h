@@ -2,29 +2,23 @@
 #define SERVERMANAGER_H
 
 #include <QObject>
-#include <QMessageBox>
-
 #include <QTcpServer>
-#include <QTcpSocket>
-#include <QNetworkInterface>
-#include <QHostAddress>
+#include <QList>
+#include "clientHandler.h"
 
-#define PORT_NUM  51234
-
-class ServerManager : public QObject
-{
+class ServerManager : public QObject {
     Q_OBJECT
 public:
     ServerManager();
-
-private:
     void run();
-    QTcpServer *tcpServer;
-    QList<QTcpSocket*> *clientSocketList;
     QString getMyIP();
 
-private slots:
+public slots:
     void clientConnect();
+
+private:
+    QTcpServer* tcpServer;
+    QList<ClientHandler*>* clientHandlerList;
 };
 
 #endif // SERVERMANAGER_H

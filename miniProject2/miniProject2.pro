@@ -19,6 +19,7 @@ SOURCES += \
     mainwindow.cpp \
     sendingManage.cpp \
     signupview.cpp \
+    socketManage.cpp \
     userManage.cpp \
     splashview.cpp
 

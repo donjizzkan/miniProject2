@@ -9,7 +9,7 @@
 // 여기에 const를 쓰면 바꿀수가 없어서 - devwooms
 QList<QString> connectDUMMY = {"김수환무", "거북이", "두루미", "삼천갑자", "동방삭"};
 QList<QString> oneByOneDUMMY = {"김씨", "심씨", "우씨", "조씨", "최씨"};
-QList<QString> oneByMoreDUMMY = {"비트코인", "이더리움", "리플", "도지코인", "페페코인"};
+QList<QString> oneByMoreDUMMY = {"비트코인", "이더리움", "리플", "도지코인", "페페코인", "test"};
 
 
 

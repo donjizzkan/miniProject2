@@ -16,7 +16,8 @@ void sendingManage::sendLogIn(QString& ID, QString& PW){
     QJsonDocument doc(sendingObj);
     QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
 
-    QTcpSocket* socket = socketManage::instance().socket();
+    QTcpSocket* socket = SocketManage::instance().socket();
+    qDebug() << "현재 소켓 : " << socket;
     socket->write(sendingArray);
     socket->flush();
     qDebug() << "서버로 로그인 요청";
@@ -36,8 +37,9 @@ void sendingManage::sendSignUp(QString& Name, QString& ID, QString& PW, QString&
     QJsonDocument doc(sendingObj);
     QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
 
-    QTcpSocket* socket = socketManage::instance().socket();
+    QTcpSocket* socket = SocketManage::instance().socket();
     socket->write(sendingArray);
+    qDebug() << "현재 소켓 : " << socket;
     qDebug() << "서버로 회원가입 요청";
 }
 
@@ -53,9 +55,11 @@ void sendingManage::sendMessage(QString& chatViewName, QString& textMessage){
     QJsonDocument doc(sendingObj);
     QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
 
-    QTcpSocket* socket = socketManage::instance().socket();
+    QTcpSocket* socket = SocketManage::instance().socket();
+
+    qDebug() << "현재 소켓 : " << socket;
     socket->write(sendingArray);
-    qDebug()<< chatViewName << "으로" << senderName << "의 메세지 전송";
+    qDebug()<< chatViewName << "으로" << senderName << "의" << textMessage <<" 전송";
 }
 
 sendingManage* sendingManage::m_instance = nullptr;

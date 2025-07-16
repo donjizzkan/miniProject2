@@ -11,6 +11,12 @@
 class sendingManage : public QObject {
     Q_OBJECT
 public:
+    // 이름 싱글턴으로 선언해야 모든 cpp파일에서 접근 가능하므로 싱글턴 선언
+    static sendingManage* instance();
+    // 전송자 이름(senderName 변수 setter)
+    void setSenderName(QString& name);
+
+
     // 로그인 화면 정보 서버에 전달
     void sendLogIn(QString& ID, QString& PW);
 
@@ -18,7 +24,13 @@ public:
     void sendSignUp(QString& Name, QString& ID, QString& PW, QString& PhoneNum);
 
     // 채팅창이름과 메세지내용을 전달
-    void sendMessage(QString& chatName, QString& textMessage);
+    void sendMessage(QString& chatViewName, QString& textMessage);
+
+    static sendingManage* m_instance;
+    sendingManage();
+
+private:
+    QString senderName;
 };
 
 #endif // SENDINGMANAGE_H

@@ -1,18 +1,37 @@
 #ifndef SOCKETMANAGE_H
 #define SOCKETMANAGE_H
-#include <QTcpSocket>
-#include <QDebug>
 
-class socketManage : public QObject {
+#include <QObject>
+#include <QTcpSocket>
+#include <QJsonDocument> // QJsonDocument, QJsonObject 사용을 위해 추가
+#include <QJsonObject>
+#include <QJsonParseError> // QJsonParseError 사용을 위해 추가
+
+class SocketManage : public QObject {
     Q_OBJECT
 public:
-    static socketManage& instance(){
-        static socketManage inst;
-        return inst;
-    }
-    socketManage() {}
-    QTcpSocket m_socket;
-    QTcpSocket* socket(){return &m_socket;}
+    static SocketManage& instance();
+    QTcpSocket* socket() const { return m_socket; }
+
+signals:
+    // 서버로부터 로그인 응답을 받았을 때 방출할 시그널
+    void loginResponseReceived(const QJsonObject& response);
+    // 서버로부터 채팅 메시지를 받았을 때 방출할 시그널
+    void chatMessageReceived(const QJsonObject& message);
+    // 서버 연결 완료 시그널 (선택 사항, 기존 connected 시그널은 소켓에 직접 연결)
+
+private slots:
+    // QTcpSocket의 readyRead 시그널을 받아서 모든 데이터를 처리할 슬롯
+    void onSocketReadyRead();
+
+private:
+    explicit SocketManage(QObject *parent = nullptr);
+    // 복사 생성자 및 대입 연산자 비활성화 (싱글턴 패턴)
+    SocketManage(const SocketManage&) = delete;
+    SocketManage& operator=(const SocketManage&) = delete;
+
+    QTcpSocket* m_socket;
+    QByteArray m_buffer; // 수신 데이터를 임시로 저장할 버퍼
 };
 
 #endif // SOCKETMANAGE_H

@@ -16,8 +16,10 @@ void sendingManage::sendLogIn(QString& ID, QString& PW){
     QJsonDocument doc(sendingObj);
     QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
 
-    QTcpSocket* socket = socketManage::instance().socket();
+    QTcpSocket* socket = SocketManage::instance().socket();
+    qDebug() << "현재 소켓 : " << socket;
     socket->write(sendingArray);
+    socket->flush();
     qDebug() << "서버로 로그인 요청";
 }
 
@@ -35,23 +37,47 @@ void sendingManage::sendSignUp(QString& Name, QString& ID, QString& PW, QString&
     QJsonDocument doc(sendingObj);
     QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
 
-    QTcpSocket* socket = socketManage::instance().socket();
+    QTcpSocket* socket = SocketManage::instance().socket();
     socket->write(sendingArray);
+    qDebug() << "현재 소켓 : " << socket;
     qDebug() << "서버로 회원가입 요청";
 }
 
 //==========================
 //      채팅메세지 전송
 //==========================
-void sendingManage::sendMessage(QString& chatName, QString& textMessage){
+void sendingManage::sendMessage(QString& chatViewName, QString& textMessage){
     QJsonObject sendingObj;
     sendingObj["type"] = "messagesend";
-    sendingObj["chatName"] = chatName;
+    sendingObj["chatViewName"] = chatViewName;
+    sendingObj["senderName"] = senderName;
     sendingObj["textMessage"] = textMessage;
     QJsonDocument doc(sendingObj);
     QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
 
-    QTcpSocket* socket = socketManage::instance().socket();
+    QTcpSocket* socket = SocketManage::instance().socket();
+
+    qDebug() << "현재 소켓 : " << socket;
     socket->write(sendingArray);
-    qDebug()<< chatName << "메세지 전송";
+    qDebug()<< chatViewName << "으로" << senderName << "의" << textMessage <<" 전송";
 }
+
+sendingManage* sendingManage::m_instance = nullptr;
+sendingManage::sendingManage(){
+
+}
+sendingManage* sendingManage::instance(){
+    if(!m_instance){
+        m_instance = new sendingManage;
+        return m_instance;
+    }
+    return m_instance;
+}
+
+void sendingManage::setSenderName(QString& name) {
+    senderName = name;
+}
+
+
+
+

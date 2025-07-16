@@ -9,7 +9,6 @@ MainView::MainView(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::MainView)
 {
-    qDebug() << "### MainView 생성자 시작 ###";
     ui->setupUi(this);
 
 
@@ -62,8 +61,6 @@ MainView::MainView(QWidget *parent)
     chattingListManager->settingConnectListWidget(ui->connect_listWidget);
     chattingListManager->settingOneByOneListWidget(ui->oneByone_listWidget);
     chattingListManager->settingOneByMoreListWidget(ui->oneByMore_listWidget);
-
-    qDebug() << "### MainView 생성자 완료 ###";
 }
 
 MainView::~MainView()

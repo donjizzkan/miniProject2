@@ -9,10 +9,14 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    candlechart.cpp \
+    candlechartdatamanager.cpp \
     chartstoolbox.cpp \
     chattinglistmanager.cpp \
     chattingwindow.cpp \
     dropwidget.cpp \
+    linechart.cpp \
+    linechartdatamanager.cpp \
     loginview.cpp \
     main.cpp \
     mainview.cpp \
@@ -24,10 +28,14 @@ SOURCES += \
     splashview.cpp
 
 HEADERS += \
+    candlechart.h \
+    candlechartdatamanager.h \
     chartstoolbox.h \
     chattinglistmanager.h \
     chattingwindow.h \
     dropwidget.h \
+    linechart.h \
+    linechartdatamanager.h \
     loginview.h \
     mainview.h \
     mainwindow.h \

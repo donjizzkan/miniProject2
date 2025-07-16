@@ -9,6 +9,13 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    main.cpp \
+    mainwindow.cpp \
+    models/loginmodel.cpp \
+    models/mainmodel.cpp \
+    views/splashview.cpp \
+    views/mainview.cpp \
+    views/loginview.cpp \
     candlechart.cpp \
     candlechartdatamanager.cpp \
     chartstoolbox.cpp \
@@ -17,17 +24,19 @@ SOURCES += \
     dropwidget.cpp \
     linechart.cpp \
     linechartdatamanager.cpp \
-    loginview.cpp \
-    main.cpp \
-    mainview.cpp \
-    mainwindow.cpp \
     sendingManage.cpp \
     signupview.cpp \
     socketManage.cpp \
-    userManage.cpp \
-    splashview.cpp
+    userManage.cpp
+
 
 HEADERS += \
+    mainwindow.h \
+    models/loginmodel.h \
+    models/mainmodel.h \
+    views/splashview.h \
+    views/mainview.h \
+    views/loginview.h \
     candlechart.h \
     candlechartdatamanager.h \
     chartstoolbox.h \
@@ -36,21 +45,18 @@ HEADERS += \
     dropwidget.h \
     linechart.h \
     linechartdatamanager.h \
-    loginview.h \
-    mainview.h \
-    mainwindow.h \
     sendingManage.h \
     signupview.h \
     socketManage.h \
-    userManage.h \
-    splashview.h
+    userManage.h
+
 
 FORMS += \
-    chattingwindow.ui \
-    loginview.ui \
-    mainview.ui \
-    mainwindow.ui \
-    signupview.ui
+    views/mainview.ui \
+    views/mainwindow.ui \
+    views/loginview.ui \
+    views/signupview.ui \
+    views/chattingwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

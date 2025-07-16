@@ -1,12 +1,13 @@
 #include "mainwindow.h"
-#include "splashview.h"
+#include "views/splashview.h"
+#include <views/mainview.h>
 
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
 #include <QTimer>
 
-#include <mainview.h>
+
 
 int main(int argc, char *argv[])
 {

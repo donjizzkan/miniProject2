@@ -22,6 +22,8 @@ ChattingListManager::ChattingListManager(QObject *parent)
 
 }
 
+
+
 // ==============================
 // ToolBox - devwooms
 // ==============================
@@ -37,20 +39,12 @@ void ChattingListManager::settingChattingToolBox(QToolBox *chatting_ToolBox){
 // 접속자 목록 세팅 - devwooms
 void ChattingListManager::settingConnectListWidget(QListWidget *connect_ListWidget){
     connectListWidget = connect_ListWidget;
-    updateConnectListWidget();
+    updateData(connectListWidget, connectDUMMY);
 
     // 더블 클릭 세팅 - devwooms
-    connect(connect_ListWidget, &QListWidget::itemDoubleClicked, this, [=](QListWidgetItem *item){
+    connect(connectListWidget, &QListWidget::itemDoubleClicked, this, [=](QListWidgetItem *item){
         doubleClickActionConnectListWidget(item);
     });
-}
-
-// 리스트 업데이트 - devwooms
-void ChattingListManager::updateConnectListWidget(){
-    connectListWidget->clear();
-    for(const auto& connectDUMMY : std::as_const(connectDUMMY)){
-        connectListWidget -> addItem(connectDUMMY);
-    }
 }
 
 // 더블 클릭 액션 - devwomms
@@ -60,7 +54,7 @@ void ChattingListManager::doubleClickActionConnectListWidget(QListWidgetItem *it
     // 중복 체크 - devwooms
     if (!oneByOneDUMMY.contains(name)) {
         oneByOneDUMMY.append(name);
-        updateOneByOneListWidget();
+        updateData(oneByonelistWidget, oneByOneDUMMY);
         // 개인톡 목록으로 이동 - devwooms
         chattingToolBox->setCurrentIndex(1);
         // 채팅 윈도우 - devwooms
@@ -78,20 +72,18 @@ void ChattingListManager::doubleClickActionConnectListWidget(QListWidgetItem *it
 // 개인톡 세팅 - devwooms
 void ChattingListManager::settingOneByOneListWidget(QListWidget *oneByone_listWidget){
     oneByonelistWidget = oneByone_listWidget;
-    updateOneByOneListWidget();
+    updateData(oneByonelistWidget, oneByOneDUMMY);
+    dragAnddrop(oneByonelistWidget);
+
 
     // 더블 클릭 세팅 - devwooms
-    connect(oneByone_listWidget, &QListWidget::itemDoubleClicked, this, [=](QListWidgetItem *item){
+    connect(oneByonelistWidget, &QListWidget::itemDoubleClicked, this, [=](QListWidgetItem *item){
         doubleClickActionOneByOneListWidget(item);
     });
-}
-
-// 리스트 업데이트 - devwooms
-void ChattingListManager::updateOneByOneListWidget(){
-    oneByonelistWidget->clear();
-    for(const auto& oneByOneDUMMY : std::as_const(oneByOneDUMMY)){
-        oneByonelistWidget -> addItem(oneByOneDUMMY);
-    }
+    // 드래그 앤 드랍 update 세팅
+    connect(connectListWidget->model(), &QAbstractItemModel::rowsMoved, this, []() {
+        qDebug() << "리스트 순서가 변경되었습니다!";
+    });
 }
 
 // 더블 클릭 액션 - devwomms
@@ -110,20 +102,12 @@ void ChattingListManager::doubleClickActionOneByOneListWidget(QListWidgetItem *i
 // 단체톡 세팅 - devwooms
 void ChattingListManager::settingOneByMoreListWidget(QListWidget *oneByMore_listWidget){
     oneByMorelistWidget = oneByMore_listWidget;
-    updateOneByMoreListWidget();
+    updateData(oneByMorelistWidget, oneByMoreDUMMY);
 
     // 더블 클릭 세팅 - devwooms
-    connect(oneByMore_listWidget, &QListWidget::itemDoubleClicked, this, [=](QListWidgetItem *item){
+    connect(oneByMorelistWidget, &QListWidget::itemDoubleClicked, this, [=](QListWidgetItem *item){
         doubleClickActionOneByMoreListWidget(item);
     });
-}
-
-// 리스트 업데이트 - devwooms
-void ChattingListManager::updateOneByMoreListWidget(){
-    oneByMorelistWidget->clear();
-    for(const auto& oneByMoreDUMMY : std::as_const(oneByMoreDUMMY)){
-        oneByMorelistWidget -> addItem(oneByMoreDUMMY);
-    }
 }
 
 // 더블 클릭 액션 - devwomms
@@ -135,3 +119,26 @@ void ChattingListManager::doubleClickActionOneByMoreListWidget(QListWidgetItem *
     ChattingWindow *chattingWindow = new ChattingWindow(name);
     chattingWindow->show();
 }
+
+// ==============================
+// 공통 함수 - devwooms
+// ==============================
+
+// 리스트 업데이트 - devwooms
+void ChattingListManager::updateData(QListWidget *qListWidget, QList<QString> list){
+    qListWidget->clear();
+    for(const auto& list : std::as_const(list)){
+        qListWidget -> addItem(list);
+    }
+}
+
+// DragAndDrop - devwooms
+void ChattingListManager::dragAnddrop(QListWidget *qListWidget){
+    // 드래그 앤 드랍 세팅 -devwooms
+    qListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+    qListWidget->setDragEnabled(true);
+    qListWidget->setAcceptDrops(true);
+    qListWidget->setDropIndicatorShown(true);
+    qListWidget->setDragDropMode(QAbstractItemView::InternalMove);
+}
+

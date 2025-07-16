@@ -9,11 +9,13 @@ LoginView::LoginView(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::LoginView)
 {
+      
     ui->setupUi(this);
 
     //==========================
     //        소켓 연결
     //==========================
+
     // socket Manage에서 생성된 socket 객체 가져오기
     QTcpSocket* socket = SocketManage::instance().socket();
 
@@ -54,7 +56,11 @@ LoginView::LoginView(QWidget *parent)
         }
     });
 
+
     // UI 버튼 연결
+    connect(ui->pw_LineEdit, &QLineEdit::returnPressed, this, [=](){
+        ui->login_Button->click();
+    });
     connect(ui->signup_Button, &QPushButton::clicked, this, &LoginView::goToSignup);
     connect(ui->login_Button, &QPushButton::clicked, this, &LoginView::doSignIn);
 }

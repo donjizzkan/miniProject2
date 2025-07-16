@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+class ChartsToolBox; // forward declaration
+
 namespace Ui {
 class MainView;
 }
@@ -17,6 +19,7 @@ public:
 
 private:
     Ui::MainView *ui;
+    ChartsToolBox *chartBox; // ChartsToolBox 인스턴스 - devwooms
 };
 
 #endif // MAINVIEW_H

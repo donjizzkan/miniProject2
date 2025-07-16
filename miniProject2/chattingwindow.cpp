@@ -4,6 +4,8 @@
 #include "sendingManage.h"   // sendingManage 사용을 위해 추가
 #include <QDebug>            // 디버그 출력을 위해 추가
 
+#include <QFileDialog>
+
 //==================================
 //        채팅방 기능 구현
 //==================================
@@ -41,6 +43,17 @@ ChattingWindow::ChattingWindow(const QString& name, QWidget *parent)
             ui->lineEdit->clear();
             sendingManage::instance()->sendMessage(chatViewName, message);
             qDebug() << "메시지 전송 시도: " << message;
+        }
+    });
+
+    //==========================
+    //   버튼 클릭시 파일 - devwooms
+    //==========================
+    connect(ui->pushButton, &QPushButton::pressed, this, [this](){
+        QString filePath = QFileDialog::getOpenFileName(this, "파일 선택", "", "모든 파일 (*)");
+        if (!filePath.isEmpty()) {
+            qDebug() << "선택된 파일:" << filePath;
+            // 파일 처리 코드...
         }
     });
 }

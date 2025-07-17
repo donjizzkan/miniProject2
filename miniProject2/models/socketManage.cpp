@@ -61,6 +61,11 @@ void SocketManage::onSocketReadyRead() {
         } else if (type == "messagesend") { // 채팅 메시지
             qDebug() << "SocketManage: chatMessageReceived 시그널 방출";
             emit chatMessageReceived(obj);
+        }
+        // file - devwooms
+        else if (type == "filesend"){
+            qDebug() << "SocketManage: fileReceived 시그널 방출";
+            emit fileReceived(obj);
         } else {
             qDebug() << "SocketManage: 알 수 없는 메시지 타입:" << type;
         }

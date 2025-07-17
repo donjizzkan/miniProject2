@@ -42,17 +42,40 @@ QString ServerManager::getMyIP() {
 }
 
 void ServerManager::clientConnect() {
-    QTcpSocket *clientSocket = tcpServer->nextPendingConnection();
-    qintptr descriptor = clientSocket->socketDescriptor();
+    //QTcpSocket *clientSocket = tcpServer->nextPendingConnection();
+    qintptr descriptor = tcpServer->nextPendingConnection()->socketDescriptor();
     //clientSocket->deleteLater();
 
     QThread *thread = new QThread;
-    ClientHandler *handler = new ClientHandler(descriptor, clientHandlerList);
-    handler->moveToThread(thread);
+    ClientSetup* setup = new ClientSetup(descriptor, setupList);
+    setup->moveToThread(thread);
 
-    connect(thread, &QThread::started, handler, &ClientHandler::start);
+    connect(setup, &ClientSetup::socketReady, this, [=](QTcpSocket* socket){
+        ClientHandler* handler = new ClientHandler(socket, clientHandlerList);
+        connect(socket, &QTcpSocket::readyRead, handler, &ClientHandler::onReadyRead);
+        connect(socket, &QTcpSocket::disconnected, handler, &ClientHandler::onDisconnected);
+    });
+    connect(thread, &QThread::started, setup, &ClientSetup::start);
     connect(thread, &QThread::finished, thread, &QThread::deleteLater);
-    connect(thread, &QThread::finished, handler, &QObject::deleteLater);
+    connect(thread, &QThread::finished, setup, &QObject::deleteLater);
 
     thread->start();
+}
+
+void ServerManager::addClient(ClientHandler* handler){
+    clientListMutex.lock();
+    if(!clientHandlerList->contains(handler)){
+        clientHandlerList->append(handler);
+    }
+    clientListMutex.unlock();
+}
+
+void ServerManager::removeClient(ClientHandler* handler){
+    clientListMutex.lock();
+    clientHandlerList->removeOne(handler);
+    clientListMutex.unlock();
+}
+
+void ServerManager::broadcastMessage(QByteArray& data){
+
 }

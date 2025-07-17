@@ -2,7 +2,7 @@
 
 #include <QList>
 
-#include "chattingwindow.h"
+#include "views/chattingRoomView.h"
 
 
 // 더미 데이터 밑에 std::as_const 일시적 읽기전용으로 변경 - devwooms
@@ -58,8 +58,8 @@ void ChattingListManager::doubleClickActionConnectListWidget(QListWidgetItem *it
         // 개인톡 목록으로 이동 - devwooms
         chattingToolBox->setCurrentIndex(1);
         // 채팅 윈도우 - devwooms
-        ChattingWindow *chattingWindow = new ChattingWindow(name);
-        chattingWindow->show();
+        ChattingRoomView *chattingRoomView = new ChattingRoomView(name);
+        chattingRoomView->show();
     } else {
         qDebug() << "이미 존재하는 사용자입니다:" << name;
     }
@@ -91,8 +91,8 @@ void ChattingListManager::doubleClickActionOneByOneListWidget(QListWidgetItem *i
     QString name = item->text();
     qDebug() << "oneByone_listWidget name : " << name;
     // 채팅 윈도우 - devwooms
-    ChattingWindow *chattingWindow = new ChattingWindow(name);
-    chattingWindow->show();
+    ChattingRoomView *chattingRoomView = new ChattingRoomView(name);
+    chattingRoomView->show();
 }
 
 // ==============================
@@ -116,8 +116,8 @@ void ChattingListManager::doubleClickActionOneByMoreListWidget(QListWidgetItem *
     qDebug() << "oneByMore_listWidget name : " << name;
 
     // 채팅 윈도우 - devwooms
-    ChattingWindow *chattingWindow = new ChattingWindow(name);
-    chattingWindow->show();
+    ChattingRoomView *chattingRoomView = new ChattingRoomView(name);
+    chattingRoomView->show();
 }
 
 // ==============================

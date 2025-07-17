@@ -1,6 +1,6 @@
 #include "loginview.h"
-#include "sendingManage.h"
-#include "socketManage.h"
+#include "models/sendingManage.h"
+#include "models/socketManage.h"
 #include "ui_loginview.h"
 #include <QDebug>      // 디버그 출력을 위해 추가
 #include <QMessageBox> // QMessageBox 사용을 위해 추가

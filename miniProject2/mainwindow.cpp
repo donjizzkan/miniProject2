@@ -1,9 +1,9 @@
 #include "mainwindow.h"
-#include "views/mainview.h"
-#include "sendingManage.h"
-#include "signupview.h"
+#include "views/homeview.h"
+#include "models/sendingManage.h"
+#include "views/signupview.h"
 #include "ui_mainwindow.h"
-#include "userManage.h"
+#include "models/userManage.h"
 #include "views/loginview.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -12,11 +12,11 @@ MainWindow::MainWindow(QWidget *parent)
 
   LoginView *loginView = new LoginView;
   SignupView *signupView = new SignupView;
-  MainView *mainView = new MainView;
+  HomeView *homeView = new HomeView;
 
   ui->mainStackedWidget->addWidget(loginView);  // index 0 - devwooms
   ui->mainStackedWidget->addWidget(signupView); // index 1 - devwooms
-  ui->mainStackedWidget->addWidget(mainView);   // index 2 - devwooms
+  ui->mainStackedWidget->addWidget(homeView);   // index 2 - devwooms
 
   // 0번째 먼저 보여주도록 세팅 - devwooms
   ui->mainStackedWidget->setCurrentIndex(0);
@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
           });
   connect(loginView, &LoginView::goToMain, this,
           [=]() { // 로그인 화면에서 goToMain 시그널 발생할 경우 처리
-            ui->mainStackedWidget->setCurrentWidget(mainView);
+            ui->mainStackedWidget->setCurrentWidget(homeView);
           });
   connect(loginView, &LoginView::doSignIn, this, [=]() {
     sendingManage sending;

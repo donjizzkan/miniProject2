@@ -2,7 +2,7 @@
 #define SIGNUPVIEW_H
 
 #include <QWidget>
-#include "userManage.h"
+#include "models/userManage.h"
 namespace Ui {  
 class SignupView;
 }

@@ -55,9 +55,9 @@ int main(int argc, char *argv[])
 
 
     // ==============================
-    // 서버
+    // 서버(싱글턴 인스턴스 가져옴)
     // ==============================
-    ServerManager server;
+    ServerManager& server = ServerManager::getInstance();
 
 
 

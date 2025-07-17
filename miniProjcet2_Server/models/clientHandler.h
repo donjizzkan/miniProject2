@@ -5,22 +5,29 @@
 #include <QTcpSocket>
 #include <QThread>
 #include <QList>
-
+#include "usermanage.h"
 class ClientHandler : public QObject {
     Q_OBJECT
+
 public:
-    explicit ClientHandler(qintptr socketDescriptor, QList<ClientHandler*>* handlerList, QObject* parent = nullptr);
+    explicit ClientHandler(QTcpSocket* socket, QObject* parent = nullptr);
+
+signals:
+    void loggedIn(ClientHandler* handler);
+    void disconnected(ClientHandler* handler);
 
 public slots:
-    void start();
     void onReadyRead();
     void onDisconnected();
     void sendMessageToClient(QByteArray data);
 
+
 private:
     QTcpSocket* socket;
     qintptr socketDescriptor;
-    QList<ClientHandler*>* clientList;
+    QByteArray readBuffer;
+    userManage* usermanage;
+
 };
 
 #endif // CLIENTHANDLER_H

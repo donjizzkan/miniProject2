@@ -1,9 +1,9 @@
-#ifndef LINECHART_H
-#define LINECHART_H
+#ifndef LINECHARTVIEW_H
+#define LINECHARTVIEW_H
 
 #include <QObject>
 
-#include "linechartdatamanager.h"
+#include "models/linechartdatamanager.h"
 
 #include <QTime>
 #include <QChartView>
@@ -13,11 +13,11 @@
 #include <QCategoryAxis>
 #include <QDateTime>
 
-class LineChart : public QObject
+class LineChartView : public QObject
 {
     Q_OBJECT
 public:
-    explicit LineChart(QObject *parent = nullptr);
+    explicit LineChartView(QObject *parent = nullptr);
     QChartView *lineChartView;
     QString lineCoin;
     void setCoin(const QString &coin);
@@ -37,4 +37,4 @@ private:
 signals:
 };
 
-#endif // LINECHART_H
+#endif // LINECHARTVIEW_H

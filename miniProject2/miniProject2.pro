@@ -13,6 +13,7 @@ SOURCES += \
     mainwindow.cpp \
     models/loginmodel.cpp \
     models/mainmodel.cpp \
+    networks/socketnetwork.cpp \
     views/splashview.cpp \
     views/mainview.cpp \
     views/loginview.cpp \

@@ -1,57 +1,54 @@
-#include "candlechart.h"
+#include "linechartview.h"
 
-#include "candlechartdatamanager.h"
 #include <QDateTimeAxis>
-#include <QCandlestickSet>
-#include <algorithm>
 
-CandleChart::CandleChart(QObject *parent)
+LineChartView::LineChartView(QObject *parent)
     : QObject{parent}
 {
     // 데이터 매니저 설정 - Devwooms
-    candleDataManager = new CandleChartDataManager;
-    candleCoin = "krw-btc";
-    candleDataManager->setting(candleCoin);
-    candleDataManager->start();
+    lineDataManager = new LineChartDataManager;
+    lineCoin = "krw-btc";
+    lineDataManager->setting(lineCoin);
+    lineDataManager->start();
 
     // 데이터 매니저에서 데이터 수신 처리 - Devwooms
-    connect(candleDataManager, &CandleChartDataManager::candleData, this, &CandleChart::getCandleData);
+    connect(lineDataManager, &LineChartDataManager::lineData, this, &LineChartView::getLineData);
 
-    // Candle 그래프 생성 - devwooms
-    candleChart = new QChart();
+    // Line 그래프 생성 - devwooms
+    lineChart = new QChart();
     // 차트 뷰 생성 - devwooms
-    candleChartView = new QChartView(candleChart);
-    candleChartView->setRenderHint(QPainter::Antialiasing);
-    candleChartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    // 캔들스틱 series - Devwooms
-    candleSeries = new QCandlestickSeries;
-    candleChart->addSeries(candleSeries);
-    candleChart->createDefaultAxes();
+    lineChartView = new QChartView(lineChart);
+    lineChartView->setRenderHint(QPainter::Antialiasing);
+    lineChartView->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    // 선 series - Devwooms
+    lineSeries = new QLineSeries;
+    lineChart->addSeries(lineSeries);
+    lineChart->createDefaultAxes();
 }
 
 // 코인 변경 - Devwooms
-void CandleChart::setCoin(const QString &coin){
-    candleDataManager->setting(coin);
-    candleCoin = coin;
+void LineChartView::setCoin(const QString &coin){
+    lineDataManager->setting(coin);
+    lineCoin = coin;
 }
 
 // 데이터 매니저에서 데이터 연결 - Devwooms
-void CandleChart::getCandleData(const QList<CandleData> &candleDataList){
-    if (!candleDataList.isEmpty()) {
-        updateCandleData(candleDataList);
+void LineChartView::getLineData(const QList<QPointF> &lineDataList){
+    if (!lineDataList.isEmpty()) {
+        updateLineData(lineDataList);
     }
 }
 
-void CandleChart::updateCandleData(const QList<CandleData> &candleDataList){
+void LineChartView::updateLineData(const QList<QPointF> &lineDataList){
     
     // 기존 데이터 클리어 - Devwooms
-    candleSeries->clear();
+    lineSeries->clear();
     
     // 시간 범위 찾기 - Devwooms
     // min -> 가장 오래된 시간 - Devwooms
     // max -> 가장 최신 시간 - Devwooms
-    double minTime = candleDataList.last().time;
-    double maxTime = candleDataList.first().time;
+    double minTime = lineDataList.last().x();
+    double maxTime = lineDataList.first().x();
     
     // Y축 값 범위 찾기 및 스케일링 - Devwooms
     double minPrice = std::numeric_limits<double>::max();
@@ -63,7 +60,7 @@ void CandleChart::updateCandleData(const QList<CandleData> &candleDataList){
     double scaleFactor = 1.0;
 
     // 첫번째 값을 받아오기 - Devwooms
-    double firstPrice = candleDataList.first().trade;
+    double firstPrice = lineDataList.first().y();
 
     // 자리수 측정 - Devwooms
     int digitCount = static_cast<int>(std::floor(std::log10(std::abs(firstPrice)))) + 1;
@@ -80,52 +77,48 @@ void CandleChart::updateCandleData(const QList<CandleData> &candleDataList){
     // 소수점 코인인지 확인하는 플래그 추가 - Devwooms
     bool isDecimalCoin = (firstPrice < 1.0);
     
-    // 캔들스틱 데이터를 차트에 추가 - Devwooms
-    for (const CandleData &candleData : candleDataList) {
+    // 데이터를 만원 단위로 스케일링하여 차트에 추가 - Devwooms
+    for (const QPointF &point : lineDataList) {
         // 단위에 따라서 지정된 scaleFactor로 나누기 ( 천만원단위 ) - Devwooms
-        double scaledOpen = candleData.open / scaleFactor;
-        double scaledHigh = candleData.high / scaleFactor;
-        double scaledLow = candleData.low / scaleFactor;
-        double scaledClose = candleData.trade / scaleFactor;
+        double scaledPrice = point.y() / scaleFactor;
+        minPrice = qMin(minPrice, scaledPrice);
+        maxPrice = qMax(maxPrice, scaledPrice);
         
-        minPrice = std::min({minPrice, scaledOpen, scaledHigh, scaledLow, scaledClose});
-        maxPrice = std::max({maxPrice, scaledOpen, scaledHigh, scaledLow, scaledClose});
-        
-        // 캔들스틱 세트 생성 (실제 timestamp 사용) - Devwooms
-        QCandlestickSet *candleSet = new QCandlestickSet(candleData.time);
-        candleSet->setOpen(scaledOpen);
-        candleSet->setHigh(scaledHigh);
-        candleSet->setLow(scaledLow);
-        candleSet->setClose(scaledClose);
-        
-        candleSeries->append(candleSet);
+        // 시간을 상대적 위치로 변환 (0~100 범위) - Devwooms
+        double relativeTime = ((point.x() - minTime) / (maxTime - minTime)) * 100;
+        lineSeries->append(relativeTime, scaledPrice);
     }
     
     // 차트 축 업데이트 - Devwooms
-    if (candleChart) {
+    if (lineChart) {
         // 기존 X축 제거 - Devwooms
-        QList<QAbstractAxis*> axes = candleChart->axes(Qt::Horizontal);
+        QList<QAbstractAxis*> axes = lineChart->axes(Qt::Horizontal);
         for (QAbstractAxis* axis : std::as_const(axes)) {
-            candleChart->removeAxis(axis);
+            lineChart->removeAxis(axis);
         }
         
-        // 새로운 DateTime X축 생성 - Devwooms
-        QDateTimeAxis *axisX = new QDateTimeAxis();
+        // 새로운 X축 생성 (3개 라벨만 표시) - Devwooms
+        QCategoryAxis *axisX = new QCategoryAxis();
+        axisX->setRange(0, 100);
         
-        // 시간 범위 설정 - Devwooms
+        // 시작시간(오래된), 중간시간, 끝시간(최신) 라벨 추가 - Devwooms
         QDateTime startTime = QDateTime::fromMSecsSinceEpoch(minTime);
+        QDateTime midTime = QDateTime::fromMSecsSinceEpoch((minTime + maxTime) / 2);
         QDateTime endTime = QDateTime::fromMSecsSinceEpoch(maxTime);
         
-        axisX->setRange(startTime, endTime);
-        axisX->setFormat("hh:mm:ss");
+        axisX->append(startTime.toString("hh:mm:ss"), 0);
+        axisX->append(midTime.toString("hh:mm:ss"), 50);
+        axisX->append(endTime.toString("hh:mm:ss"), 100);
+        
         axisX->setLabelsAngle(-45);
+
         
         // 새로운 X축 추가 - Devwooms
-        candleChart->addAxis(axisX, Qt::AlignBottom);
-        candleSeries->attachAxis(axisX);
+        lineChart->addAxis(axisX, Qt::AlignBottom);
+        lineSeries->attachAxis(axisX);
         
         // Y축 업데이트 (만원 단위) - Devwooms
-        QList<QAbstractAxis*> yAxes = candleChart->axes(Qt::Vertical);
+        QList<QAbstractAxis*> yAxes = lineChart->axes(Qt::Vertical);
         if (!yAxes.isEmpty()) {
             QValueAxis *axisY = qobject_cast<QValueAxis*>(yAxes.first());
             if (axisY) {
@@ -154,15 +147,17 @@ void CandleChart::updateCandleData(const QList<CandleData> &candleDataList){
         
         // 차트 제목 업데이트 ( 어떤 코인 / 실시간 가격 / 단위 / 시간 ) - Devwooms
         QDateTime latestTime = QDateTime::fromMSecsSinceEpoch(maxTime);
-        double latestPrice = candleDataList.last().trade;
+        double latestPrice = lineDataList.last().y();
         QString priceStr = QString::number(latestPrice / scaleFactor, 'f', (isDecimalCoin ? 5 : 1));
-        QString title = QString("%1 캔들차트 (최신: %2%3, %4)")
-                            .arg(candleCoin)
+        QString title = QString("%1 실시간 차트 (최신: %2%3, %4)")
+                            .arg(lineCoin)
                             .arg(priceStr)
                             .arg(unitLabel)
                             .arg(latestTime.toString("hh:mm:ss"));
-        candleChart->setTitle(title);
+        lineChart->setTitle(title);
 
     }
     
 }
+
+

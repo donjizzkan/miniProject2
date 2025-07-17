@@ -1,7 +1,7 @@
-#include "chattingwindow.h"
-#include "ui_chattingwindow.h"
-#include "socketManage.h"    // socketManage 사용을 위해 추가
-#include "sendingManage.h"   // sendingManage 사용을 위해 추가
+#include "chattingRoomView.h"
+#include "ui_chattingRoomView.h"
+#include "models/socketManage.h"    // socketManage 사용을 위해 추가
+#include "models/sendingManage.h"   // sendingManage 사용을 위해 추가
 #include <QDebug>            // 디버그 출력을 위해 추가
 
 #include <QFileDialog>
@@ -9,9 +9,9 @@
 //==================================
 //        채팅방 기능 구현
 //==================================
-ChattingWindow::ChattingWindow(const QString& name, QWidget *parent)
+ChattingRoomView::ChattingRoomView(const QString& name, QWidget *parent)
     : DropWidget(parent), chatViewName(name)          // name 변수를 chatViewName에....
-    , ui(new Ui::ChattingWindow)
+    , ui(new Ui::ChattingRoomView)
 {
     ui->setupUi(this);
     this->setWindowTitle(chatViewName);
@@ -58,7 +58,7 @@ ChattingWindow::ChattingWindow(const QString& name, QWidget *parent)
     });
 }
 
-ChattingWindow::~ChattingWindow()
+ChattingRoomView::~ChattingRoomView()
 {
     delete ui;
 }

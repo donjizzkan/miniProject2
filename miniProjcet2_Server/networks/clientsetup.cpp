@@ -10,7 +10,6 @@ ClientSetup::ClientSetup(QTcpSocket* sock, QObject* parent)
     : QObject(parent), socket(sock) {}
 
 void ClientSetup::start() {
-    socket = new QTcpSocket();
     if (!socket) {
         qDebug() << "소켓 디스크립터 설정 실패";
         return;

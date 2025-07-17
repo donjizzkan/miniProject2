@@ -7,19 +7,8 @@
 #include "servermanager.h"
 #include "usermanage.h"
 
-ClientHandler::ClientHandler(qintptr socketDescriptor, QList<ClientHandler*>* handlerList, QObject* parent)
-    : QObject(parent), socket(nullptr), socketDescriptor(socketDescriptor), clientList(handlerList) {}
-
-void ClientHandler::start() {
-    socket = new QTcpSocket();
-    if (!socket->setSocketDescriptor(socketDescriptor)) {
-        qDebug() << "소켓 디스크립터 설정 실패";
-        return;
-    }
-    connect(socket, &QTcpSocket::readyRead, this, &ClientHandler::onReadyRead);
-    connect(socket, &QTcpSocket::disconnected, this, &ClientHandler::onDisconnected);
-    qDebug() << "클라이언트 스레드에서 소켓 세팅 완료";
-}
+ClientHandler::ClientHandler(QTcpSocket* socket, QList<ClientHandler*>* clientList, QObject* parent)
+    : QObject(parent), socket(socket), clientList(clientList) {}
 
 void ClientHandler::onReadyRead() {
     qDebug() << "신호 받음";

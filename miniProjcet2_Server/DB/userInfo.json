@@ -1,0 +1,24 @@
+[
+    {
+        "ID": "test123",
+        "PW": "test123",
+        "coinCnt": 0,
+        "money": 0,
+        "name": "첫서버연동",
+        "payment": 0,
+        "phoneNum": "01012345678",
+        "tradingHis": [
+        ]
+    },
+    {
+        "ID": "cancan",
+        "PW": "cancan",
+        "coinCnt": 0,
+        "money": 0,
+        "name": "회원가입이되나용",
+        "payment": 0,
+        "phoneNum": "0010101010",
+        "tradingHis": [
+        ]
+    }
+]

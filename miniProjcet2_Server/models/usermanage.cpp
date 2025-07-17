@@ -1,5 +1,6 @@
 #include "usermanage.h"
 #include <QFileInfo>
+#include <QDir>
 
 userManage::userManage(QObject* parent) : QObject(parent){
 }
@@ -10,7 +11,10 @@ userManage::~userManage(){
 //                  로그인
 //=========================================
 bool userManage::signIn(QString& ID, QString& PW, QString& nameOut){
-    QFile file("userInfo.json");                        // userInfo 파일 가져오기
+    QFile file("../../DB/userInfo.json");                        // userInfo 파일 가져오기
+    qDebug() << "Current working directory:" << QDir::currentPath();
+
+
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning() << "파일 열기 실패:" << file.errorString();
         return false;
@@ -40,13 +44,12 @@ bool userManage::signIn(QString& ID, QString& PW, QString& nameOut){
 
 
 
-
 //=========================================
 //                 회원 가입
 //=========================================
 void userManage::signUp(userInfo& info){
     // 파일 생성 오류를 대비한 경로 설정
-    QFile file("userInfo.json");        // userInfo 파일 가져오기
+    QFile file("../../DB/userInfo.json");        // userInfo 파일 가져오기
 
     // userInfo 파일이 없을 경우 생성
     if(!file.exists()){

@@ -9,55 +9,57 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    data/candledata.cpp \
+    data/linedata.cpp \
     main.cpp \
     mainwindow.cpp \
-    models/loginmodel.cpp \
-    models/mainmodel.cpp \
-    networks/socketnetwork.cpp \
+    services/chartdatamanager.cpp \
+    views/chattingRoomView.cpp \
+    views/homeview.cpp \
+    views/linechartview.cpp \
     views/splashview.cpp \
-    views/mainview.cpp \
     views/loginview.cpp \
-    candlechart.cpp \
-    candlechartdatamanager.cpp \
-    chartstoolbox.cpp \
-    chattinglistmanager.cpp \
-    chattingwindow.cpp \
-    dropwidget.cpp \
-    linechart.cpp \
-    linechartdatamanager.cpp \
-    sendingManage.cpp \
-    signupview.cpp \
-    socketManage.cpp \
-    userManage.cpp
-
+    views/candlechart.cpp \
+    views/chartstoolbox.cpp \
+    views/signupview.cpp \
+    views/dropwidget.cpp \
+    models/mainmodel.cpp \
+    models/candlechartdatamanager.cpp \
+    models/chattinglistmanager.cpp \
+    models/linechartdatamanager.cpp \
+    models/sendingManage.cpp \
+    models/socketManage.cpp \
+    models/userManage.cpp \
+    networks/socketnetwork.cpp
 
 HEADERS += \
+    data/candledata.h \
+    data/linedata.h \
     mainwindow.h \
-    models/loginmodel.h \
-    models/mainmodel.h \
+    services/chartdatamanager.h \
+    views/chattingRoomView.h \
+    views/homeview.h \
+    views/linechartview.h \
     views/splashview.h \
-    views/mainview.h \
     views/loginview.h \
-    candlechart.h \
-    candlechartdatamanager.h \
-    chartstoolbox.h \
-    chattinglistmanager.h \
-    chattingwindow.h \
-    dropwidget.h \
-    linechart.h \
-    linechartdatamanager.h \
-    sendingManage.h \
-    signupview.h \
-    socketManage.h \
-    userManage.h
-
+    views/candlechart.h \
+    views/chartstoolbox.h \
+    views/dropwidget.h \
+    views/signupview.h \
+    models/candlechartdatamanager.h \
+    models/mainmodel.h \
+    models/chattinglistmanager.h \
+    models/linechartdatamanager.h \
+    models/sendingManage.h \
+    models/socketManage.h \
+    models/userManage.h
 
 FORMS += \
-    views/mainview.ui \
+    views/homeview.ui \
     views/mainwindow.ui \
     views/loginview.ui \
     views/signupview.ui \
-    views/chattingwindow.ui
+    views/chattingRoomView.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

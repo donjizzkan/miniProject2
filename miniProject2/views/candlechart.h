@@ -1,7 +1,7 @@
 #ifndef CANDLECHART_H
 #define CANDLECHART_H
 
-#include "candlechartdatamanager.h"
+#include "models/candlechartdatamanager.h"
 
 #include <QObject>
 #include <QTime>

@@ -1,13 +1,13 @@
-#include "mainview.h"
-#include "linechart.h"
-#include "ui_mainview.h"
+#include "homeview.h"
+#include "linechartview.h"
+#include "ui_homeview.h"
 
 #include "chartstoolbox.h"
-#include "chattinglistmanager.h"
+#include "models/chattinglistmanager.h"
 
-MainView::MainView(QWidget *parent)
+HomeView::HomeView(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::MainView)
+    , ui(new Ui::HomeView)
 {
     ui->setupUi(this);
 
@@ -63,7 +63,7 @@ MainView::MainView(QWidget *parent)
     chattingListManager->settingOneByMoreListWidget(ui->oneByMore_listWidget);
 }
 
-MainView::~MainView()
+HomeView::~HomeView()
 {
     delete ui;
 }

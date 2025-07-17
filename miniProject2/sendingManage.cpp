@@ -1,8 +1,8 @@
 #include "sendingManage.h"
 
 // 무언가 전달할 때 무조건 메세지 type 포함해서!!!
-// 메세지 type의 종류(모두 소문자로 작성할것)
-// login, signup, response(success,fail만 result에 대입), messagesend
+// 메세지 type의 종류(모두 소문자로 작성할것) :
+//      login, signup, response(success,fail만 result에 대입), messagesend
 
 //==========================
 //       ID, PW 전달

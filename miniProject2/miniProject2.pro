@@ -13,6 +13,7 @@ SOURCES += \
     data/linedata.cpp \
     main.cpp \
     mainwindow.cpp \
+    models/filesendmanager.cpp \
     services/chartdatamanager.cpp \
     views/chattingRoomView.cpp \
     views/homeview.cpp \
@@ -36,6 +37,7 @@ HEADERS += \
     data/candledata.h \
     data/linedata.h \
     mainwindow.h \
+    models/filesendmanager.h \
     services/chartdatamanager.h \
     views/chattingRoomView.h \
     views/homeview.h \

@@ -28,7 +28,8 @@ void ClientHandler::onReadyRead() {
     QJsonDocument doc = QJsonDocument::fromJson(recvData, &err);
 
     if (err.error != QJsonParseError::NoError) {
-        qDebug() << "클라이언트에서 받은 정보 Json 파싱 에러 발생";
+        qDebug() << "클라이언트에서 받은 정보 Json 파싱 에러 발생 : " << &err;
+        qDebug() << "recvData : " << recvData;
         return;
     }
 
@@ -91,6 +92,9 @@ void ClientHandler::onReadyRead() {
                 QMetaObject::invokeMethod(handler, "sendMessageToClient", Qt::QueuedConnection, Q_ARG(QByteArray, sending));
                 qDebug() << handler->socket <<" 로 전송";
             }
+        }
+        else if (type == "filesend"){
+            qDebug() << "file 전달받음";
         }
     }
 }

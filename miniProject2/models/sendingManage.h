@@ -26,6 +26,9 @@ public:
     // 채팅창이름과 메세지내용을 전달
     void sendMessage(QString& chatViewName, QString& textMessage);
 
+    // 파일 전달
+    void sendFile(QStringList filePaths, QString& chatViewName);
+
     static sendingManage* m_instance;
     sendingManage();
 

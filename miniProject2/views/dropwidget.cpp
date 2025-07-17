@@ -4,11 +4,14 @@
 #include <QDropEvent>
 #include <QMimeData>
 
-DropWidget::DropWidget(QWidget *parent)
-    : QWidget{parent}
+
+DropWidget::DropWidget(QWidget *parent, const QString& name)
+    : QWidget{parent}, m_name(name)
 {
     // 드랍을 허용 - devwooms
     setAcceptDrops(true);
+
+
 }
 
 // 드래그가 해당 위젯에 인식됬을때 - devwooms
@@ -30,7 +33,26 @@ void DropWidget::dropEvent(QDropEvent *event){
     for (const QUrl &url : urls) {
         filePaths << url.toLocalFile();
     }
-    qDebug() << "test : " << filePaths;
-    // 시그널로 전달 - devwooms
-    emit fileDropped(filePaths);
+
+    qDebug() << "드롭된 파일들:" << filePaths;
+    
+    QMessageBox::StandardButton reply = QMessageBox::question(
+        this,
+        "파일 전송",
+        QString("선택된 파일(%1개)을 전송하시겠습니까?").arg(filePaths.size()),
+        QMessageBox::Yes | QMessageBox::No,
+        QMessageBox::No
+        );
+
+    if (reply == QMessageBox::Yes) {
+        // Yes 선택 시 파일 전송 시그널 발생
+        qDebug() << "파일 전송 승인";
+        emit fileDropped(filePaths);
+    } else {
+        // No 선택 시
+        qDebug() << "파일 전송 취소";
+    }
 }
+
+
+

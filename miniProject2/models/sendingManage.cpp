@@ -1,4 +1,5 @@
 #include "sendingManage.h"
+#include "filesendmanager.h"
 
 // 무언가 전달할 때 무조건 메세지 type 포함해서!!!
 // 메세지 type의 종류(모두 소문자로 작성할것) :
@@ -61,6 +62,17 @@ void sendingManage::sendMessage(QString& chatViewName, QString& textMessage){
     socket->write(sendingArray);
     qDebug()<< chatViewName << "으로" << senderName << "의" << textMessage <<" 전송";
 }
+
+//==========================
+//      파일 전송
+//==========================
+void sendingManage::sendFile(QStringList filePaths, QString& chatViewName){
+    qDebug() << "sendingManage.cpp sendFile";
+    QTcpSocket* socket = SocketManage::instance().socket();
+    FileSendManager *fileSendManager = new FileSendManager();
+    fileSendManager->sendFile(socket, "filesend", chatViewName, filePaths);
+}
+
 
 sendingManage* sendingManage::m_instance = nullptr;
 sendingManage::sendingManage(){

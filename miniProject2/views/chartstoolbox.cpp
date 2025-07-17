@@ -1,4 +1,4 @@
-#include "chartstoolbox.h"
+#include "views/chartstoolbox.h"
 
 #include <QDebug>
 
@@ -20,19 +20,19 @@ ChartsToolBox::ChartsToolBox(QWidget *parent)
     setLayout(chartsToolBoxLayout);
 
 
-    lineChart = new LineChart; // 멤버 변수로 저장 - devwooms
+    lineChartView = new LineChartView; // 멤버 변수로 저장 - devwooms
     candleChart = new CandleChart; // 멤버 변수로 저장 - devwooms
 
     // QToolBox 탭 부분에 Line Chart 추가 - devwooms
-    chartsToolBox->addItem(lineChart->lineChartView, "Line Chart");
+    chartsToolBox->addItem(lineChartView->lineChartView, "Line Chart");
     
     // QToolBox 탭 부분에 Candle Chart 추가 - devwooms
     chartsToolBox->addItem(candleChart->candleChartView, "Candle Chart");
 
 }
 
-LineChart* ChartsToolBox::getLineChart(){
-    return lineChart;
+LineChartView* ChartsToolBox::getLineChart(){
+    return lineChartView;
 }
 CandleChart* ChartsToolBox::getCandleChart(){
     return candleChart;

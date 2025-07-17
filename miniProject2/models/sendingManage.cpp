@@ -16,7 +16,7 @@ void sendingManage::sendLogIn(QString& ID, QString& PW){
     sendingObj["PW"] = PW;
     QJsonDocument doc(sendingObj);
     QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
-
+    sendingArray.append('\n');
     QTcpSocket* socket = SocketManage::instance().socket();
     qDebug() << "현재 소켓 : " << socket;
     socket->write(sendingArray);
@@ -37,7 +37,7 @@ void sendingManage::sendSignUp(QString& Name, QString& ID, QString& PW, QString&
     sendingObj["Phone"] = PhoneNum;
     QJsonDocument doc(sendingObj);
     QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
-
+    sendingArray.append('\n');
     QTcpSocket* socket = SocketManage::instance().socket();
     socket->write(sendingArray);
     qDebug() << "현재 소켓 : " << socket;
@@ -55,7 +55,7 @@ void sendingManage::sendMessage(QString& chatViewName, QString& textMessage){
     sendingObj["textMessage"] = textMessage;
     QJsonDocument doc(sendingObj);
     QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
-
+    sendingArray.append('\n');
     QTcpSocket* socket = SocketManage::instance().socket();
 
     qDebug() << "현재 소켓 : " << socket;

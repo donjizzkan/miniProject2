@@ -8,7 +8,8 @@
 
 ClientHandler::ClientHandler(QTcpSocket *socket, QObject *parent)
     : QObject(parent), socket(socket) {
-  connect(socket, &QTcpSocket::disconnected, this,
+    usermanage = new userManage(this);
+    connect(socket, &QTcpSocket::disconnected, this,
           &ClientHandler::onDisconnected);
 }
 
@@ -94,12 +95,6 @@ void ClientHandler::onReadyRead() {
       }
     }
   }
-}
-
-void ClientHandler::onDisconnected() {
-  qDebug() << "클라이언트 연결 해제";
-  socket->deleteLater();
-  this->deleteLater();
 }
 
 void ClientHandler::sendMessageToClient(QByteArray data) {

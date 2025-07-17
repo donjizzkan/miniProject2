@@ -18,8 +18,7 @@ struct CandleData {
     double trade;
     double time;
     // 생성자 추가
-    CandleData(double o, double h, double l, double t, double dt)
-        : open(o), high(h), low(l), trade(t), time(dt) {}
+    CandleData(double o, double h, double l, double t, double dt);
 };
 
 class CandleChartDataManager : public QObject

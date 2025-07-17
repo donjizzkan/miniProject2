@@ -1,18 +1,21 @@
 #include "servermanager.h"
 #include <QNetworkInterface>
 #include <QDebug>
-
-ServerManager::ServerManager() {
+ServerManager& ServerManager::getInstance(){
+    static ServerManager instance;
+    return instance;
+}
+ServerManager::ServerManager(QObject* parent): QObject(parent){
     run();
 }
 
 void ServerManager::run() {
-    clientHandlerList = new QList<ClientHandler*>();
 
     tcpServer = new QTcpServer(this);
-    connect(tcpServer, SIGNAL(newConnection()), SLOT(clientConnect()));
+    connect(tcpServer, &QTcpServer::newConnection,this, &ServerManager::clientConnect);
 
     if (!tcpServer->listen(QHostAddress::Any, 51234)) {
+        qDebug() << "서버 시작 실패";
         return;
     }
 
@@ -42,18 +45,23 @@ QString ServerManager::getMyIP() {
 }
 
 void ServerManager::clientConnect() {
-    //QTcpSocket *clientSocket = tcpServer->nextPendingConnection();
-    qintptr descriptor = tcpServer->nextPendingConnection()->socketDescriptor();
-    //clientSocket->deleteLater();
+    QTcpSocket *clientSocket = tcpServer->nextPendingConnection();
+    if(!clientSocket){
+        qDebug() << "새 클라이언트 소켓 연결 실패";
+        return;
+    }
 
     QThread *thread = new QThread;
-    ClientSetup* setup = new ClientSetup(descriptor, setupList);
+
+    ClientSetup* setup = new ClientSetup(clientSocket);
     setup->moveToThread(thread);
 
     connect(setup, &ClientSetup::socketReady, this, [=](QTcpSocket* socket){
-        ClientHandler* handler = new ClientHandler(socket, clientHandlerList);
+        ClientHandler* handler = new ClientHandler(socket);
         connect(socket, &QTcpSocket::readyRead, handler, &ClientHandler::onReadyRead);
-        connect(socket, &QTcpSocket::disconnected, handler, &ClientHandler::onDisconnected);
+        connect(handler,&ClientHandler::disconnected,this,&ServerManager::removeClient);
+        connect(thread,&QThread::finished,handler,&QObject::deleteLater);
+        connect(thread, &QThread::finished,socket,&QObject::deleteLater);
     });
     connect(thread, &QThread::started, setup, &ClientSetup::start);
     connect(thread, &QThread::finished, thread, &QThread::deleteLater);
@@ -64,18 +72,25 @@ void ServerManager::clientConnect() {
 
 void ServerManager::addClient(ClientHandler* handler){
     clientListMutex.lock();
-    if(!clientHandlerList->contains(handler)){
-        clientHandlerList->append(handler);
+    if(!clientHandlerList.contains(handler)){
+        clientHandlerList.append(handler);
     }
     clientListMutex.unlock();
 }
 
 void ServerManager::removeClient(ClientHandler* handler){
     clientListMutex.lock();
-    clientHandlerList->removeOne(handler);
+    clientHandlerList.removeOne(handler);
     clientListMutex.unlock();
 }
 
 void ServerManager::broadcastMessage(QByteArray& data){
+    QList<ClientHandler*> toBroadcast;
+    clientListMutex.lock();
+    toBroadcast = clientHandlerList;
+    clientListMutex.unlock();
 
+    for(ClientHandler* handler : toBroadcast){
+        QMetaObject::invokeMethod(handler,"sendMessageToClient",Qt::QueuedConnection,Q_ARG(QByteArray,data));
+    }
 }

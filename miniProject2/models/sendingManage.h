@@ -29,6 +29,9 @@ public:
     // 파일 전달
     void sendFile(QStringList filePaths, QString& chatViewName);
 
+    // 로그를 달라는 신호 전달
+    void giveMeLog(QString& chatViewName);
+
     static sendingManage* m_instance;
     sendingManage();
 

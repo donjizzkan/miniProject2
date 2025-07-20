@@ -36,8 +36,7 @@ LoginView::LoginView(QWidget *parent) : QWidget(parent), ui(new Ui::LoginView) {
           [this](const QJsonObject &obj) {
             qDebug() << "LoginView: loginResponseReceived 시그널 받음";
             // 이 obj는 이미 SocketManage에서 파싱된 JSON 객체임
-            if (obj.value("type").toString() ==
-                "response") { // 타입이 'response'인지 다시 확인 (안전성)
+            if (obj.value("type").toString() == "response") { // 타입이 'response'일 경우
               QString result = obj.value("result").toString();
               // 로그인 성공/실패에 따라 UI 전환
               if (result == "success") {
@@ -49,8 +48,7 @@ LoginView::LoginView(QWidget *parent) : QWidget(parent), ui(new Ui::LoginView) {
                 sendingManage::instance()->setSenderName(senderName);
                 emit goToMain(); // 메인 화면으로 이동 시그널 방출
               } else {
-                QMessageBox::warning(this, "로그인 실패",
-                                     "ID 또는 PW가 틀렸습니다!");
+                QMessageBox::warning(this, "로그인 실패", "ID 또는 PW가 틀렸습니다.");
                 qDebug() << "로그인 실패: ID 또는 PW 불일치";
               }
             }

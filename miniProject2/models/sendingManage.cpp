@@ -3,7 +3,7 @@
 
 // 무언가 전달할 때 무조건 메세지 type 포함해서!!!
 // 메세지 type의 종류(모두 소문자로 작성할것) :
-//      login, signup, response(success,fail만 result에 대입), messagesend
+//      login, signup, response(success,fail만 result에 대입), messagesend, givemelog, messagelog
 
 //==========================
 //       ID, PW 전달
@@ -73,6 +73,21 @@ void sendingManage::sendFile(QStringList filePaths, QString& chatViewName){
     fileSendManager->sendFile(socket, "filesend", chatViewName, filePaths);
 }
 
+//==========================
+//  채팅 로그 달라는 신호 전달
+//==========================
+void sendingManage::giveMeLog(QString& chatViewName){
+    qDebug()<<"서버로 채팅 로그 전송 요청";
+    QTcpSocket* socket = SocketManage::instance().socket();
+    QJsonObject sendingObj;
+    sendingObj["type"] = "givemelog";
+    sendingObj["chatViewName"] = chatViewName;
+    QJsonDocument doc(sendingObj);
+    QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
+    sendingArray.append('\n');
+
+    socket->write(sendingArray);
+}
 
 sendingManage* sendingManage::m_instance = nullptr;
 sendingManage::sendingManage(){

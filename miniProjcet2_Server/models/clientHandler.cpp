@@ -68,6 +68,7 @@ void ClientHandler::onReadyRead() {
                 QByteArray respData = respDoc.toJson(QJsonDocument::Compact);
                 respData.append('\n');
                 socket->write(respData);
+
             //==========================
             //       회원가입 처리
             //==========================
@@ -149,6 +150,39 @@ void ClientHandler::onReadyRead() {
             //==========================
             } else if (type == "filesend") {
                 qDebug() << "file 전달받음";
+            }
+            //==========================
+            //      채팅 로그 전송
+            //==========================
+            else if (type == "givemelog"){
+                QString chatViewName = obj.value("chatViewName").toString();
+                // 폴더에 있는 파일 읽어옴
+                QFile file("../../DB/" + chatViewName + ".json");
+                QJsonObject JsonResponse;
+                JsonResponse["type"] = "messagelog";
+
+                // 파일이 없을 경우 로그 없음 전송
+                if (!file.exists()) {
+                    JsonResponse["exist"] = "no";   // 존재여부 no
+                    QJsonDocument respDoc(JsonResponse);
+                    QByteArray respData = respDoc.toJson(QJsonDocument::Compact);
+                    respData.append('\n');
+                    socket->write(respData);
+                } else{     // 파일이 있을 경우 파일 전부 읽어와 내용물 전송
+                    file.open(QIODevice::ReadOnly);
+                    // 읽어오는데에 쓰는 변수
+                    QByteArray readData = file.readAll();
+                    QJsonDocument dataDoc = QJsonDocument::fromJson(readData);
+                    QJsonArray messageArray = dataDoc.array();
+                    JsonResponse["exist"] = "yes";
+                    JsonResponse["log"] = messageArray;
+                    file.close();
+                    // 전송하는데에 쓰는 변수
+                    QJsonDocument sendingDoc(JsonResponse);
+                    QByteArray sendingData = sendingDoc.toJson(QJsonDocument::Compact);
+                    sendingData.append('\n');
+                    socket->write(sendingData);
+                }
             }
         }
     }

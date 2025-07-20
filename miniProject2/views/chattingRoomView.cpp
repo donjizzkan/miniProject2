@@ -17,6 +17,26 @@ ChattingRoomView::ChattingRoomView(const QString& name, QWidget *parent)
 {
     ui->setupUi(this);
     this->setWindowTitle(chatViewName);
+    //==========================
+    //  메세지 기록이 있다면 받음
+    //==========================
+    // 채팅방 이름의 로그를 불러와달라고 요청 보냄
+    sendingManage::instance()->giveMeLog(chatViewName);
+    // type == messagelog일 때 처리
+    connect(&SocketManage::instance(), &SocketManage::chattingLogReceived, this, [this](const QJsonObject& chatLog){
+        QJsonArray logArray = chatLog["log"].toArray();
+
+        if (chatLog["exist"]=="yes"){
+            for (const QJsonValue& v : logArray) {
+                QString line = v.toString();
+                ui->textBrowser->append(line);
+            }
+            qDebug() << "로그 불러옴";
+        }
+        else{
+            qDebug() << "불러올 로그 없음";
+        }
+    });
 
     //==========================
     //   서버로부터 메세지 받음
@@ -26,7 +46,7 @@ ChattingRoomView::ChattingRoomView(const QString& name, QWidget *parent)
         qDebug() << "ChattingWindow: chatMessageReceived 시그널 받음";
         // 이 message는 이미 SocketManage에서 파싱된 JSON 객체임
         // textBrowser에 message 띄우기
-        if(message["type"].toString() == "messagesend"){ // 타입이 'messagesend'인지 다시 확인 (안전성)
+        if(message["type"].toString() == "messagesend"){ // 타입이 'messagesend'인지 다시 확인
             QString chatName = message["chatViewName"].toString();
             QString text = message["textMessage"].toString();
             if(chatName == this->chatViewName){ // 현재 채팅방 이름과 일치하는 메시지만 표시
@@ -51,11 +71,6 @@ ChattingRoomView::ChattingRoomView(const QString& name, QWidget *parent)
                 // 채팅창에 파일 수신 메시지 표시
                 ui->textBrowser->append(QString("[파일 수신] %1 (%2 bytes)").arg(fileName).arg(fileSize));
                 qDebug() << "파일 수신:" << fileName;
-                
-                // 여기에 파일 저장 로직을 추가할 수 있음
-                // QString base64Data = fileData["fileData"].toString();
-                // QByteArray fileContent = QByteArray::fromBase64(base64Data.toUtf8());
-                // 파일 저장 처리...
             }
         }
     });

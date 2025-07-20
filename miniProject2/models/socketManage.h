@@ -20,7 +20,8 @@ signals:
     void chatMessageReceived(const QJsonObject& message);
     // 서버로부터 파일을 받았을 때 방출할 시그널
     void fileReceived(const QJsonObject& fileData);
-    // 서버 연결 완료 시그널 (선택 사항, 기존 connected 시그널은 소켓에 직접 연결)
+    // 서버로부터 채팅 기록 받아왔을 때 방출할 시그널
+    void chattingLogReceived(const QJsonObject& chatLog);
 
 private slots:
     // QTcpSocket의 readyRead 시그널을 받아서 모든 데이터를 처리할 슬롯

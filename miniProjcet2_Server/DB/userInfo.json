@@ -20,5 +20,16 @@
         "phoneNum": "0010101010",
         "tradingHis": [
         ]
+    },
+    {
+        "ID": "test",
+        "PW": "test",
+        "coinCnt": 0,
+        "money": 0,
+        "name": "test",
+        "payment": 581,
+        "phoneNum": "test",
+        "tradingHis": [
+        ]
     }
 ]

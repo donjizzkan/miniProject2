@@ -1,7 +1,7 @@
 #include "homeview.h"
 #include "linechartview.h"
 #include "ui_homeview.h"
-
+#include "models/sendingManage.h"
 #include "chartstoolbox.h"
 #include "models/chattinglistmanager.h"
 
@@ -46,6 +46,37 @@ HomeView::HomeView(QWidget *parent)
             chartBox->getCandleChart()->candleDataManager->update();
         }
     });
+
+    //==========================
+    //  채팅 로그 달라는 신호 전달
+    //==========================
+    connect(ui->pushButton, &QPushButton::clicked, this, [this]() {
+        QString action;
+        int amount = 0;     // 수량
+        // 매수버튼(radioButton) 선택되어있을 경우
+        if (ui->radioButton->isChecked()) {
+            action = "buy";
+            amount = ui->spinBox->value();
+        // 매도버튼(radioButton_2) 선택되어있을 경우
+        } else if (ui->radioButton_2->isChecked()) {
+            action = "sell";
+            amount = ui->spinBox_2->value();
+        }
+        // 현재 열람중인 종목 이름 가져오기
+        QString comboText = ui->comboBox->itemText(ui->comboBox->currentIndex());
+        // 첫 단어만 가져오게 예(krw-btc)
+        QString coinName = comboText.split(" / ").first().toLower();
+        double price = chartBox->getLineChart()->getLatestPrice();  // 현재 가격
+
+        sendingManage sending;
+        sending.sendTrade(action, coinName, price, amount);
+
+        qDebug() << coinName << action << ", 수량:" << amount;
+
+        // 이 부분에서 서버나 매수/매도 처리 함수 호출
+        // tradeManager->sendTradeRequest(coinSymbol, action, amount);
+    });
+
 
     // tab의 layout에 추가 - devwooms
     ui->chartTab->addWidget(chartBox);

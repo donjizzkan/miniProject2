@@ -66,6 +66,10 @@ void SocketManage::onSocketReadyRead() {
         else if (type == "filesend"){
             qDebug() << "SocketManage: fileReceived 시그널 방출";
             emit fileReceived(obj);
+        }
+        else if (type == "messagelog"){  // 메세지 기록 보내줌
+            qDebug()<< "message log 불러옴";
+            emit chattingLogReceived(obj);
         } else {
             qDebug() << "SocketManage: 알 수 없는 메시지 타입:" << type;
         }

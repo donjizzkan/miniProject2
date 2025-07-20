@@ -17,6 +17,9 @@ class LineChartDataManager : public QObject
 public:
     explicit LineChartDataManager(QObject *parent = nullptr);
 
+    // 최근 값 getter
+    double getLatestPrice() const;
+
 public slots:
     void setting(QString coin);
     void start();
@@ -26,6 +29,9 @@ private:
     QNetworkAccessManager *manager;
     QNetworkRequest request;
     QTimer *timer;
+
+    // 최근 값을 멤버 변수로 저장
+    double latestPrice = 0.0;
 signals:
     // QPointF를 쓰는 이유는
     // Json으로 다시 만들 경우 소모가 크고

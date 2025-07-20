@@ -52,7 +52,7 @@ LoginView::LoginView(QWidget *parent) : QWidget(parent), ui(new Ui::LoginView) {
                 qDebug() << "로그인 실패: ID 또는 PW 불일치";
               }
             }
-          });
+        });
 
   // UI 버튼 연결
   connect(ui->pw_LineEdit, &QLineEdit::returnPressed, this,

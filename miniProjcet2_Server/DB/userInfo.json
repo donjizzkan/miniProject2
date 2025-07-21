@@ -31,5 +31,27 @@
         "phoneNum": "test",
         "tradingHis": [
         ]
+    },
+    {
+        "ID": "123",
+        "PW": "123",
+        "coinCnt": 0,
+        "money": 0,
+        "name": "123",
+        "payment": 0,
+        "phoneNum": "123",
+        "tradingHis": [
+        ]
+    },
+    {
+        "ID": "1234",
+        "PW": "2134",
+        "coinCnt": 0,
+        "money": 0,
+        "name": "1234",
+        "payment": 0,
+        "phoneNum": "2314",
+        "tradingHis": [
+        ]
     }
 ]

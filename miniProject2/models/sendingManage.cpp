@@ -35,6 +35,7 @@ void sendingManage::sendSignUp(QString& Name, QString& ID, QString& PW, QString&
     sendingObj["ID"] = ID;
     sendingObj["PW"] = PW;
     sendingObj["Phone"] = PhoneNum;
+    sendingObj["money"] = 10000000;
     QJsonDocument doc(sendingObj);
     QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
     sendingArray.append('\n');

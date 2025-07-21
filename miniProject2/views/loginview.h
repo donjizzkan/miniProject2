@@ -28,8 +28,6 @@ public:
 
 private slots:
     void handleLoginResponse(const QJsonObject &obj);
-    void handleLoginSuccess(const QString &senderName);
-    void handleLoginFailure();
 
 private:
     // UI 컴포넌트

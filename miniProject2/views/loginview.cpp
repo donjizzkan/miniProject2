@@ -14,53 +14,53 @@ LoginView::LoginView(QWidget *parent) : QWidget(parent)
     setupSocketConnection();
 }
 
+//==========================
+//        소켓 연결
+//==========================
 void LoginView::setupSocketConnection()
 {
     // 소켓 연겴 초기화
+    // socket Manage에서 생성된 socket 객체 가져오기
     QTcpSocket *socket = SocketManage::instance().socket();
-    
+    // 소켓 연결 시도 (LoginView 생성 시점에 한 번만 시도)
+    // 이미 연결되어 있다면 다시 연결 시도하지 않음
     if (socket->state() == QAbstractSocket::UnconnectedState) {
-        // TODO: 서버 주소를 설정 파일에서 불러오도록 개선 필요
+        // 192.168.2.235 => devwooms
+        // 192.168.56.1 => donjizzkan
         socket->connectToHost("192.168.2.234", 51234);
+        // 서버 연결 완료 시그널은 SocketManage에서 처리하므로 여기서 직접 연결할
+        // 필요 없음 connect(socket, &QTcpSocket::connected, this, [](){
+        //     qDebug("서버 연결 완료");
+        // });
     }
+
 }
 
 
+//==========================
+// 통과 신호(로그인 응답) 받으면 메인화면으로
+//==========================
+// SocketManage에서 방출하는 loginResponseReceived 시그널을 받도록 변경
 void LoginView::handleLoginResponse(const QJsonObject &obj)
 {
-    qDebug() << "LoginView: 로그인 응답 수신";
-    
-    if (obj.value("type").toString() != "response") {
-        return;
+    qDebug() << "LoginView: loginResponseReceived 시그널 받음";
+    // 이 obj는 이미 SocketManage에서 파싱된 JSON 객체임
+    if (obj.value("type").toString() == "response") { // 타입이 'response'일 경우
+        QString result = obj.value("result").toString();
+        // 로그인 성공/실패에 따라 UI 전환
+        if (result == "success") {
+            // 해당 로그인 정보에 해당하는 이름 받아 옴
+            QString senderName = obj.value("name").toString();
+            qDebug() << senderName << "으로 로그인 성공";
+            // sendingManage에 있는 이름 setter로 내 이름 저장
+            // 파일이나 메세지 전송시 저장된 senderName 불러옴
+            sendingManage::instance()->setSenderName(senderName);
+            emit goToMain(); // 메인 화면으로 이동 시그널 방출
+        } else {
+            QMessageBox::warning(this, "로그인 실패", "ID 또는 PW가 틀렸습니다.");
+            qDebug() << "로그인 실패: ID 또는 PW 불일치";
+        }
     }
-    
-    QString result = obj.value("result").toString();
-    
-    if (result == "success") {
-        handleLoginSuccess(obj.value("name").toString());
-    } else {
-        handleLoginFailure();
-    }
-}
-
-void LoginView::handleLoginSuccess(const QString &senderName)
-{
-    qDebug() << senderName << "으로 로그인 성공";
-    
-    // 사용자 이름 저장
-    sendingManage::instance()->setSenderName(senderName);
-    
-    // 메인 화면으로 이동
-    emit goToMain();
-}
-
-void LoginView::handleLoginFailure()
-{
-    QMessageBox::warning(this, "로그인 실패", "ID 또는 PW가 틀렸습니다.");
-    qDebug() << "로그인 실패: ID 또는 PW 불일치";
-    
-    // 입력 필드 초기화
-    clearInputFields();
 }
 
 void LoginView::clearInputFields()

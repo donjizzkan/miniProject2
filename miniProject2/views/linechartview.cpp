@@ -147,7 +147,7 @@ void LineChartView::updateLineData(const QList<QPointF> &lineDataList){
         
         // 차트 제목 업데이트 ( 어떤 코인 / 실시간 가격 / 단위 / 시간 ) - Devwooms
         QDateTime latestTime = QDateTime::fromMSecsSinceEpoch(maxTime);
-        latestPrice = lineDataList.last().y();
+        double latestPrice = lineDataList.last().y();
         QString priceStr = QString::number(latestPrice / scaleFactor, 'f', (isDecimalCoin ? 5 : 1));
         QString title = QString("%1 실시간 차트 (최신: %2%3, %4)")
                             .arg(lineCoin)
@@ -160,6 +160,6 @@ void LineChartView::updateLineData(const QList<QPointF> &lineDataList){
     
 }
 
-double LineChartView::getLatestPrice() const{
-    return latestPrice;
-}
+// double LineChartView::getLatestPrice() const{
+//     return latestPrice;
+// }

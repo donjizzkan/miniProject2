@@ -93,6 +93,36 @@ bool HomeView::eventFilter(QObject *obj, QEvent *event) {
 }
 
 void HomeView::connectSignal(){
+
+    connect(pushButton, &QPushButton::clicked, this, [this]() {
+        QString action;
+        int amount = 0;     // 수량
+        // 매수버튼(radioButton) 선택되어있을 경우
+        if (radioButton->isChecked()) {
+            action = "buy";
+            amount = spinBox->value();
+            // 매도버튼(radioButton_2) 선택되어있을 경우
+        } else if (radioButton_2->isChecked()) {
+            action = "sell";
+            amount = spinBox_2->value();
+        }
+        // 현재 열람중인 종목 이름 가져오기
+        QString comboText = comboBox->itemText(comboBox->currentIndex());
+        // 첫 단어만 가져오게 예(krw-btc)
+        QString coinName = comboText.split(" / ").first().toLower();
+        // double price = chartBox->getLineChart()->getLatestPrice();  // 현재 가격
+
+        sendingManage sending;
+        // sending.sendTrade(action, coinName, price, amount);
+
+        qDebug() << coinName << action << ", 수량:" << amount;
+
+        // 이 부분에서 서버나 매수/매도 처리 함수 호출
+        // tradeManager->sendTradeRequest(coinSymbol, action, amount);
+    });
+
+
+
     // comboBox에서 선택시 선택 코인의 데이터를 가져오도록 연결
     connect(comboBox, &QComboBox::currentIndexChanged, this, [this](int index) {
         QString text = comboBox->itemText(index);

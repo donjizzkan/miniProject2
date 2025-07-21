@@ -1,6 +1,6 @@
 #include "homeview.h"
 #include "linechartview.h"
-
+#include "models/sendingManage.h"
 #include "chartstoolbox.h"
 #include "models/chattinglistmanager.h"
 #include <QIcon>
@@ -152,6 +152,7 @@ void HomeView::setupUI()
     // 시세 탭
     QWidget *tab = new QWidget();
     chartTab = new QVBoxLayout(tab);
+
 
     // 코인 검색 기능 추가
     searchLineEdit = new QLineEdit();

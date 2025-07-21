@@ -2,14 +2,17 @@
 #define LOGINVIEW_H
 
 #include <QWidget>
-#include <QJsonDocument>    // Json관련 라이브러리
-#include <QJsonArray>       // Json관련 라이브러리
-#include <QJsonObject>      // Json관련 라이브러리
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
 #include <QMessageBox>
-#include "mainwindow.h"
-namespace Ui {
-class LoginView;
-}
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QSpacerItem>
+#include <QPixmap>
 
 class LoginView : public QWidget
 {
@@ -19,19 +22,39 @@ public:
     explicit LoginView(QWidget *parent = nullptr);
     ~LoginView();
 
-    // 입력받은 아이디와 패스워드 가져오는 함수
-    QString getInsertedID();
-    QString getInsertedPW();
+    // 사용자 입력 데이터 접근자
+    QString getInsertedID() const;
+    QString getInsertedPW() const;
 
+private slots:
+    void handleLoginResponse(const QJsonObject &obj);
+    void handleLoginSuccess(const QString &senderName);
+    void handleLoginFailure();
 
 private:
-    Ui::LoginView *ui;
+    // UI 컴포넌트
+    QLineEdit *id_LineEdit;
+    QLineEdit *pw_LineEdit;
+    QPushButton *signup_Button;
+    QPushButton *login_Button;
+    
+    // 초기화 메서드들
+    void setupUI();
+    void setupSocketConnection();
+    void connectSignals();
+    
+    // UI 생성 헬퍼 메서드들
+    QHBoxLayout* createTitleLayout();
+    QHBoxLayout* createLoginFormLayout();
+    QHBoxLayout* createButtonLayout();
+    
+    // 유틸리티 메서드들
+    void clearInputFields();
 
-// 메인윈도우에게 알릴 신호
 signals:
     void goToSignup();
     void goToMain();
-    void doSignIn();            // signIn 함수 호출 시그널
+    void doSignIn();
 };
 
 #endif // LOGINVIEW_H

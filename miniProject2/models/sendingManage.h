@@ -14,7 +14,7 @@ public:
     // 이름 싱글턴으로 선언해야 모든 cpp파일에서 접근 가능하므로 싱글턴 선언
     static sendingManage* instance();
     // 전송자 이름(senderName 변수 setter)
-    void setSenderName(QString& name);
+    void setSenderName(const QString& name);
 
 
     // 로그인 화면 정보 서버에 전달

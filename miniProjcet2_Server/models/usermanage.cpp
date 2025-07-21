@@ -1,8 +1,53 @@
 #include "usermanage.h"
 #include <QFileInfo>
 #include <QDir>
+#include <QCoreApplication>
+#include <QStandardPaths>
 
 userManage::userManage(QObject* parent) : QObject(parent){
+}
+
+QString userManage::getDBPath() {
+    // 애플리케이션 실행 경로에서 DB 폴더 찾기
+    QString appDir = QCoreApplication::applicationDirPath();
+    
+    // macOS 앱 번들 내부에서 실행되는 경우 처리
+    if (appDir.contains(".app/Contents/MacOS")) {
+        // .app/Contents/MacOS에서 5단계 위로 올라가서 프로젝트 루트 찾기
+        QDir dir(appDir);
+        dir.cdUp(); // MacOS
+        dir.cdUp(); // Contents
+        dir.cdUp(); // .app
+        dir.cdUp(); // build/Qt_...
+        dir.cdUp(); // build
+        dir.cdUp(); // miniProjcet2_Server
+        QString dbPath = dir.absolutePath() + "/DB/userInfo.json";
+        
+        if (QFile::exists(dbPath)) {
+            return dbPath;
+        }
+    }
+    
+    // 일반 실행 환경에서 DB 폴더 찾기
+    QStringList possiblePaths = {
+        "DB/userInfo.json",                    // 현재 디렉토리
+        "../DB/userInfo.json",                 // 한 단계 위
+        "../../DB/userInfo.json",              // 두 단계 위
+        "../../../DB/userInfo.json",           // 세 단계 위
+        QDir::homePath() + "/Desktop/WorkSpace/DevWooms/miniProject2/miniProjcet2_Server/DB/userInfo.json"  // 절대 경로
+    };
+    
+    for (const QString& path : possiblePaths) {
+        if (QFile::exists(path)) {
+            qDebug() << "DB 파일 발견:" << path;
+            return path;
+        }
+    }
+    
+    // 기본 경로 반환 (새로 생성용)
+    QString defaultPath = "DB/userInfo.json";
+    qWarning() << "DB 파일을 찾을 수 없음. 기본 경로 사용:" << defaultPath;
+    return defaultPath;
 }
 userManage::~userManage(){
 }
@@ -11,8 +56,10 @@ userManage::~userManage(){
 //                  로그인
 //=========================================
 bool userManage::signIn(QString& ID, QString& PW, QString& nameOut){
-    QFile file("../../DB/userInfo.json");                        // userInfo 파일 가져오기
+    QString dbPath = getDBPath();
+    QFile file(dbPath);                        // userInfo 파일 가져오기
     qDebug() << "Current working directory:" << QDir::currentPath();
+    qDebug() << "DB 파일 경로:" << dbPath;
 
 
     if (!file.open(QIODevice::ReadOnly)) {
@@ -48,7 +95,21 @@ bool userManage::signIn(QString& ID, QString& PW, QString& nameOut){
 //                 회원 가입
 //=========================================
 void userManage::signUp(userInfo& info){
-    QFile file("../../DB/userInfo.json");        // userInfo 파일 가져오기
+    QString dbPath = getDBPath();
+    QFile file(dbPath);        // userInfo 파일 가져오기
+    qDebug() << "Signup - DB 파일 경로:" << dbPath;
+
+    // DB 디렉토리가 없을 경우 생성
+    QFileInfo fileInfo(file);
+    QDir dir = fileInfo.absoluteDir();
+    if (!dir.exists()) {
+        if (dir.mkpath(dir.absolutePath())) {
+            qDebug() << "DB 디렉토리 생성됨:" << dir.absolutePath();
+        } else {
+            qWarning() << "DB 디렉토리 생성 실패:" << dir.absolutePath();
+            return;
+        }
+    }
 
     // userInfo 파일이 없을 경우 생성
     if(!file.exists()){
@@ -57,10 +118,10 @@ void userManage::signUp(userInfo& info){
             QJsonDocument doc(emptyArray);
             file.write(doc.toJson());
             file.close();
-            qDebug()<<"userInfo Json 파일 생성";
+            qDebug()<<"userInfo Json 파일 생성됨:" << dbPath;
         }
         else{
-            qWarning()<<"파일 생성 실패";
+            qWarning()<<"파일 생성 실패:" << file.errorString();
             return;
         }
     }

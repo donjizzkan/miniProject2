@@ -16,6 +16,8 @@ SOURCES += \
     models/filesendmanager.cpp \
     services/chartdatamanager.cpp \
     views/chattingRoomView.cpp \
+    views/coinsearchlineedit.cpp \
+    views/coinsearchwidget.cpp \
     views/homeview.cpp \
     views/linechartview.cpp \
     views/splashview.cpp \
@@ -40,6 +42,8 @@ HEADERS += \
     models/filesendmanager.h \
     services/chartdatamanager.h \
     views/chattingRoomView.h \
+    views/coinsearchlineedit.h \
+    views/coinsearchwidget.h \
     views/homeview.h \
     views/linechartview.h \
     views/splashview.h \
@@ -56,12 +60,12 @@ HEADERS += \
     models/socketManage.h \
     models/userManage.h
 
-FORMS += \
-    views/homeview.ui \
-    views/mainwindow.ui \
-    views/loginview.ui \
-    views/signupview.ui \
-    views/chattingRoomView.ui
+# FORMS += \
+#     views/homeview.ui \
+#     views/mainwindow.ui \
+#     views/loginview.ui \
+#     views/signupview.ui \
+#     views/chattingRoomView.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

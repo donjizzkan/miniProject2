@@ -102,7 +102,7 @@ sendingManage* sendingManage::instance(){
     return m_instance;
 }
 
-void sendingManage::setSenderName(QString& name) {
+void sendingManage::setSenderName(const QString& name) {
     senderName = name;
 }
 

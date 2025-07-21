@@ -1,5 +1,4 @@
 #include "chattingRoomView.h"
-#include "ui_chattingRoomView.h"
 #include "models/socketManage.h"    // socketManage 사용을 위해 추가
 #include "models/sendingManage.h"   // sendingManage 사용을 위해 추가
 #include <QDebug>            // 디버그 출력을 위해 추가
@@ -7,15 +6,15 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QFileInfo>
+#include <QIcon>
 
 //==================================
 //        채팅방 기능 구현
 //==================================
 ChattingRoomView::ChattingRoomView(const QString& name, QWidget *parent)
     : DropWidget(parent, name), chatViewName(name)          // name 변수를 chatViewName에....
-    , ui(new Ui::ChattingRoomView)
 {
-    ui->setupUi(this);
+    setupUI();
     this->setWindowTitle(chatViewName);
     //==========================
     //  메세지 기록이 있다면 받음
@@ -29,7 +28,7 @@ ChattingRoomView::ChattingRoomView(const QString& name, QWidget *parent)
         if (chatLog["exist"]=="yes"){
             for (const QJsonValue& v : logArray) {
                 QString line = v.toString();
-                ui->textBrowser->append(line);
+                textBrowser->append(line);
             }
             qDebug() << "로그 불러옴";
         }
@@ -50,7 +49,7 @@ ChattingRoomView::ChattingRoomView(const QString& name, QWidget *parent)
             QString chatName = message["chatViewName"].toString();
             QString text = message["textMessage"].toString();
             if(chatName == this->chatViewName){ // 현재 채팅방 이름과 일치하는 메시지만 표시
-                ui->textBrowser->append(text);
+                textBrowser->append(text);
                 qDebug() << chatName<<"으로 메세지 띄움";
             }
         }
@@ -69,7 +68,7 @@ ChattingRoomView::ChattingRoomView(const QString& name, QWidget *parent)
                 int fileSize = fileData["fileSize"].toInt();
                 
                 // 채팅창에 파일 수신 메시지 표시
-                ui->textBrowser->append(QString("[파일 수신] %1 (%2 bytes)").arg(fileName).arg(fileSize));
+                textBrowser->append(QString("[파일 수신] %1 (%2 bytes)").arg(fileName).arg(fileSize));
                 qDebug() << "파일 수신:" << fileName;
             }
         }
@@ -78,10 +77,10 @@ ChattingRoomView::ChattingRoomView(const QString& name, QWidget *parent)
     //==========================
     //    서버로 메세지 전송
     //==========================
-    connect(ui->pushButton_2, &QPushButton::pressed,this,[this](){
-        QString message = ui->lineEdit->text();
+    connect(pushButton_2, &QPushButton::pressed,this,[this](){
+        QString message = lineEdit->text();
         if (!message.isEmpty()) { // 빈 메시지는 전송하지 않음
-            ui->lineEdit->clear();
+            lineEdit->clear();
             sendingManage::instance()->sendMessage(chatViewName, message);
             qDebug() << "메시지 전송 시도: " << message;
         }
@@ -90,7 +89,7 @@ ChattingRoomView::ChattingRoomView(const QString& name, QWidget *parent)
     //==========================
     //   버튼 클릭시 파일 - devwooms
     //==========================
-    connect(ui->pushButton, &QPushButton::pressed, this, [this](){
+    connect(pushButton, &QPushButton::pressed, this, [this](){
         QString filePath = QFileDialog::getOpenFileName(this, "파일 선택", "", "모든 파일 (*)");
         if (!filePath.isEmpty()) {
             qDebug() << "선택된 파일:" << filePath;
@@ -125,7 +124,44 @@ ChattingRoomView::ChattingRoomView(const QString& name, QWidget *parent)
     });
 }
 
+void ChattingRoomView::setupUI()
+{
+    // 메인 레이아웃
+    QHBoxLayout *horizontalLayout_2 = new QHBoxLayout(this);
+    horizontalLayout_2->setContentsMargins(12, 12, 12, 12);
+    
+    // 수직 레이아웃
+    QVBoxLayout *verticalLayout = new QVBoxLayout();
+    
+    // 텍스트 브라우저
+    textBrowser = new QTextBrowser();
+    verticalLayout->addWidget(textBrowser);
+    
+    // 하단 수평 레이아웃
+    QHBoxLayout *horizontalLayout = new QHBoxLayout();
+    
+    // 파일 추가 버튼
+    pushButton = new QPushButton();
+    pushButton->setMinimumSize(50, 50);
+    pushButton->setMaximumSize(50, 50);
+    pushButton->setIcon(QIcon(":/assets/assets/AddFile.png"));
+    pushButton->setIconSize(QSize(50, 50));
+    horizontalLayout->addWidget(pushButton);
+    
+    // 라인 에디트
+    lineEdit = new QLineEdit();
+    lineEdit->setMinimumHeight(50);
+    horizontalLayout->addWidget(lineEdit);
+    
+    // 전송 버튼
+    pushButton_2 = new QPushButton("PushButton");
+    pushButton_2->setMinimumHeight(50);
+    horizontalLayout->addWidget(pushButton_2);
+    
+    verticalLayout->addLayout(horizontalLayout);
+    horizontalLayout_2->addLayout(verticalLayout);
+}
+
 ChattingRoomView::~ChattingRoomView()
 {
-    delete ui;
 }

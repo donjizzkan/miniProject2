@@ -2,10 +2,17 @@
 #define SIGNUPVIEW_H
 
 #include <QWidget>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QGridLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QSpacerItem>
+#include <QSizePolicy>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 #include "models/userManage.h"
-namespace Ui {  
-class SignupView;
-}
 
 class SignupView : public QWidget
 {
@@ -20,7 +27,19 @@ public:
 
 
 private:
-    Ui::SignupView *ui;
+    QLineEdit *name_LineEdit;
+    QLineEdit *id_LineEdit;
+    QLineEdit *pw_LineEdit;
+    QLineEdit *phoneNUM_LineEdit;
+    QLabel *label_2;
+    QLabel *label_4;
+    QPushButton *signup_Button;
+    QPushButton *cancel_Button;
+    
+    void setupUI();
+    // 초기화 및 설정 메서드들
+    void setupInputFields();
+    void connectSignals();
 
 // 메인윈도우에게 알릴 신호
 signals:

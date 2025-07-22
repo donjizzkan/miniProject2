@@ -37,7 +37,7 @@ void CoinSearchWidget::addCoinToTable(const CoinData& coin) {
     int rowCount = resultTableWidget->rowCount();
     resultTableWidget->insertRow(rowCount);
     
-    // 심볼, 한국어명, 영어명 순으로 데이터 추가
+    // 종, 한국어명, 영어명 순으로 데이터 추가
     resultTableWidget->setItem(rowCount, 0, new QTableWidgetItem(coin.symbol));
     resultTableWidget->setItem(rowCount, 1, new QTableWidgetItem(coin.koreanName));
     resultTableWidget->setItem(rowCount, 2, new QTableWidgetItem(coin.englishName));
@@ -72,7 +72,7 @@ void CoinSearchWidget::filterResults(const QString& searchText) {
 
     // 코인 데이터에서 검색어와 일치하는 항목 필터링
     for (const CoinData& coin : coinDataList) {
-        // 여러 필드에서 검색 (심볼, 한국어명, 영어명)
+        // 여러 필드에서 검색 (종목, 한국어명, 영어명)
         if (coin.symbol.contains(searchText, Qt::CaseInsensitive) ||
             coin.koreanName.contains(searchText, Qt::CaseInsensitive) ||
             coin.englishName.contains(searchText, Qt::CaseInsensitive)) {
@@ -98,7 +98,7 @@ void CoinSearchWidget::setupUI(){
     
     // 테이블 헤더 설정
     QStringList headers;
-    headers << "심볼" << "한국어명" << "영어명";
+    headers << "종목" << "한국어명" << "영어명";
     resultTableWidget->setHorizontalHeaderLabels(headers);
     
     // 테이블 설정

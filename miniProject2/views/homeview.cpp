@@ -128,9 +128,9 @@ void HomeView::connectSignal(){
         QString text = comboBox->itemText(index);
         qDebug() << "선택된 항목:" << text;
 
-        // 코인 종목 추출 (예: "KRW-BTC / 비트코인 / Bitcoin" → "krw-btc") - devwooms
+        // 코인 심볼 추출 (예: "KRW-BTC / 비트코인 / Bitcoin" → "krw-btc") - devwooms
         QString coinSymbol = text.split(" / ").first().toLower();
-        qDebug() << "추출된 코인 종목:" << coinSymbol;
+        qDebug() << "추출된 코인 심볼:" << coinSymbol;
 
         // 코인 설정 변경 - devwooms
         if (chartBox && chartBox->getLineChart()) {
@@ -148,7 +148,7 @@ void HomeView::connectSignal(){
     
     // CoinSearchWidget에서 코인 선택시 comboBox 업데이트
     connect(coinSearchWidget, &CoinSearchWidget::coinSelected, this, [this](const QString& symbol, const QString& koreanName, const QString& englishName) {
-        qDebug() << "코인 선택됨 - 종목:" << symbol << "한국어명:" << koreanName << "영어명:" << englishName;
+        qDebug() << "코인 선택됨 - 심볼:" << symbol << "한국어명:" << koreanName << "영어명:" << englishName;
         
         // comboBox에서 해당 코인 찾아서 선택
         QString targetText = QString("%1 / %2 / %3").arg(symbol, koreanName, englishName);

@@ -1,14 +1,6 @@
 #include "signupview.h"
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
-#include <QMessageBox>
-
-#include <QRandomGenerator>
-#include <QTcpSocket>
-#include <QTimer>
-#include <QOverload>
-#include <QAbstractSocket>
-#include <QSslSocket>
 
 SignupView::SignupView(QWidget *parent)
     : QWidget(parent)
@@ -41,17 +33,13 @@ void SignupView::setupInputFields()
     name_LineEdit->setPlaceholderText("이름을 입력하세요");
     id_LineEdit->setPlaceholderText("아이디를 입력하세요");
     pw_LineEdit->setPlaceholderText("비밀번호를 입력하세요");
-    phoneNUM_LineEdit->setPlaceholderText("01012345678");
-    email_LineEdit->setPlaceholderText("test@gmail.com");
-    emailCheck_Lable->hide();
-    emailCheck_LineEdit->hide();
-    emailCheckNUM->hide();
-
+    phoneNUM_LineEdit->setPlaceholderText("010-1234-5678");
 
     // 중복확인 라벨 초기 설정
     label_2->setText("중복확인");
     label_2->setStyleSheet("color: gray;");
-
+    label_4->setText("중복확인");
+    label_4->setStyleSheet("color: gray;");
 }
 
 
@@ -75,107 +63,10 @@ userInfo SignupView::getUserInfo(){
     return user;
 }
 
-void SignupView::checkEmail(){
-
-    QString emailText = email_LineEdit->text();
-
-    // 이메일 정규식
-    QRegularExpression emailcheck(R"(^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$)");
-    QRegularExpressionMatch match = emailcheck.match(emailText);
-
-    // 정규식에 맞는지 확인
-    if(match.hasMatch()){
-
-        qDebug() << "test1";
-        emailCheck_Lable->show();
-        emailCheck_LineEdit->show();
-        emailCheckNUM->show();
-
-        email_LineEdit->setReadOnly(true);
-        emailCheck->hide();
-
-        savedCode = QString::number(QRandomGenerator::global()->bounded(100000, 999999));
-        sendEmail(emailText, savedCode);
-
-
-
-
-
-
-    } else {
-        QMessageBox msgBox;
-        msgBox.setIconPixmap(QPixmap(":/assets/assets/warning.png"));
-        msgBox.setText("이메일 형식이 올바르지 않습니다.");
-        msgBox.exec();
-    }
-
-}
-
-void SignupView::checkEmailNum(){
-
-}
-
-void SignupView::sendEmail(QString email, QString code){
-    QSslSocket *socket = new QSslSocket(this);
-
-    connect(socket, &QSslSocket::encrypted, [=]() {
-        qDebug() << "✓ Gmail SSL 연결 성공!";
-
-        QString myEmail = "woomstest@gmail.com";
-        QString myPassword = "tpxzttfhztaawewm";
-
-        QStringList commands;
-        commands << "EHLO localhost"
-                 << "AUTH LOGIN"
-                 << myEmail.toUtf8().toBase64()
-                 << myPassword.toUtf8().toBase64()
-                 << QString("MAIL FROM:<%1>").arg(myEmail)
-                 << QString("RCPT TO:<%1>").arg(email)
-                 << "DATA"
-                 << QString("Subject: 인증코드\r\n\r\n인증코드: %1\r\n.").arg(code);
-
-        int step = 0;
-        QTimer *timer = new QTimer();
-
-        connect(timer, &QTimer::timeout, [=]() mutable {
-            if (step < commands.size()) {
-                socket->write((commands[step] + "\r\n").toUtf8());
-                socket->flush();
-                qDebug() << "Step" << step << ":" << commands[step];
-                step++;
-            } else {
-                timer->stop();
-                timer->deleteLater();
-
-                socket->write("QUIT\r\n");
-                socket->flush();
-                qDebug() << "QUIT 전송";
-                qDebug() << "✓ 이메일 발송 완료!";
-
-                // 즉시 모든 시그널 연결 해제 후 삭제
-                socket->disconnect(); // 모든 시그널 연결 해제
-                socket->abort();      // 강제 연결 종료
-                socket->deleteLater(); // 한 번만 삭제
-            }
-        });
-        timer->start(500);
-    });
-
-    // SSL 에러만 처리 (연결/에러 시그널은 제거)
-    connect(socket, &QSslSocket::sslErrors, [socket]() {
-        socket->ignoreSslErrors();
-    });
-
-    qDebug() << "🔒 Gmail SSL 연결 시도...";
-    socket->connectToHostEncrypted("smtp.gmail.com", 465);
-}
-
 // 시그널 연결
 void SignupView::connectSignals()
 {
     // 버튼 클릭 시그널 연결
-    connect(emailCheck, &QPushButton::clicked, this, &SignupView::checkEmail);
-    connect(emailCheckNUM, &QPushButton::clicked, this, &SignupView::checkEmailNum);
     connect(signup_Button, &QPushButton::clicked, this, &SignupView::doSignUp);
     connect(cancel_Button, &QPushButton::clicked, this, &SignupView::goToLogin);
 }
@@ -230,33 +121,16 @@ void SignupView::setupUI()
     
     phoneNUM_LineEdit = new QLineEdit();
     gridLayout->addWidget(phoneNUM_LineEdit, 4, 2);
-
-    // 이메일
-    QLabel *email_Label = new QLabel("이메일 :");
-    gridLayout->addWidget(email_Label, 5, 0, 1, 2);
-
-    email_LineEdit = new QLineEdit();
-    gridLayout->addWidget(email_LineEdit, 5, 2);
-
-    emailCheck = new QPushButton("이메일 인증");
-    gridLayout->addWidget(emailCheck, 6, 2);
-
-    // 인증 번호
-    emailCheck_Lable = new QLabel("05 : 00");
-    gridLayout->addWidget(emailCheck_Lable, 7, 0, 1, 2);
-
-    emailCheck_LineEdit = new QLineEdit();
-    gridLayout->addWidget(emailCheck_LineEdit, 7, 2);
     
-    emailCheckNUM = new QPushButton("인증 확인");
-    gridLayout->addWidget(emailCheckNUM, 8, 2);
+    label_4 = new QLabel("중복확인");
+    gridLayout->addWidget(label_4, 5, 2);
     
     // 버튼들
     cancel_Button = new QPushButton("취소");
-    gridLayout->addWidget(cancel_Button, 9, 0, 1, 2);
+    gridLayout->addWidget(cancel_Button, 6, 0, 1, 2);
     
     signup_Button = new QPushButton("가입하기");
-    gridLayout->addWidget(signup_Button, 9, 2);
+    gridLayout->addWidget(signup_Button, 6, 2);
     
     horizontalLayout->addLayout(gridLayout);
     

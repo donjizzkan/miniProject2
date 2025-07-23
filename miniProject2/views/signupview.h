@@ -31,30 +31,20 @@ private:
     QLineEdit *id_LineEdit;
     QLineEdit *pw_LineEdit;
     QLineEdit *phoneNUM_LineEdit;
-    QLineEdit *email_LineEdit;
-    QLineEdit *emailCheck_LineEdit;
     QLabel *label_2;
-    QPushButton *emailCheck;
-    QLabel *emailCheck_Lable;
-    QPushButton *emailCheckNUM;
+    QLabel *label_4;
     QPushButton *signup_Button;
     QPushButton *cancel_Button;
-
-    // test
-    QString savedCode;
-    void sendEmail(QString email, QString code);
     
     void setupUI();
     // 초기화 및 설정 메서드들
     void setupInputFields();
     void connectSignals();
-    void checkEmail();
-    void checkEmailNum();
 
+// 메인윈도우에게 알릴 신호
 signals:
     void goToLogin();
     void doSignUp();            // signUp 함수 호출 시그널
-
 };
 
 #endif // SIGNUPVIEW_H

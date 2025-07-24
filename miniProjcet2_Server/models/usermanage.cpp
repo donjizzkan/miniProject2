@@ -140,7 +140,7 @@ void userManage::signUp(userInfo& info){
     userObj["phoneNum"] = info.phoneNum;
     userObj["coins"] = coins;
     userObj["payment"] = info.payment;
-    userObj["money"] = info.money;
+    userObj["money"] = 10000000;
 
 
     // 저장할 내용 이어붙이기 위해 앞내용 읽어옴

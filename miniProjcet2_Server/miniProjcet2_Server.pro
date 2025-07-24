@@ -13,10 +13,10 @@ INCLUDEPATH += views networks models DB
 SOURCES += \
     models/clientHandler.cpp \
     main.cpp \
+    models/usermanage.cpp \
     views/mainwindow.cpp \
     networks/clientsetup.cpp \
     networks/servermanager.cpp \
-    models/usermanage.cpp
 
 HEADERS += \
     models/clientHandler.h \

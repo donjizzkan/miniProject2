@@ -90,6 +90,24 @@ void sendingManage::giveMeLog(QString& chatViewName){
     socket->write(sendingArray);
 }
 
+//==========================
+//      거래 신호 전달
+//==========================
+void sendingManage::sendTrade(const QString& action, const QString& coin, double price, int amount){
+    QJsonObject sendingObj;
+    sendingObj["type"] = "trade";
+    sendingObj["action"] = action;
+    sendingObj["coin"] = coin;
+    sendingObj["price"] = price;
+    sendingObj["amount"] = amount;
+    sendingObj["senderName"] = senderName;
+
+    QJsonDocument doc(sendingObj);
+    QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
+    sendingArray.append('\n');
+    QTcpSocket* socket = SocketManage::instance().socket();
+    socket->write(sendingArray);
+}
 sendingManage* sendingManage::m_instance = nullptr;
 sendingManage::sendingManage(){
 

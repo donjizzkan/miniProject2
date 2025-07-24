@@ -93,7 +93,9 @@ bool HomeView::eventFilter(QObject *obj, QEvent *event) {
 }
 
 void HomeView::connectSignal(){
-
+    // ==============================
+    //       매수/매도 버튼 연결
+    // ==============================
     connect(pushButton, &QPushButton::clicked, this, [this]() {
         QString action;
         int amount = 0;     // 수량
@@ -110,15 +112,17 @@ void HomeView::connectSignal(){
         QString comboText = comboBox->itemText(comboBox->currentIndex());
         // 첫 단어만 가져오게 예(krw-btc)
         QString coinName = comboText.split(" / ").first().toLower();
-        // double price = chartBox->getLineChart()->getLatestPrice();  // 현재 가격
 
-        sendingManage sending;
-        // sending.sendTrade(action, coinName, price, amount);
+        // 현재가 받아오기
+        double price = 0.0;
+        if(chartBox && chartBox->getLineChart()){
+            price = chartBox->getLineChart()->getLastPrice();
+        }
+
+        // 트레이드 함수 호출
+        sendingManage::instance()->sendTrade(action,coinName,price,amount);
 
         qDebug() << coinName << action << ", 수량:" << amount;
-
-        // 이 부분에서 서버나 매수/매도 처리 함수 호출
-        // tradeManager->sendTradeRequest(coinSymbol, action, amount);
     });
 
 

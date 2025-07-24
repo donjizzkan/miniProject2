@@ -32,6 +32,9 @@ public:
     // 로그를 달라는 신호 전달
     void giveMeLog(QString& chatViewName);
 
+    // 거래 신호 전달
+    void sendTrade(const QString& action, const QString& coin, double price, int amount);
+
     static sendingManage* m_instance;
     sendingManage();
 

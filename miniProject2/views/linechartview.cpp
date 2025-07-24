@@ -158,8 +158,9 @@ void LineChartView::updateLineData(const QList<QPointF> &lineDataList){
 
     }
     
+    // 최신 값 저장
+    if(!lineDataList.isEmpty()){
+        latestPrice = lineDataList.last().y();
+    }
 }
 
-// double LineChartView::getLatestPrice() const{
-//     return latestPrice;
-// }

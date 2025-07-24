@@ -128,14 +128,19 @@ void userManage::signUp(userInfo& info){
 
     // 전달받은 userInfo를 json Obejct로
     QJsonObject userObj;
+    QJsonObject coins;
+    coins["krw-btc"] = 0;
+    coins["krw-eth"] = 0;
+    coins["krw-xrp"] = 0;
+    coins["krw-doge"] = 0;
+
     userObj["name"] = info.name;
     userObj["ID"] = info.ID;
     userObj["PW"] = info.PW;
     userObj["phoneNum"] = info.phoneNum;
-    userObj["coinCnt"] = info.coinCnt;
+    userObj["coins"] = coins;
     userObj["payment"] = info.payment;
     userObj["money"] = info.money;
-    userObj["tradingHis"] = QJsonArray();   // 빈 Array 대입
 
 
     // 저장할 내용 이어붙이기 위해 앞내용 읽어옴

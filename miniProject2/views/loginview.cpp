@@ -26,8 +26,8 @@ void LoginView::setupSocketConnection()
     // 이미 연결되어 있다면 다시 연결 시도하지 않음
     if (socket->state() == QAbstractSocket::UnconnectedState) {
         // 192.168.2.235 => devwooms
-        // 192.168.56.1 => donjizzkan
-        socket->connectToHost("192.168.2.234", 51234);
+        // 192.168.1.44 => donjizzkan
+        socket->connectToHost("192.168.1.44", 51234);
         // 서버 연결 완료 시그널은 SocketManage에서 처리하므로 여기서 직접 연결할
         // 필요 없음 connect(socket, &QTcpSocket::connected, this, [](){
         //     qDebug("서버 연결 완료");

@@ -27,5 +27,4 @@ SplashView::SplashView(QWidget *parent)
 
     layout->addWidget(gifLabel);
     layout->setAlignment(Qt::AlignCenter);
-
 }

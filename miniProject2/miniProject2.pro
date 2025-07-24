@@ -14,6 +14,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     models/filesendmanager.cpp \
+    models/smtpemailsender.cpp \
     services/chartdatamanager.cpp \
     views/chattingRoomView.cpp \
     views/coinsearchlineedit.cpp \
@@ -40,6 +41,7 @@ HEADERS += \
     data/linedata.h \
     mainwindow.h \
     models/filesendmanager.h \
+    models/smtpemailsender.h \
     services/chartdatamanager.h \
     views/chattingRoomView.h \
     views/coinsearchlineedit.h \
@@ -74,3 +76,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     resource.qrc
+
+ICON = assets/Bitcoin.icns

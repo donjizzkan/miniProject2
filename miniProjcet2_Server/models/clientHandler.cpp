@@ -184,6 +184,113 @@ void ClientHandler::onReadyRead() {
                     socket->write(sendingData);
                 }
             }
+            //==========================
+            //     매수/매도 처리
+            //==========================
+            else if(type == "trade"){
+                QFile file("../../DB/userInfo.json");
+                if(!file.open(QIODevice::ReadOnly)){
+                    qDebug()<<"거래 신호 수신, 유저 정보 읽기 실패";
+                    return;
+                }
+                QByteArray data = file.readAll();
+                file.close();
+                QJsonDocument doc = QJsonDocument::fromJson(data);
+                QJsonArray userList = doc.array();
+
+                QString action = obj.value("action").toString();
+                QString coin = obj.value("coin").toString();
+                double price = obj.value("price").toDouble();
+                int amount = obj.value("amount").toInt();
+                QString senderName = obj.value("senderName").toString();
+
+                bool updated = false;
+                QJsonObject resultObj; // 응답용
+
+                for(int i = 0; i < userList.size(); ++i){
+                    QJsonObject userObj = userList[i].toObject();
+                    if(userObj["name"].toString() == senderName){
+                        QJsonObject coins = userObj["coins"].toObject();
+                        double money = userObj["money"].toDouble();
+                        double payment = userObj["payment"].toDouble();
+
+                        int currentCoinCnt = coins.value(coin).toInt();
+
+                        // 신규 코인 거래 대응
+                        if(!coins.contains(coin))
+                            coins[coin] = 0;
+
+                        if(action == "buy"){
+                            double totalCost = price * amount;
+                            if(money >= totalCost){
+                                money -= totalCost;
+                                payment += totalCost;
+                                coins[coin] = currentCoinCnt + amount;
+                                userObj["money"] = money;
+                                userObj["coins"] = coins;
+                                userObj["payment"] = payment;
+                                updated = true;
+                                qDebug()<<"매수 성공";
+                            } else {
+                                qDebug()<<"매수 실패: 잔액 부족";
+                            }
+                        }
+                        else if(action == "sell"){
+                            if(currentCoinCnt >= amount){
+                                money += price * amount;
+                                payment -= price * amount; // (원한다면)
+                                coins[coin] = currentCoinCnt - amount;
+                                userObj["money"] = money;
+                                userObj["coins"] = coins;
+                                userObj["payment"] = payment;
+                                updated = true;
+                                qDebug()<<"매도 성공";
+                            } else {
+                                qDebug()<<"매도 실패: 코인 부족";
+                            }
+                        }
+
+                        // 거래내역 기록 (옵션)
+                        QJsonArray tradingHis = userObj["tradingHis"].toArray();
+                        QJsonObject record;
+                        record["action"] = action;
+                        record["coin"] = coin;
+                        record["price"] = price;
+                        record["amount"] = amount;
+                        record["datetime"] = QDateTime::currentDateTime().toString(Qt::ISODate);
+                        tradingHis.append(record);
+                        userObj["tradingHis"] = tradingHis;
+
+                        userList[i] = userObj;
+                        resultObj = userObj; // 응답으로 현재 유저정보를 그대로 내려주고 싶다면
+                        break;
+                    }
+                }
+
+                // 변경 사항 저장
+                if(updated){
+                    if(file.open(QIODevice::WriteOnly)){
+                        QJsonDocument newDoc(userList);
+                        file.write(newDoc.toJson());
+                        file.close();
+                    }
+                }
+
+                // 거래 응답 내려주기 (클라에서 결과 받을 수 있게)
+                QJsonObject resp;
+                resp["type"] = "tradeResponse";
+                resp["result"] = updated ? "success" : "fail";
+                resp["action"] = action;
+                resp["coin"] = coin;
+                resp["amount"] = amount;
+                resp["user"] = resultObj; // 옵션: 유저의 최신 정보
+
+                QJsonDocument respDoc(resp);
+                QByteArray respData = respDoc.toJson(QJsonDocument::Compact);
+                respData.append('\n');
+                socket->write(respData);
+            }
+
         }
     }
 }

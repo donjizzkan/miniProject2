@@ -95,22 +95,22 @@ bool userManage::signIn(QString& ID, QString& PW, QString& nameOut){
 //                 회원 가입
 //=========================================
 void userManage::signUp(userInfo& info){
-    QString dbPath = getDBPath();
-    QFile file(dbPath);        // userInfo 파일 가져오기
-    qDebug() << "Signup - DB 파일 경로:" << dbPath;
-
+    // QString dbPath = getDBPath();
+    // QFile file(dbPath);        // userInfo 파일 가져오기
+    // qDebug() << "Signup - DB 파일 경로:" << dbPath;
     // DB 디렉토리가 없을 경우 생성
-    QFileInfo fileInfo(file);
-    QDir dir = fileInfo.absoluteDir();
-    if (!dir.exists()) {
-        if (dir.mkpath(dir.absolutePath())) {
-            qDebug() << "DB 디렉토리 생성됨:" << dir.absolutePath();
-        } else {
-            qWarning() << "DB 디렉토리 생성 실패:" << dir.absolutePath();
-            return;
-        }
-    }
+    // QFileInfo fileInfo(file);
+    // QDir dir = fileInfo.absoluteDir();
+    // if (!dir.exists()) {
+    //     if (dir.mkpath(dir.absolutePath())) {
+    //         qDebug() << "DB 디렉토리 생성됨:" << dir.absolutePath();
+    //     } else {
+    //         qWarning() << "DB 디렉토리 생성 실패:" << dir.absolutePath();
+    //         return;
+    //     }
+    // }
 
+    QFile file("../../DB/userInfo.json");
     // userInfo 파일이 없을 경우 생성
     if(!file.exists()){
         if(file.open(QIODevice::WriteOnly)){
@@ -118,7 +118,7 @@ void userManage::signUp(userInfo& info){
             QJsonDocument doc(emptyArray);
             file.write(doc.toJson());
             file.close();
-            qDebug()<<"userInfo Json 파일 생성됨:" << dbPath;
+            qDebug()<<"userInfo Json 파일 생성됨:";
         }
         else{
             qWarning()<<"파일 생성 실패:" << file.errorString();
@@ -128,14 +128,19 @@ void userManage::signUp(userInfo& info){
 
     // 전달받은 userInfo를 json Obejct로
     QJsonObject userObj;
+    QJsonObject coins;
+    coins["krw-btc"] = 0;
+    coins["krw-eth"] = 0;
+    coins["krw-xrp"] = 0;
+    coins["krw-doge"] = 0;
+
     userObj["name"] = info.name;
     userObj["ID"] = info.ID;
     userObj["PW"] = info.PW;
     userObj["phoneNum"] = info.phoneNum;
-    userObj["coinCnt"] = info.coinCnt;
+    userObj["coins"] = coins;
     userObj["payment"] = info.payment;
-    userObj["money"] = info.money;
-    userObj["tradingHis"] = QJsonArray();   // 빈 Array 대입
+    userObj["money"] = 10000000;
 
 
     // 저장할 내용 이어붙이기 위해 앞내용 읽어옴

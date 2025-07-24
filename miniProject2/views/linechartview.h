@@ -22,6 +22,7 @@ public:
     QString lineCoin;
     void setCoin(const QString &coin);
     LineChartDataManager *lineDataManager;
+    double getLatestPrice() const { return latestPrice; }
 
 public slots:
     void getLineData(const QList<QPointF> &lineDataList);
@@ -33,6 +34,7 @@ private:
     void setupLineChartAxes();
     void updateLineChart(int start, int end, double price);
     void updateLineData(const QList<QPointF> &lineDataList);
+    double latestPrice = 0.0;
 
 signals:
 };

@@ -1,57 +1,26 @@
 [
     {
-        "ID": "test123",
-        "PW": "test123",
-        "coinCnt": 0,
-        "money": 0,
-        "name": "첫서버연동",
-        "payment": 0,
-        "phoneNum": "01012345678",
-        "tradingHis": [
-        ]
-    },
-    {
-        "ID": "cancan",
-        "PW": "cancan",
-        "coinCnt": 0,
-        "money": 0,
-        "name": "회원가입이되나용",
-        "payment": 0,
-        "phoneNum": "0010101010",
-        "tradingHis": [
-        ]
-    },
-    {
         "ID": "test",
         "PW": "test",
-        "coinCnt": 0,
-        "money": 0,
+        "coins": {
+            "krw-btc": 0,
+            "krw-doge": 0,
+            "krw-eth": 0,
+            "krw-pepe": 7,
+            "krw-xrp": 0
+        },
+        "money": 9999999.8838,
         "name": "test",
-        "payment": 581,
-        "phoneNum": "test",
+        "payment": 0.1162,
+        "phoneNum": "01012345678",
         "tradingHis": [
-        ]
-    },
-    {
-        "ID": "123",
-        "PW": "123",
-        "coinCnt": 0,
-        "money": 0,
-        "name": "123",
-        "payment": 0,
-        "phoneNum": "123",
-        "tradingHis": [
-        ]
-    },
-    {
-        "ID": "1234",
-        "PW": "2134",
-        "coinCnt": 0,
-        "money": 0,
-        "name": "1234",
-        "payment": 0,
-        "phoneNum": "2314",
-        "tradingHis": [
+            {
+                "action": "buy",
+                "amount": 7,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-24T15:02:54",
+                "price": 0.0166
+            }
         ]
     }
 ]

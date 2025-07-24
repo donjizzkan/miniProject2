@@ -155,8 +155,13 @@ void LineChartView::updateLineData(const QList<QPointF> &lineDataList){
                             .arg(unitLabel)
                             .arg(latestTime.toString("hh:mm:ss"));
         lineChart->setTitle(title);
-
     }
+
+    // LineChartView.cpp의 updateLineData 함수 마지막에
+    if (!lineDataList.isEmpty()) {
+        latestPrice = lineDataList.last().y(); // 마지막이 최신
+    }
+
     
 }
 

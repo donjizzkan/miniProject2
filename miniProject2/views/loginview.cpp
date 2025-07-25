@@ -1,6 +1,7 @@
 #include "loginview.h"
 #include "models/sendingManage.h"
 #include "models/socketManage.h"
+#include "mainwindow.h"
 #include <QDebug>
 #include <QMessageBox>
 #include <QIcon>
@@ -51,11 +52,14 @@ void LoginView::handleLoginResponse(const QJsonObject &obj)
         if (result == "success") {
             // 해당 로그인 정보에 해당하는 이름 받아 옴
             QString senderName = obj.value("name").toString();
+            QJsonObject userInfo = obj["user"].toObject();
+            QJsonArray history = obj["history"].toArray();
             qDebug() << senderName << "으로 로그인 성공";
             // sendingManage에 있는 이름 setter로 내 이름 저장
             // 파일이나 메세지 전송시 저장된 senderName 불러옴
             sendingManage::instance()->setSenderName(senderName);
-            emit goToMain(); // 메인 화면으로 이동 시그널 방출
+            emit loginSuccessWithInfo(userInfo, history);   // 유저 정보 띄우기
+            emit goToMain(); // 메인 화면으로 이동
         } else {
             QMessageBox::warning(this, "로그인 실패", "ID 또는 PW가 틀렸습니다.");
             qDebug() << "로그인 실패: ID 또는 PW 불일치";

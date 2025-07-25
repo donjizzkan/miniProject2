@@ -165,3 +165,24 @@ void userManage::signUp(userInfo& info){
         qDebug()<<info.name<<" 가입완료";
     }
 }
+
+QJsonObject userManage::getUserDetailByName(const QString &name) {
+    QString dbPath = getDBPath();
+    QFile file(dbPath);
+    if (!file.open(QIODevice::ReadOnly))
+        return QJsonObject();
+
+    QByteArray data = file.readAll();
+    file.close();
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    QJsonArray userList = doc.array();
+
+    for (const auto &val : userList) {
+        QJsonObject userObj = val.toObject();
+        if (userObj["name"].toString() == name) {
+            return userObj;
+        }
+    }
+    return QJsonObject(); // 못찾으면 빈 객체 반환
+}
+

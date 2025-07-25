@@ -53,6 +53,7 @@ signals:
     void goToSignup();
     void goToMain();
     void doSignIn();
+    void loginSuccessWithInfo(const QJsonObject &userInfo, const QJsonArray &history);
 };
 
 #endif // LOGINVIEW_H

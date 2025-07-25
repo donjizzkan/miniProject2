@@ -6,6 +6,7 @@
 #include <QJsonObject>
 #include <QThread>
 
+
 ClientHandler::ClientHandler(QTcpSocket *socket, QObject *parent)
     : QObject(parent), socket(socket) {
     usermanage = new userManage(this);
@@ -50,6 +51,7 @@ void ClientHandler::onReadyRead() {
                 QString PW = obj.value("PW").toString();
                 QString nameOut;
 
+                // usermanage로 로그인 시도(성공 시 nameOut에 이름 세팅)
                 bool val = usermanage->signIn(ID, PW, nameOut);
 
                 QJsonObject JsonResponse;
@@ -58,12 +60,13 @@ void ClientHandler::onReadyRead() {
                 JsonResponse["name"] = nameOut;
 
                 if (val) {
-                    // 로그인 성공 시 servermanager 싱글턴 인스턴스에 로그인한 clienthandler 추가 요청
-                    ServerManager::getInstance().addClient(this);
-                    emit loggedIn(this);
-                    qDebug() << "로그인 성공, 클라이언트 리스트에 추가";
+                    // 1) 로그인 성공 시 유저 정보 전체 내려주기
+                    QJsonObject userInfo = usermanage->getUserDetailByName(nameOut);
+                    JsonResponse["user"] = userInfo;
+                    JsonResponse["history"] = userInfo["tradingHis"];
                 }
 
+                // 응답 전송
                 QJsonDocument respDoc(JsonResponse);
                 QByteArray respData = respDoc.toJson(QJsonDocument::Compact);
                 respData.append('\n');
@@ -238,7 +241,7 @@ void ClientHandler::onReadyRead() {
                         else if(action == "sell"){
                             if(currentCoinCnt >= amount){
                                 money += price * amount;
-                                payment -= price * amount; // (원한다면)
+                                payment -= price * amount;
                                 coins[coin] = currentCoinCnt - amount;
                                 userObj["money"] = money;
                                 userObj["coins"] = coins;
@@ -250,7 +253,7 @@ void ClientHandler::onReadyRead() {
                             }
                         }
 
-                        // 거래내역 기록 (옵션)
+                        // 거래내역 기록
                         QJsonArray tradingHis = userObj["tradingHis"].toArray();
                         QJsonObject record;
                         record["action"] = action;
@@ -276,21 +279,27 @@ void ClientHandler::onReadyRead() {
                     }
                 }
 
-                // 거래 응답 내려주기 (클라에서 결과 받을 수 있게)
+                // 거래 응답 전송
                 QJsonObject resp;
-                resp["type"] = "tradeResponse";
+                resp["type"] = "traderesponse";
                 resp["result"] = updated ? "success" : "fail";
                 resp["action"] = action;
                 resp["coin"] = coin;
                 resp["amount"] = amount;
-                resp["user"] = resultObj; // 옵션: 유저의 최신 정보
+                resp["history"] = resultObj["tradingHis"];
+
+                // [수정된 부분] user 객체 통째로 넘기는 대신 핵심 정보만 직접 넘김
+                resp["money"] = resultObj["money"];
+                resp["payment"] = resultObj["payment"];
+                resp["coins"] = resultObj["coins"];
+                // resp["user"] = resultObj; // 이 라인은 이제 필요 없어!
 
                 QJsonDocument respDoc(resp);
                 QByteArray respData = respDoc.toJson(QJsonDocument::Compact);
                 respData.append('\n');
                 socket->write(respData);
+                qDebug() << "거래 응답 전송";
             }
-
         }
     }
 }

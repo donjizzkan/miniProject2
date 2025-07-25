@@ -33,6 +33,7 @@ class HomeView : public QWidget
 public:
     explicit HomeView(QWidget *parent = nullptr);
     ~HomeView();
+    void setAccountInfo(const QJsonObject &userInfo, const QJsonArray &history);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
@@ -72,6 +73,11 @@ private:
     
     void setupUI();
     void connectSignal();
+
+
+
+private slots:
+    void handleTradeResponse(const QJsonObject &obj);
 };
 
 #endif // HOMEVIEW_H

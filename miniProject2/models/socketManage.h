@@ -22,6 +22,8 @@ signals:
     void fileReceived(const QJsonObject& fileData);
     // 서버로부터 채팅 기록 받아왔을 때 방출할 시그널
     void chattingLogReceived(const QJsonObject& chatLog);
+    // 서버로부터 거래완료 신호 받아왔을 때 시그널
+    void tradeResponseReceived(const QJsonObject &obj);
 
 private slots:
     // QTcpSocket의 readyRead 시그널을 받아서 모든 데이터를 처리할 슬롯

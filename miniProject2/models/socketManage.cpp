@@ -70,7 +70,11 @@ void SocketManage::onSocketReadyRead() {
         else if (type == "messagelog"){  // 메세지 기록 보내줌
             qDebug()<< "message log 불러옴";
             emit chattingLogReceived(obj);
-        } else {
+        }
+        else if (type == "traderesponse"){
+            emit tradeResponseReceived(obj);
+        }
+        else {
             qDebug() << "SocketManage: 알 수 없는 메시지 타입:" << type;
         }
     }

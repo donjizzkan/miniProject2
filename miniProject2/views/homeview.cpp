@@ -13,6 +13,9 @@ HomeView::HomeView(QWidget *parent)
     setupUI();
     connectSignal();
 
+    // 소켓에서 거래완료 신호 받을 경우 할 행동 호출
+    connect(&SocketManage::instance(), &SocketManage::tradeResponseReceived, this, &HomeView::handleTradeResponse);
+
     // ==============================
     // 거래 탭 - devwooms
     // ==============================
@@ -441,6 +444,137 @@ void HomeView::setupUI()
     QSpacerItem *horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
     horizontalLayout_4->addItem(horizontalSpacer);
 }
+
+void HomeView::handleTradeResponse(const QJsonObject &obj){
+    // [수정된 부분] obj 전체가 아니라 user 키 안의 객체를 먼저 꺼내야 함 -> 이제 obj에서 바로 받음
+    // QJsonObject userInfo = obj["user"].toObject(); // 이제 필요 없음
+
+    qDebug() << "받은 tradeResponse 전체:" << obj; // 이제 obj에 money, payment, coins가 직접 담김
+    // qDebug() << "userInfo 전체:" << userInfo; // 이제 필요 없음
+    qDebug() << "payment raw:" << obj["payment"]; // [수정된 부분] obj에서 바로 payment를 확인
+    qDebug() << "payment toDouble:" << obj["payment"].toDouble();
+    qDebug() << "money raw:" << obj["money"]; // [수정된 부분] obj에서 바로 money를 확인
+    qDebug() << "money toDouble:" << obj["money"].toDouble();
+
+
+    QString result = obj["result"].toString();
+    if(result != "success"){
+        textBrowser->append("거래 실패, 잔고를 확인하세요");
+        return;
+    }
+
+    // [수정된 부분] money, payment, coins를 obj에서 직접 받음
+    double money = obj["money"].toDouble();
+    double payment = obj["payment"].toDouble();
+    QJsonObject coins = obj["coins"].toObject(); // [수정된 부분] obj에서 바로 coins를 받음
+
+    QString selectedCoin = comboBox->currentText().split(" / ").first().toLower();
+
+    int coinAmount = coins[selectedCoin].toInt();
+
+    // 최신 거래 가격 (history 마지막 값에서 price 추출)
+    QJsonArray history = obj["history"].toArray(); // history는 원래 obj에서 직접 받음
+
+    double latestPrice = 0;
+    if(!history.isEmpty()) {
+        QJsonObject lastRecord = history.last().toObject();
+        latestPrice = lastRecord["price"].toDouble();
+    }
+
+    // 평가금액 = 현재 보유수량 * 최신가격
+    double evalAmount = coinAmount * latestPrice;
+    // 평가손익 = 평가금액 - payment (단순화, 실제 계산 로직은 상황에 따라 보정)
+    double evalProfit = evalAmount - payment;
+    // 수익률 = (평가손익 / payment) * 100
+    double profitPercent = payment > 0 ? (evalProfit / payment) * 100.0 : 0;
+
+    purchasePrice->setText(QString::number(payment, 'f', 2));      // 매입금액
+    gain->setText(QString::number(evalProfit, 'f', 2));            // 평가손익
+    recentPrice->setText(QString::number(evalAmount, 'f', 2));     // 평가금액
+    gainPercent->setText(QString::number(profitPercent, 'f', 2));  // 수익률(%)
+
+    orderType->clear();
+    orderDate->clear();
+    orderAmount->clear();
+    orderPrice->clear();
+    orderTotal->clear();
+    textBrowser->setHtml(QString("<p align=\"center\">계좌 잔고 : %1</p>").arg(QString::number(money, 'f', 2)));
+
+    for (const auto &val : history) {
+        QJsonObject rec = val.toObject();
+
+        // 주문정보: 매수/매도 + 코인명
+        QString orderInfo = QString("%1(%2)").arg(rec["action"].toString()).arg(rec["coin"].toString());
+        // 거래일시: datetime
+        QString date = rec["datetime"].toString();
+        // 거래수량: amount
+        QString amount = QString::number(rec["amount"].toInt());
+        // 거래액수: price
+        QString price = QString::number(rec["price"].toDouble());
+        // 총액수: price * amount
+        QString total = QString::number(rec["price"].toDouble() * rec["amount"].toInt());
+
+        orderType->append(orderInfo);
+        orderDate->append(date);
+        orderAmount->append(amount);
+        orderPrice->append(price);
+        orderTotal->append(total);
+    }
+}
+
+void HomeView::setAccountInfo(const QJsonObject &userInfo, const QJsonArray &history) {
+    // userInfo는 이미 user 키 안의 객체로 전달된 상태라고 가정
+    qDebug() << "userInfo 전체:" << userInfo;
+    qDebug() << "payment raw:" << userInfo["payment"];
+    qDebug() << "payment toDouble:" << userInfo["payment"].toDouble();
+    qDebug() << "money raw:" << userInfo["money"];
+    qDebug() << "money toDouble:" << userInfo["money"].toDouble();
+
+    double money = userInfo["money"].toDouble();
+    double payment = userInfo["payment"].toDouble();
+    QJsonObject coins = userInfo["coins"].toObject();
+    QString selectedCoin = comboBox->currentText().split(" / ").first().toLower();
+    int coinAmount = coins[selectedCoin].toInt();
+
+    // 거래내역 최신가 구하기
+    double latestPrice = 0;
+    if (!history.isEmpty()) {
+        QJsonObject lastRec = history.last().toObject();
+        latestPrice = lastRec["price"].toDouble();
+    }
+
+    double evalAmount = coinAmount * latestPrice;
+    double evalProfit = evalAmount - payment;
+    double profitPercent = payment > 0 ? (evalProfit / payment) * 100.0 : 0;
+
+    // 각 칸 채우기
+    purchasePrice->setText(QString::number(payment, 'f', 2));
+    gain->setText(QString::number(evalProfit, 'f', 2));
+    recentPrice->setText(QString::number(evalAmount, 'f', 2));
+    gainPercent->setText(QString::number(profitPercent, 'f', 2));
+    textBrowser->setHtml(QString("<p align=\"center\">계좌 잔고 : %1</p>").arg(QString::number(money, 'f', 2)));
+
+    // 거래내역 표 채우기
+    orderType->clear();
+    orderDate->clear();
+    orderAmount->clear();
+    orderPrice->clear();
+    orderTotal->clear();
+    for (const auto &val : history) {
+        QJsonObject rec = val.toObject();
+        QString orderInfo = QString("%1(%2)").arg(rec["action"].toString()).arg(rec["coin"].toString());
+        QString date = rec["datetime"].toString();
+        QString amount = QString::number(rec["amount"].toInt());
+        QString price = QString::number(rec["price"].toDouble());
+        QString total = QString::number(rec["price"].toDouble() * rec["amount"].toInt());
+        orderType->append(orderInfo);
+        orderDate->append(date);
+        orderAmount->append(amount);
+        orderPrice->append(price);
+        orderTotal->append(total);
+    }
+}
+
 
 HomeView::~HomeView()
 {

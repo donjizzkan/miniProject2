@@ -39,6 +39,8 @@ void MainWindow::connectSignals()
     // 회원가입 화면 시그널 연결
     connect(signupView, &SignupView::goToLogin, this, &MainWindow::showLoginView);
     connect(signupView, &SignupView::doSignUp, this, &MainWindow::handleSignup);
+
+    connect(loginView, &LoginView::loginSuccessWithInfo, homeView, &HomeView::setAccountInfo);
 }
 
 void MainWindow::setupUI()

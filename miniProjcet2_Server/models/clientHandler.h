@@ -6,6 +6,7 @@
 #include <QThread>
 #include <QList>
 #include "usermanage.h"
+
 class ClientHandler : public QObject {
     Q_OBJECT
 

@@ -6,12 +6,12 @@
             "krw-btc": 0,
             "krw-doge": 0,
             "krw-eth": 0,
-            "krw-pepe": 7,
+            "krw-pepe": 35,
             "krw-xrp": 0
         },
-        "money": 9999999.8838,
+        "money": 9999999.423700003,
         "name": "test",
-        "payment": 0.1162,
+        "payment": 0.5763,
         "phoneNum": "01012345678",
         "tradingHis": [
             {
@@ -20,6 +20,76 @@
                 "coin": "krw-pepe",
                 "datetime": "2025-07-24T15:02:54",
                 "price": 0.0166
+            },
+            {
+                "action": "buy",
+                "amount": 6,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T11:29:46",
+                "price": 0.0166
+            },
+            {
+                "action": "buy",
+                "amount": 8,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T12:35:24",
+                "price": 0.0161
+            },
+            {
+                "action": "buy",
+                "amount": 2,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T13:00:25",
+                "price": 0.0163
+            },
+            {
+                "action": "buy",
+                "amount": 10,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T14:13:12",
+                "price": 0.0165
+            },
+            {
+                "action": "buy",
+                "amount": 1,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T14:20:00",
+                "price": 0.0165
+            },
+            {
+                "action": "buy",
+                "amount": 1,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T14:21:58",
+                "price": 0.0165
+            },
+            {
+                "action": "buy",
+                "amount": 4,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T14:30:08",
+                "price": 0.0165
+            },
+            {
+                "action": "buy",
+                "amount": 4,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T15:06:00",
+                "price": 0.0165
+            },
+            {
+                "action": "sell",
+                "amount": 5,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T15:07:29",
+                "price": 0.0164
+            },
+            {
+                "action": "sell",
+                "amount": 3,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T15:09:20",
+                "price": 0.0163
             }
         ]
     }

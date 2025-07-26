@@ -343,10 +343,15 @@ void HomeView::setupUI()
     label->setAlignment(Qt::AlignCenter);
     verticalLayout_4->addWidget(label);
     
-    lineEdit = new QLineEdit();
-    lineEdit->setMinimumHeight(30);
-    lineEdit->setReadOnly(true);
-    verticalLayout_4->addWidget(lineEdit);
+    // lineEdit = new QLineEdit();
+    // lineEdit->setMinimumHeight(30);
+    // lineEdit->setReadOnly(true);
+    // verticalLayout_4->addWidget(lineEdit);
+    accountBrowser = new QTextBrowser();
+    accountBrowser->setMinimumHeight(30);
+    accountBrowser->setMaximumHeight(30);
+    accountBrowser->setReadOnly(true);
+    verticalLayout_4->addWidget(accountBrowser);
     
     QSpacerItem *verticalSpacer_4 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
     verticalLayout_4->addItem(verticalSpacer_4);
@@ -552,6 +557,7 @@ void HomeView::handleTradeResponse(const QJsonObject &obj){
     orderPrice->clear();
     orderTotal->clear();
     textBrowser->setHtml(QString("<p align=\"center\">계좌 잔고 : %1</p>").arg(QString::number(money, 'f', 2)));
+    accountBrowser->setText(QString::number(money, 'f', 2));
 
     for (const auto &val : history) {
         QJsonObject rec = val.toObject();
@@ -576,7 +582,6 @@ void HomeView::handleTradeResponse(const QJsonObject &obj){
 }
 
 void HomeView::setAccountInfo(const QJsonObject &userInfo, const QJsonArray &history) {
-    // userInfo는 이미 user 키 안의 객체로 전달된 상태라고 가정
     qDebug() << "userInfo 전체:" << userInfo;
     qDebug() << "payment raw:" << userInfo["payment"];
     qDebug() << "payment toDouble:" << userInfo["payment"].toDouble();
@@ -595,6 +600,9 @@ void HomeView::setAccountInfo(const QJsonObject &userInfo, const QJsonArray &his
         QJsonObject lastRec = history.last().toObject();
         latestPrice = lastRec["price"].toDouble();
     }
+    if (latestPrice == 0 && chartBox && chartBox->getLineChart()) {
+        latestPrice = chartBox->getLineChart()->getLatestPrice();
+    }
 
     double evalAmount = coinAmount * latestPrice;
     double evalProfit = evalAmount - payment;
@@ -606,6 +614,7 @@ void HomeView::setAccountInfo(const QJsonObject &userInfo, const QJsonArray &his
     recentPrice->setText(QString::number(evalAmount, 'f', 2));
     gainPercent->setText(QString::number(profitPercent, 'f', 2));
     textBrowser->setHtml(QString("<p align=\"center\">계좌 잔고 : %1</p>").arg(QString::number(money, 'f', 2)));
+    accountBrowser->setText(QString::number(money, 'f', 2));
 
     // 거래내역 표 채우기
     orderType->clear();

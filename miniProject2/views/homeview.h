@@ -51,7 +51,7 @@ private:
     QTextBrowser *gain;
     QTextBrowser *gainPercent;
     QTextBrowser *recentPrice;
-    QLineEdit *lineEdit;
+    QTextBrowser* accountBrowser;
     QSpinBox *spinBox;
     QSpinBox *spinBox_2;
     QRadioButton *radioButton;

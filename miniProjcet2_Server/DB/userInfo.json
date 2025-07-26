@@ -105,13 +105,22 @@
         "PW": "test123",
         "coins": {
             "krw-btc": 0,
-            "krw-doge": 0,
+            "krw-doge": 10,
             "krw-eth": 0,
             "krw-xrp": 0
         },
-        "money": 10000000,
+        "money": 9996770,
         "name": "테스트",
-        "payment": 0,
-        "phoneNum": "01012345678"
+        "payment": 3230,
+        "phoneNum": "01012345678",
+        "tradingHis": [
+            {
+                "action": "buy",
+                "amount": 10,
+                "coin": "krw-doge",
+                "datetime": "2025-07-26T11:53:39",
+                "price": 323
+            }
+        ]
     }
 ]

@@ -6,6 +6,7 @@
 #include <QJsonDocument> // QJsonDocument, QJsonObject 사용을 위해 추가
 #include <QJsonObject>
 #include <QJsonParseError> // QJsonParseError 사용을 위해 추가
+#include <QMessageBox>
 
 class SocketManage : public QObject {
     Q_OBJECT

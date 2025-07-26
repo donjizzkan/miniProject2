@@ -124,6 +124,20 @@ void sendingManage::setSenderName(const QString& name) {
     senderName = name;
 }
 
+void sendingManage::sendReport(const QString& name, const QString& reason) {
+    QJsonObject obj;
+    obj["type"] = "report";
+    obj["targetName"] = name;
+    obj["reason"] = reason;
+    QJsonDocument doc(obj);
+    QByteArray arr = doc.toJson(QJsonDocument::Compact);
+    arr.append('\n');
 
+    QTcpSocket* socket = SocketManage::instance().socket();
+    socket->write(arr);
+    socket->flush();
+
+    qDebug() << "서버로 신고 전송:" << arr;
+}
 
 

@@ -56,11 +56,12 @@ userManage::~userManage(){
 //                  로그인
 //=========================================
 bool userManage::signIn(QString& ID, QString& PW, QString& nameOut){
-    QString dbPath = getDBPath();
-    QFile file(dbPath);                        // userInfo 파일 가져오기
-    qDebug() << "Current working directory:" << QDir::currentPath();
-    qDebug() << "DB 파일 경로:" << dbPath;
+    //QString dbPath = getDBPath();
+    //QFile file(dbPath);                        // userInfo 파일 가져오기
+    //qDebug() << "Current working directory:" << QDir::currentPath();
+    //qDebug() << "DB 파일 경로:" << dbPath;
 
+    QFile file("../../DB/userInfo.json");
 
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning() << "파일 열기 실패:" << file.errorString();
@@ -186,3 +187,56 @@ QJsonObject userManage::getUserDetailByName(const QString &name) {
     return QJsonObject(); // 못찾으면 빈 객체 반환
 }
 
+void userManage::increaseReport(const QString& name, const QString& reason) {
+    QFile file("../../DB/report.json");
+    QJsonArray arr;
+
+    // 파일 읽기
+    if (file.open(QIODevice::ReadOnly)) {
+        arr = QJsonDocument::fromJson(file.readAll()).array();
+        file.close();
+    }
+    // 찾으면 count++, reason 추가
+    bool found = false;
+    for (int i = 0; i < arr.size(); ++i) {
+        QJsonObject o = arr[i].toObject();
+        if (o["name"].toString() == name) {
+            o["count"] = o["count"].toInt() + 1;
+            // reason 추가
+            QJsonArray reasons = o.contains("reasons") ? o["reasons"].toArray() : QJsonArray();
+            reasons.append(reason);
+            o["reasons"] = reasons;
+            arr[i] = o;
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        QJsonObject o;
+        o["name"] = name;
+        o["count"] = 1;
+        QJsonArray reasons;
+        reasons.append(reason);
+        o["reasons"] = reasons;
+        arr.append(o);
+    }
+    if (file.open(QIODevice::WriteOnly)) {
+        file.write(QJsonDocument(arr).toJson());
+        file.close();
+    }
+}
+
+
+bool userManage::isBanned(const QString& name) {
+    QFile file("../../DB/report.json");
+    if (file.open(QIODevice::ReadOnly)) {
+        QJsonArray arr = QJsonDocument::fromJson(file.readAll()).array();
+        file.close();
+        for (const auto& v : arr) {
+            QJsonObject o = v.toObject();
+            if (o["name"].toString() == name && o["count"].toInt() >= 5)
+                return true;
+        }
+    }
+    return false;
+}

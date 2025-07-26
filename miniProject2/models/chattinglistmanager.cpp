@@ -1,7 +1,7 @@
 #include "chattinglistmanager.h"
 
 #include <QList>
-
+#include <QLabel>
 #include "views/chattingRoomView.h"
 
 

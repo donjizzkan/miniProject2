@@ -98,6 +98,14 @@ void ClientHandler::onReadyRead() {
                 QString text = obj.value("textMessage").toString();
                 QString sendString = "[" + senderName + "] : " + text;
 
+                if (usermanage->isBanned(senderName)) {
+                    // 금지 상태면 "yourebanned" 신호만 전송
+                    QJsonObject resp;
+                    resp["type"] = "yourebanned";
+                    QJsonDocument doc(resp);
+                    socket->write(doc.toJson(QJsonDocument::Compact) + "\n");
+                    return;
+                }
                 QJsonObject sendObj;
                 sendObj["type"] = "messagesend";
                 sendObj["textMessage"] = sendString;
@@ -300,6 +308,25 @@ void ClientHandler::onReadyRead() {
                 socket->write(respData);
                 qDebug() << "거래 응답 전송";
             }
+            //==========================
+            //       신고 처리
+            //==========================
+            else if (type == "report") {
+                QString targetName = obj.value("targetName").toString();
+                QString reason = obj.value("reason").toString();
+
+                // 신고 처리 (userManage에 함수 분리 추천)
+                usermanage->increaseReport(targetName, reason);
+
+                // 필요시 신고 누적 결과 응답
+                bool isBanned = usermanage->isBanned(targetName);
+                QJsonObject resp;
+                resp["type"] = "reportresult";
+                resp["result"] = "ok";
+                resp["targetBanned"] = isBanned;
+                socket->write(QJsonDocument(resp).toJson(QJsonDocument::Compact) + "\n");
+            }
+
         }
     }
 }

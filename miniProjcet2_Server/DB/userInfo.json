@@ -6,12 +6,12 @@
             "krw-btc": 0,
             "krw-doge": 0,
             "krw-eth": 0,
-            "krw-pepe": 35,
+            "krw-pepe": 135,
             "krw-xrp": 0
         },
-        "money": 9999999.423700003,
+        "money": 9999997.783700002,
         "name": "test",
-        "payment": 0.5763,
+        "payment": 2.2163000000000004,
         "phoneNum": "01012345678",
         "tradingHis": [
             {
@@ -90,7 +90,28 @@
                 "coin": "krw-pepe",
                 "datetime": "2025-07-25T15:09:20",
                 "price": 0.0163
+            },
+            {
+                "action": "buy",
+                "amount": 100,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T15:12:27",
+                "price": 0.0164
             }
         ]
+    },
+    {
+        "ID": "test123",
+        "PW": "test123",
+        "coins": {
+            "krw-btc": 0,
+            "krw-doge": 0,
+            "krw-eth": 0,
+            "krw-xrp": 0
+        },
+        "money": 10000000,
+        "name": "테스트",
+        "payment": 0,
+        "phoneNum": "01012345678"
     }
 ]

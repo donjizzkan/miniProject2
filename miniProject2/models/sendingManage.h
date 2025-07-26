@@ -35,6 +35,9 @@ public:
     // 거래 요청 전달
     void sendTrade(const QString& action, const QString& coin, double price, int amount);
 
+    // 이용자 신고
+    void sendReport(const QString& name, const QString& reason);
+
 
     static sendingManage* m_instance;
     sendingManage();

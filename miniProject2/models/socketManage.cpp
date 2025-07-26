@@ -74,6 +74,10 @@ void SocketManage::onSocketReadyRead() {
         else if (type == "traderesponse"){
             emit tradeResponseReceived(obj);
         }
+        else if (type == "yourebanned"){
+            qDebug() << "신고로 인한 채팅 정지 상태 안내";
+            QMessageBox::warning(nullptr, "채팅 정지", "신고로 인한 채팅 정지 상태입니다.");
+        }
         else {
             qDebug() << "SocketManage: 알 수 없는 메시지 타입:" << type;
         }

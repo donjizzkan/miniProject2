@@ -165,7 +165,126 @@ void ClientHandler::onReadyRead() {
                 //       파일 전송 처리
                 //==========================
             } else if (type == "filesend") {
-                qDebug() << "file 전달받음";
+                qDebug() << "파일 메타데이터 전달받음";
+                
+                // JSON에서 파일 메타데이터 추출
+                QString chatViewName = obj.value("chatViewName").toString();
+                QString fileId = obj.value("fileId").toString();
+                QString fileName = obj.value("fileName").toString();
+                QString originalPath = obj.value("originalPath").toString();
+                qint64 fileSize = obj.value("fileSize").toDouble();
+                QString fileExtension = obj.value("fileExtension").toString();
+                QString mimeType = obj.value("mimeType").toString();
+                QString timestamp = obj.value("timestamp").toString();
+                QString checksum = obj.value("checksum").toString();
+                
+                qDebug() << "파일 정보:";
+                qDebug() << "  - 파일ID:" << fileId;
+                qDebug() << "  - 파일명:" << fileName;
+                qDebug() << "  - 크기:" << fileSize << "bytes";
+                qDebug() << "  - 타입:" << mimeType;
+                qDebug() << "  - 채팅방:" << chatViewName;
+                
+                // 파일 메타데이터를 chatFiles.json에 저장
+                QString chatFilesPath = usermanage->getDBPath().replace("userInfo.json", "chatFiles.json");
+                QFile chatFilesFile(chatFilesPath);
+                
+                QJsonArray fileArray;
+                
+                // 기존 파일 데이터 읽기
+                if (chatFilesFile.exists() && chatFilesFile.open(QIODevice::ReadOnly)) {
+                    QByteArray readData = chatFilesFile.readAll();
+                    QJsonDocument dataDoc = QJsonDocument::fromJson(readData);
+                    if (dataDoc.isArray()) {
+                        fileArray = dataDoc.array();
+                    }
+                    chatFilesFile.close();
+                }
+                
+                // 새 파일 정보 객체 생성
+                QJsonObject fileRecord;
+                fileRecord["fileId"] = fileId;
+                fileRecord["fileName"] = fileName;
+                fileRecord["originalPath"] = originalPath;
+                fileRecord["fileSize"] = fileSize;
+                fileRecord["fileExtension"] = fileExtension;
+                fileRecord["mimeType"] = mimeType;
+                fileRecord["chatViewName"] = chatViewName;
+                fileRecord["timestamp"] = timestamp;
+                fileRecord["checksum"] = checksum;
+                fileRecord["uploadTime"] = QDateTime::currentDateTime().toString(Qt::ISODate);
+                
+                // 배열에 추가
+                fileArray.append(fileRecord);
+                
+                // 파일에 저장
+                if (chatFilesFile.open(QIODevice::WriteOnly)) {
+                    QJsonDocument newDoc(fileArray);
+                    chatFilesFile.write(newDoc.toJson());
+                    chatFilesFile.close();
+                    qDebug() << "파일 메타데이터 저장 완료:" << fileName;
+                } else {
+                    qWarning() << "chatFiles.json 저장 실패";
+                }
+                
+                // 채팅 메시지로 파일 공유 알림 추가
+                QString fileMessage = QString("[파일] %1 (%2 bytes)").arg(fileName).arg(fileSize);
+                QString chatPath = usermanage->getDBPath().replace("userInfo.json", chatViewName + ".json");
+                QFile chatFile(chatPath);
+                
+                // 채팅 로그에 파일 메시지 추가
+                QJsonArray messageArray;
+                if (chatFile.exists() && chatFile.open(QIODevice::ReadOnly)) {
+                    QByteArray readData = chatFile.readAll();
+                    QJsonDocument dataDoc = QJsonDocument::fromJson(readData);
+                    if (dataDoc.isArray()) {
+                        messageArray = dataDoc.array();
+                    }
+                    chatFile.close();
+                } else {
+                    // 파일이 없으면 새로 생성
+                    if (chatFile.open(QIODevice::WriteOnly)) {
+                        QJsonArray emptyArray;
+                        QJsonDocument doc(emptyArray);
+                        chatFile.write(doc.toJson());
+                        chatFile.close();
+                    }
+                }
+                
+                // 파일 메시지를 채팅 로그에 추가
+                messageArray.append(fileMessage);
+                if (chatFile.open(QIODevice::WriteOnly)) {
+                    QJsonDocument newDoc(messageArray);
+                    chatFile.write(newDoc.toJson());
+                    chatFile.close();
+                    qDebug() << "채팅 로그에 파일 메시지 추가 완료";
+                }
+                
+                // 다른 클라이언트들에게 파일 공유 알림 브로드캐스트
+                QJsonObject broadcastObj;
+                broadcastObj["type"] = "messagesend";
+                broadcastObj["textMessage"] = fileMessage;
+                broadcastObj["chatViewName"] = chatViewName;
+                broadcastObj["fileId"] = fileId;  // 파일 다운로드용 ID 포함
+                
+                QJsonDocument broadcastDoc(broadcastObj);
+                QByteArray broadcastData = broadcastDoc.toJson(QJsonDocument::Compact);
+                broadcastData.append('\n');
+                
+                ServerManager::getInstance().broadcastMessage(broadcastData);
+                qDebug() << "파일 공유 알림 브로드캐스트 완료";
+                
+                // 클라이언트에게 파일 업로드 성공 응답
+                QJsonObject response;
+                response["type"] = "fileupload_response";
+                response["result"] = "success";
+                response["fileId"] = fileId;
+                response["message"] = "파일이 성공적으로 업로드되었습니다.";
+                
+                QJsonDocument respDoc(response);
+                QByteArray respData = respDoc.toJson(QJsonDocument::Compact);
+                respData.append('\n');
+                socket->write(respData);
             }
             //==========================
             //      채팅 로그 전송

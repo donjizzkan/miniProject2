@@ -18,6 +18,10 @@ public:
 
 private:
     bool sendSingleFileAsJson(QTcpSocket *socket, const QString& filePath, const QString& chatViewName, const QString& type);
+    
+    // 헬퍼 함수들
+    QString getMimeType(const QString& extension);
+    QString calculateFileChecksum(const QString& filePath);
 
 signals:
 };

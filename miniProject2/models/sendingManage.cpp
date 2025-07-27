@@ -108,6 +108,22 @@ void sendingManage::sendTrade(const QString& action, const QString& coin, double
     socket->write(sendingArray);
 }
 
+//==========================
+//  이메일 확인 신호 전달
+//==========================
+void sendingManage::sendEmailCheck(QString email){
+    QTcpSocket* socket = SocketManage::instance().socket();
+    QJsonObject sendingObj;
+    sendingObj["type"] = "emailcheck";
+    sendingObj["email"] = email;
+
+    QJsonDocument doc(sendingObj);
+    QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
+    sendingArray.append('\n');
+    socket->write(sendingArray);
+
+}
+
 sendingManage* sendingManage::m_instance = nullptr;
 sendingManage::sendingManage(){
 

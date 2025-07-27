@@ -38,6 +38,9 @@ public:
     // 이용자 신고
     void sendReport(const QString& name, const QString& reason);
 
+    // 이메일 확인
+    void sendEmailCheck(QString email);
+
 
     static sendingManage* m_instance;
     sendingManage();

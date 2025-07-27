@@ -6,6 +6,10 @@
 #include <QJsonObject>
 #include <QThread>
 
+#include <QSslSocket>
+#include <QTimer>
+#include <QRandomGenerator>
+
 
 ClientHandler::ClientHandler(QTcpSocket *socket, QObject *parent)
     : QObject(parent), socket(socket) {
@@ -72,9 +76,9 @@ void ClientHandler::onReadyRead() {
                 respData.append('\n');
                 socket->write(respData);
 
-            //==========================
-            //       회원가입 처리
-            //==========================
+                //==========================
+                //       회원가입 처리
+                //==========================
             } else if (type == "signup") {
                 QString name = obj.value("Name").toString();
                 QString id = obj.value("ID").toString();
@@ -88,9 +92,9 @@ void ClientHandler::onReadyRead() {
                 info.phoneNum = phone;
 
                 usermanage->signUp(info);
-            //==========================
-            //       메세지 전송 처리
-            //==========================
+                //==========================
+                //       메세지 전송 처리
+                //==========================
             } else if (type == "messagesend") {
                 qDebug() << "message 전달받음";
                 QString senderName = obj.value("senderName").toString();
@@ -157,9 +161,9 @@ void ClientHandler::onReadyRead() {
                     qDebug()<<"메세지 저장 완료";
                 }
 
-            //==========================
-            //       파일 전송 처리
-            //==========================
+                //==========================
+                //       파일 전송 처리
+                //==========================
             } else if (type == "filesend") {
                 qDebug() << "file 전달받음";
             }
@@ -328,6 +332,74 @@ void ClientHandler::onReadyRead() {
                 resp["result"] = "ok";
                 resp["targetBanned"] = isBanned;
                 socket->write(QJsonDocument(resp).toJson(QJsonDocument::Compact) + "\n");
+            }
+            //==========================
+            //      이메일 확인 처리
+            //==========================
+            else if (type == "emailcheck"){
+                qDebug() << "server emailcheck";
+                QString email = obj.value("email").toString();
+                QSslSocket *socket = new QSslSocket(this);
+
+                connect(socket, &QSslSocket::encrypted, [=]() {
+                    qDebug() << "✓ Gmail SSL 연결 성공!";
+
+                    QString myEmail = "woomstest@gmail.com";
+                    QString myPassword = "tpxzttfhztaawewm";
+
+                    QString savedCode = QString::number(QRandomGenerator::global()->bounded(100000, 999999));
+
+                    QStringList commands;
+                        // 누군지 확인
+                    commands << "EHLO localhost"
+                             << "AUTH LOGIN"
+                             << myEmail.toUtf8().toBase64()
+                             << myPassword.toUtf8().toBase64()
+                             // 송신자
+                             << QString("MAIL FROM:<%1>").arg(myEmail)
+                             // 수신자
+                             << QString("RCPT TO:<%1>").arg(email)
+                             // 메일 내용
+                             << "DATA"
+                             << QString("Subject: 인증코드\r\n\r\n인증코드: %1\r\n.").arg(savedCode);
+
+                    int step = 0;
+                    QTimer *timer = new QTimer();
+
+                    connect(timer, &QTimer::timeout, [=]() mutable {
+                        if (step < commands.size()) {
+                            socket->write((commands[step] + "\r\n").toUtf8());
+                            socket->flush();
+                            qDebug() << "Step" << step << ":" << commands[step];
+                            step++;
+                        } else {
+                            timer->stop();
+                            timer->deleteLater();
+
+                            // 메일로 더 이상 보낼것이 없다고 알려줌
+                            socket->write("QUIT\r\n");
+                            socket->flush();
+                            qDebug() << "QUIT 전송";
+                            qDebug() << "✓ 이메일 발송 완료!";
+
+                            // 즉시 모든 시그널 연결 해제 후 삭제
+                            socket->disconnect(); // 모든 시그널 연결 해제
+                            socket->abort();      // 강제 연결 종료
+                            socket->deleteLater(); // 한 번만 삭제
+                        }
+                    });
+                    timer->start(500);
+                });
+
+                // SSL 에러만 처리 (연결/에러 시그널은 제거)
+                connect(socket, &QSslSocket::sslErrors, [socket]() {
+                    qDebug()<<"QSslSocket::sslErrors : "<<socket;
+                    // 이걸 하게 되면 보안 취약
+                    // socket->ignoreSslErrors();
+                });
+
+                qDebug() << "🔒 Gmail SSL 연결 시도...";
+                socket->connectToHostEncrypted("smtp.gmail.com", 465);
             }
 
         }

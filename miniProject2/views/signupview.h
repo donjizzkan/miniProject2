@@ -39,10 +39,6 @@ private:
     QPushButton *emailCheckNUM;
     QPushButton *signup_Button;
     QPushButton *cancel_Button;
-
-    // test
-    QString savedCode;
-    void sendEmail(QString email, QString code);
     
     void setupUI();
     // 초기화 및 설정 메서드들

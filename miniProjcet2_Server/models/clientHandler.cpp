@@ -9,6 +9,8 @@
 #include <QSslSocket>
 #include <QTimer>
 #include <QRandomGenerator>
+#include <QFileInfo>
+#include <QDir>
 
 
 ClientHandler::ClientHandler(QTcpSocket *socket, QObject *parent)
@@ -165,10 +167,11 @@ void ClientHandler::onReadyRead() {
                 //       파일 전송 처리
                 //==========================
             } else if (type == "filesend") {
-                qDebug() << "파일 메타데이터 전달받음";
+                qDebug() << "파일 데이터 전달받음";
                 
-                // JSON에서 파일 메타데이터 추출
+                // JSON에서 파일 메타데이터 및 실제 데이터 추출
                 QString chatViewName = obj.value("chatViewName").toString();
+                QString senderName = obj.value("senderName").toString();  // ← 전송자 이름 추출
                 QString fileId = obj.value("fileId").toString();
                 QString fileName = obj.value("fileName").toString();
                 QString originalPath = obj.value("originalPath").toString();
@@ -177,13 +180,50 @@ void ClientHandler::onReadyRead() {
                 QString mimeType = obj.value("mimeType").toString();
                 QString timestamp = obj.value("timestamp").toString();
                 QString checksum = obj.value("checksum").toString();
+                QString base64Data = obj.value("fileData").toString();  // ← Base64 데이터 추출
                 
                 qDebug() << "파일 정보:";
+                qDebug() << "  - 전송자:" << senderName;
                 qDebug() << "  - 파일ID:" << fileId;
                 qDebug() << "  - 파일명:" << fileName;
                 qDebug() << "  - 크기:" << fileSize << "bytes";
                 qDebug() << "  - 타입:" << mimeType;
                 qDebug() << "  - 채팅방:" << chatViewName;
+                qDebug() << "  - Base64 데이터 크기:" << base64Data.size() << "characters";
+                
+                // Base64 데이터를 바이너리로 디코딩
+                QByteArray fileData = QByteArray::fromBase64(base64Data.toUtf8());
+                qDebug() << "Base64 디코딩 완료 - 디코딩된 크기:" << fileData.size() << "bytes";
+                
+                // 서버에 파일 저장 디렉토리 생성
+                QString dbPath = usermanage->getDBPath();
+                QFileInfo dbInfo(dbPath);
+                QString filesDir = dbInfo.dir().absolutePath() + "/files";
+                
+                QDir dir;
+                if (!dir.exists(filesDir)) {
+                    dir.mkpath(filesDir);
+                    qDebug() << "파일 저장 디렉토리 생성:" << filesDir;
+                }
+                
+                // 서버에 저장할 파일 경로 생성 (fileId_원본파일명)
+                QString serverFilePath = QString("%1/%2_%3").arg(filesDir).arg(fileId).arg(fileName);
+                
+                // 서버에 실제 파일 저장
+                QFile serverFile(serverFilePath);
+                if (serverFile.open(QIODevice::WriteOnly)) {
+                    qint64 writtenBytes = serverFile.write(fileData);
+                    serverFile.close();
+                    
+                    if (writtenBytes == fileData.size()) {
+                        qDebug() << "서버에 파일 저장 완료:" << serverFilePath;
+                        qDebug() << "저장된 파일 크기:" << writtenBytes << "bytes";
+                    } else {
+                        qWarning() << "파일 저장 불완전 - 예상:" << fileData.size() << "실제:" << writtenBytes;
+                    }
+                } else {
+                    qWarning() << "서버에 파일 저장 실패:" << serverFilePath;
+                }
                 
                 // 파일 메타데이터를 chatFiles.json에 저장
                 QString chatFilesPath = usermanage->getDBPath().replace("userInfo.json", "chatFiles.json");
@@ -205,7 +245,9 @@ void ClientHandler::onReadyRead() {
                 QJsonObject fileRecord;
                 fileRecord["fileId"] = fileId;
                 fileRecord["fileName"] = fileName;
+                fileRecord["senderName"] = senderName;  // ← 전송자 이름 저장
                 fileRecord["originalPath"] = originalPath;
+                fileRecord["serverPath"] = serverFilePath;  // ← 서버 저장 경로 추가
                 fileRecord["fileSize"] = fileSize;
                 fileRecord["fileExtension"] = fileExtension;
                 fileRecord["mimeType"] = mimeType;
@@ -227,8 +269,8 @@ void ClientHandler::onReadyRead() {
                     qWarning() << "chatFiles.json 저장 실패";
                 }
                 
-                // 채팅 메시지로 파일 공유 알림 추가
-                QString fileMessage = QString("[파일] %1 (%2 bytes)").arg(fileName).arg(fileSize);
+                // 채팅 메시지로 파일 공유 알림 추가 (전송자 이름 포함)
+                QString fileMessage = QString("[%1] [파일] %2 (%3 bytes) - 업로드 완료").arg(senderName).arg(fileName).arg(fileSize);
                 QString chatPath = usermanage->getDBPath().replace("userInfo.json", chatViewName + ".json");
                 QFile chatFile(chatPath);
                 
@@ -272,7 +314,7 @@ void ClientHandler::onReadyRead() {
                 broadcastData.append('\n');
                 
                 ServerManager::getInstance().broadcastMessage(broadcastData);
-                qDebug() << "파일 공유 알림 브로드캐스트 완료";
+                qDebug() << "파일 업로드 완료 알림 브로드캐스트 완료:" << senderName;
                 
                 // 클라이언트에게 파일 업로드 성공 응답
                 QJsonObject response;

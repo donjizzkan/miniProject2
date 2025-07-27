@@ -71,7 +71,7 @@ void sendingManage::sendFile(QStringList filePaths, QString& chatViewName){
     qDebug() << "sendingManage.cpp sendFile";
     QTcpSocket* socket = SocketManage::instance().socket();
     FileSendManager *fileSendManager = new FileSendManager();
-    fileSendManager->sendFile(socket, "filesend", chatViewName, filePaths);
+    fileSendManager->sendFile(socket, "filesend", chatViewName, filePaths, senderName);  // ← senderName 추가
 }
 
 //==========================

@@ -41,6 +41,10 @@ public:
     // 이메일 확인
     void sendEmailCheck(QString email);
 
+    // 이메일 코드 확인
+    void sendCodeEmailCheck(QString code);
+
+
 
     static sendingManage* m_instance;
     sendingManage();

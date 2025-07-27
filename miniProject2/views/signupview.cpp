@@ -110,7 +110,43 @@ void SignupView::checkEmail(){
 }
 
 void SignupView::checkEmailNum(){
+    QString emailCheckCode = emailCheck_LineEdit->text();
+    sendingManage sending;
+    sending.sendCodeEmailCheck(emailCheckCode);
+}
 
+void SignupView::checkEmailSignal(){
+    emailCheckBool = true;
+    emailCheckNUM ->hide();
+    qDebug() << "이메일 인증 완료 - 회원가입 가능";
+}
+
+void SignupView::onSignupButtonClicked(){
+    // 이메일 인증이 완료되었는지 확인
+    if (!emailCheckBool) {
+        QMessageBox msgBox;
+        msgBox.setIconPixmap(QPixmap(":/assets/assets/warning.png"));
+        msgBox.setText("이메일 인증을 먼저 완료해주세요.");
+        msgBox.exec();
+        return;
+    }
+    
+    // 모든 필드가 입력되었는지 확인
+    if (name_LineEdit->text().isEmpty() || 
+        id_LineEdit->text().isEmpty() || 
+        pw_LineEdit->text().isEmpty() || 
+        phoneNUM_LineEdit->text().isEmpty() || 
+        email_LineEdit->text().isEmpty()) {
+        QMessageBox msgBox;
+        msgBox.setIconPixmap(QPixmap(":/assets/assets/warning.png"));
+        msgBox.setText("모든 필드를 입력해주세요.");
+        msgBox.exec();
+        return;
+    }
+    
+    // 이메일 인증이 완료되었으므로 회원가입 진행
+    emit doSignUp();
+    qDebug() << "회원가입 진행";
 }
 
 // 시그널 연결
@@ -119,8 +155,10 @@ void SignupView::connectSignals()
     // 버튼 클릭 시그널 연결
     connect(emailCheck, &QPushButton::clicked, this, &SignupView::checkEmail);
     connect(emailCheckNUM, &QPushButton::clicked, this, &SignupView::checkEmailNum);
-    connect(signup_Button, &QPushButton::clicked, this, &SignupView::doSignUp);
+    connect(signup_Button, &QPushButton::clicked, this, &SignupView::onSignupButtonClicked);
     connect(cancel_Button, &QPushButton::clicked, this, &SignupView::goToLogin);
+    // 이메일 확인 시그널
+    connect(&SocketManage::instance(), &SocketManage::emailCheckResponseReceived, this, &SignupView::checkEmailSignal);
 }
 
 // Ui 설정
@@ -185,7 +223,8 @@ void SignupView::setupUI()
     gridLayout->addWidget(emailCheck, 6, 2);
 
     // 인증 번호
-    emailCheck_Lable = new QLabel("05 : 00");
+    // emailCheck_Lable = new QLabel("05 : 00");
+    emailCheck_Lable = new QLabel("");
     gridLayout->addWidget(emailCheck_Lable, 7, 0, 1, 2);
 
     emailCheck_LineEdit = new QLineEdit();

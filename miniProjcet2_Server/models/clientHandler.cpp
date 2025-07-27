@@ -339,15 +339,15 @@ void ClientHandler::onReadyRead() {
             else if (type == "emailcheck"){
                 qDebug() << "server emailcheck";
                 QString email = obj.value("email").toString();
-                QSslSocket *socket = new QSslSocket(this);
+                QSslSocket *sslSocket = new QSslSocket(this);
 
-                connect(socket, &QSslSocket::encrypted, [=]() {
+                connect(sslSocket, &QSslSocket::encrypted, [=]() {
                     qDebug() << "✓ Gmail SSL 연결 성공!";
 
                     QString myEmail = "woomstest@gmail.com";
                     QString myPassword = "tpxzttfhztaawewm";
 
-                    QString savedCode = QString::number(QRandomGenerator::global()->bounded(100000, 999999));
+                    savedCode = QString::number(QRandomGenerator::global()->bounded(100000, 999999));
 
                     QStringList commands;
                         // 누군지 확인
@@ -368,8 +368,8 @@ void ClientHandler::onReadyRead() {
 
                     connect(timer, &QTimer::timeout, [=]() mutable {
                         if (step < commands.size()) {
-                            socket->write((commands[step] + "\r\n").toUtf8());
-                            socket->flush();
+                            sslSocket->write((commands[step] + "\r\n").toUtf8());
+                            sslSocket->flush();
                             qDebug() << "Step" << step << ":" << commands[step];
                             step++;
                         } else {
@@ -377,29 +377,51 @@ void ClientHandler::onReadyRead() {
                             timer->deleteLater();
 
                             // 메일로 더 이상 보낼것이 없다고 알려줌
-                            socket->write("QUIT\r\n");
-                            socket->flush();
+                            sslSocket->write("QUIT\r\n");
+                            sslSocket->flush();
                             qDebug() << "QUIT 전송";
                             qDebug() << "✓ 이메일 발송 완료!";
 
                             // 즉시 모든 시그널 연결 해제 후 삭제
-                            socket->disconnect(); // 모든 시그널 연결 해제
-                            socket->abort();      // 강제 연결 종료
-                            socket->deleteLater(); // 한 번만 삭제
+                            sslSocket->disconnect(); // 모든 시그널 연결 해제
+                            sslSocket->abort();      // 강제 연결 종료
+                            sslSocket->deleteLater(); // 한 번만 삭제
                         }
                     });
                     timer->start(500);
                 });
 
                 // SSL 에러만 처리 (연결/에러 시그널은 제거)
-                connect(socket, &QSslSocket::sslErrors, [socket]() {
-                    qDebug()<<"QSslSocket::sslErrors : "<<socket;
+                connect(sslSocket, &QSslSocket::sslErrors, [sslSocket]() {
+                    qDebug()<<"QSslSocket::sslErrors : "<<sslSocket;
                     // 이걸 하게 되면 보안 취약
                     // socket->ignoreSslErrors();
                 });
 
                 qDebug() << "🔒 Gmail SSL 연결 시도...";
-                socket->connectToHostEncrypted("smtp.gmail.com", 465);
+                sslSocket->connectToHostEncrypted("smtp.gmail.com", 465);
+            }
+            //==========================
+            //      이메일 코드 확인 처리
+            //==========================
+            else if (type == "emailcodecheck"){
+                QString code = obj.value("code").toString();
+                QJsonObject resp;
+                if (code == savedCode){
+                    resp["type"] = "emailtrue";
+                    QJsonDocument respDoc(resp);
+                    QByteArray respData = respDoc.toJson(QJsonDocument::Compact);
+                    respData.append('\n');
+                    socket->write(respData);
+                    qDebug() << "이메일 코드 성공";
+                } else {
+                    resp["type"] = "emailfalse";
+                    QJsonDocument respDoc(resp);
+                    QByteArray respData = respDoc.toJson(QJsonDocument::Compact);
+                    respData.append('\n');
+                    socket->write(respData);
+                    qDebug() << "이메일 코드 실패";
+                }
             }
 
         }

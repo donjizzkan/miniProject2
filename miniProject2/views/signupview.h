@@ -39,6 +39,8 @@ private:
     QPushButton *emailCheckNUM;
     QPushButton *signup_Button;
     QPushButton *cancel_Button;
+
+    bool emailCheckBool = false;
     
     void setupUI();
     // 초기화 및 설정 메서드들
@@ -46,6 +48,10 @@ private:
     void connectSignals();
     void checkEmail();
     void checkEmailNum();
+    void checkEmailSignal();
+
+private slots:
+    void onSignupButtonClicked();  // 회원가입 버튼 클릭 처리
 
 signals:
     void goToLogin();

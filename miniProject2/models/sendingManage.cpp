@@ -121,8 +121,24 @@ void sendingManage::sendEmailCheck(QString email){
     QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
     sendingArray.append('\n');
     socket->write(sendingArray);
-
 }
+
+//==========================
+//  이메일 코드 확인 신호 전달
+//==========================
+void sendingManage::sendCodeEmailCheck(QString code){
+    QTcpSocket* socket = SocketManage::instance().socket();
+    QJsonObject sendingObj;
+    sendingObj["type"] = "emailcodecheck";
+    sendingObj["code"] = code;
+
+    QJsonDocument doc(sendingObj);
+    QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
+    sendingArray.append('\n');
+    socket->write(sendingArray);
+}
+
+
 
 sendingManage* sendingManage::m_instance = nullptr;
 sendingManage::sendingManage(){

@@ -136,5 +136,19 @@
         "name": "qwerty",
         "payment": 1,
         "phoneNum": "0101928"
+    },
+    {
+        "ID": "mytest",
+        "PW": "mytest",
+        "coins": {
+            "krw-btc": 0,
+            "krw-doge": 0,
+            "krw-eth": 0,
+            "krw-xrp": 0
+        },
+        "money": 10000000,
+        "name": "mytest",
+        "payment": 0,
+        "phoneNum": "0"
     }
 ]

@@ -78,6 +78,14 @@ void SocketManage::onSocketReadyRead() {
             qDebug() << "신고로 인한 채팅 정지 상태 안내";
             QMessageBox::warning(nullptr, "채팅 정지", "신고로 인한 채팅 정지 상태입니다.");
         }
+        else if (type == "emailtrue"){
+            qDebug() << "이메일 인증 성공";
+            emit emailCheckResponseReceived();
+        }
+        else if (type == "emailfalse"){
+            qDebug() << "이메일 인증 실패";
+            QMessageBox::warning(nullptr, "인증 코드 불일치", "인증 번호를 다시 확인해주세요.");
+        }
         else {
             qDebug() << "SocketManage: 알 수 없는 메시지 타입:" << type;
         }

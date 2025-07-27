@@ -53,10 +53,9 @@ public:
     QJsonObject getUserDetailByName(const QString &name);
     void increaseReport(const QString& name, const QString& reason);
     bool isBanned(const QString& name);
+    QString getDBPath();                           // DB 파일 경로 찾기
 
 private:
-    //========== 유틸리티 함수
-    QString getDBPath();                           // DB 파일 경로 찾기
 
     //========== 시그널
 signals:

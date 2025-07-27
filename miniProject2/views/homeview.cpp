@@ -419,9 +419,82 @@ void HomeView::setupUI()
     connect_list->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     QVBoxLayout *verticalLayout_2 = new QVBoxLayout(connect_list);
 
+    // // 접속자 목록 verticalLayout에 신고 기능 추가 - donjizzkan
+    // QHBoxLayout* topLayout = new QHBoxLayout;
+    // QLabel* connectLabel = new QLabel("접속자 목록");
+    // QPushButton* reportBtn = new QPushButton;
+    // reportBtn->setIcon(QIcon("report.png"));
+    // reportBtn->setFixedSize(20, 20);
+    // reportBtn->setToolTip("신고");
+
+    // topLayout->addWidget(connectLabel);
+    // topLayout->addStretch();
+    // topLayout->addWidget(reportBtn);
+    // verticalLayout_2->addLayout(topLayout);
+
+    // // 신고 버튼 누를경우 신고 신호 전송 - donjizzkan
+    // connect(reportBtn, &QPushButton::clicked, [this]() {
+    //     // 선택된 닉네임이 있을 경우 자동입력
+    //     QString selectedNick;
+    //     auto item = connect_listWidget->currentItem();
+    //     if (item) selectedNick = item->text();
+
+    //     QDialog dialog(this);
+    //     dialog.setWindowTitle("신고하기");
+    //     QVBoxLayout* vbox = new QVBoxLayout(&dialog);
+
+    //     QLineEdit* nickEdit = new QLineEdit(selectedNick, &dialog);
+    //     nickEdit->setPlaceholderText("신고 대상 닉네임");
+    //     vbox->addWidget(new QLabel("신고 대상 닉네임:"));
+    //     vbox->addWidget(nickEdit);
+
+    //     QTextEdit* reasonEdit = new QTextEdit(&dialog);
+    //     reasonEdit->setPlaceholderText("신고 사유를 입력하세요...");
+    //     vbox->addWidget(new QLabel("신고 사유:"));
+    //     vbox->addWidget(reasonEdit);
+
+    //     QPushButton* okBtn = new QPushButton("신고", &dialog);
+    //     vbox->addWidget(okBtn);
+
+    //     connect(okBtn, &QPushButton::clicked, [&]() {
+    //         QString name = nickEdit->text().trimmed();
+    //         QString reason = reasonEdit->toPlainText().trimmed();
+    //         if (name.isEmpty() || reason.isEmpty()) {
+    //             QMessageBox::warning(&dialog, "전송 불가", "닉네임과 사유를 모두 입력하세요");
+    //             return;
+    //         }
+    //         sendingManage::instance()->sendReport(name, reason);
+    //         dialog.accept();
+    //     });
+
+    //     dialog.exec();
+    // });
+
+    connect_listWidget = new QListWidget();
+    verticalLayout_2->addWidget(connect_listWidget);
+    // chatting_ToolBox->addItem(connect_list, "접속자 목록");
+    
+    // 개인 채팅방
+    QWidget *oneByone_list = new QWidget();
+    QVBoxLayout *verticalLayout_6 = new QVBoxLayout(oneByone_list);
+    verticalLayout_6->setContentsMargins(0, 0, 0, 0);
+    oneByone_listWidget = new QListWidget();
+    verticalLayout_6->addWidget(oneByone_listWidget);
+    // chatting_ToolBox->addItem(oneByone_list, "개인 채팅방");
+    
+    // 오픈 채팅방
+    QWidget *oneByMore_list = new QWidget();
+    oneByMore_list->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    QVBoxLayout *verticalLayout_7 = new QVBoxLayout(oneByMore_list);
+    // verticalLayout_7->setContentsMargins(20, 20, 20, 20);
+
     // 접속자 목록 verticalLayout에 신고 기능 추가 - donjizzkan
     QHBoxLayout* topLayout = new QHBoxLayout;
-    QLabel* connectLabel = new QLabel("접속자 목록");
+    // topLayout->setAlignment(Qt::AlignVCenter);  // 레이아웃 자체를 수직 가운데 정렬
+    
+    QLabel* connectLabel = new QLabel("신고하기");
+    // connectLabel->setAlignment(Qt::AlignVCenter);  // 라벨 내용도 가운데 정렬
+    
     QPushButton* reportBtn = new QPushButton;
     reportBtn->setIcon(QIcon("report.png"));
     reportBtn->setFixedSize(20, 20);
@@ -430,7 +503,7 @@ void HomeView::setupUI()
     topLayout->addWidget(connectLabel);
     topLayout->addStretch();
     topLayout->addWidget(reportBtn);
-    verticalLayout_2->addLayout(topLayout);
+    verticalLayout_7->addLayout(topLayout);
 
     // 신고 버튼 누를경우 신고 신호 전송 - donjizzkan
     connect(reportBtn, &QPushButton::clicked, [this]() {
@@ -470,26 +543,11 @@ void HomeView::setupUI()
         dialog.exec();
     });
 
-    connect_listWidget = new QListWidget();
-    verticalLayout_2->addWidget(connect_listWidget);
-    chatting_ToolBox->addItem(connect_list, "접속자 목록");
-    
-    // 개인 채팅방
-    QWidget *oneByone_list = new QWidget();
-    QVBoxLayout *verticalLayout_6 = new QVBoxLayout(oneByone_list);
-    verticalLayout_6->setContentsMargins(0, 0, 0, 0);
-    oneByone_listWidget = new QListWidget();
-    verticalLayout_6->addWidget(oneByone_listWidget);
-    chatting_ToolBox->addItem(oneByone_list, "개인 채팅방");
-    
-    // 오픈 채팅방
-    QWidget *oneByMore_list = new QWidget();
-    QVBoxLayout *verticalLayout_7 = new QVBoxLayout(oneByMore_list);
-    verticalLayout_7->setContentsMargins(0, 0, 0, 0);
+
     oneByMore_listWidget = new QListWidget();
     verticalLayout_7->addWidget(oneByMore_listWidget);
     chatting_ToolBox->addItem(oneByMore_list, "오픈 채팅방");
-    
+
     horizontalLayout_2->addWidget(chatting_ToolBox);
     
     tabWidget->addTab(tab_4, "채팅");

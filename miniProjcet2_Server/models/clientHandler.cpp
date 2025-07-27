@@ -119,7 +119,8 @@ void ClientHandler::onReadyRead() {
                 qDebug() << "클라이언트로 전송 요청 완료";
 
                 // 전송 내용 파일로 저장, DB 폴더에 "채팅방 이름"의 json파일을 생성 및 열람
-                QFile file("../../DB/" + chatViewName + ".json");
+                QString chatPath = usermanage->getDBPath().replace("userInfo.json", chatViewName + ".json");
+                QFile file(chatPath);
 
                 // 파일이 없을 경우 생성
                 if (!file.exists()) {
@@ -168,7 +169,8 @@ void ClientHandler::onReadyRead() {
             else if (type == "givemelog"){
                 QString chatViewName = obj.value("chatViewName").toString();
                 // 폴더에 있는 파일 읽어옴
-                QFile file("../../DB/" + chatViewName + ".json");
+                QString chatLogPath = usermanage->getDBPath().replace("userInfo.json", chatViewName + ".json");
+                QFile file(chatLogPath);
                 QJsonObject JsonResponse;
                 JsonResponse["type"] = "messagelog";
 
@@ -199,7 +201,8 @@ void ClientHandler::onReadyRead() {
             //     매수/매도 처리
             //==========================
             else if(type == "trade"){
-                QFile file("../../DB/userInfo.json");
+                QString userInfoPath = usermanage->getDBPath();
+                QFile file(userInfoPath);
                 if(!file.open(QIODevice::ReadOnly)){
                     qDebug()<<"거래 신호 수신, 유저 정보 읽기 실패";
                     return;

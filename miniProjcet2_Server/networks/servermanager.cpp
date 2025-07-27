@@ -62,6 +62,10 @@ void ServerManager::clientConnect() {
         connect(handler,&ClientHandler::disconnected,this,&ServerManager::removeClient);
         connect(thread,&QThread::finished,handler,&QObject::deleteLater);
         connect(thread, &QThread::finished,socket,&QObject::deleteLater);
+        
+        // 클라이언트를 브로드캐스트 리스트에 추가 - 이 부분이 빠져있었음!
+        this->addClient(handler);
+        qDebug() << "클라이언트가 브로드캐스트 리스트에 추가됨. 총 클라이언트 수:" << clientHandlerList.size();
     });
     connect(thread, &QThread::started, setup, &ClientSetup::start);
     connect(thread, &QThread::finished, thread, &QThread::deleteLater);

@@ -122,5 +122,19 @@
                 "price": 323
             }
         ]
+    },
+    {
+        "ID": "qwerty",
+        "PW": "qwerty",
+        "coins": {
+            "krw-btc": 0,
+            "krw-doge": 0,
+            "krw-eth": 0,
+            "krw-xrp": 0
+        },
+        "money": 10000000,
+        "name": "qwerty",
+        "payment": 1,
+        "phoneNum": "0101928"
     }
 ]

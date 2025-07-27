@@ -1,1 +1,0 @@
-/Users/wooms/Desktop/Setting/devwooms/Ai_Setting/KOSA_Mini_Project_2/claude/CLAUDE.md

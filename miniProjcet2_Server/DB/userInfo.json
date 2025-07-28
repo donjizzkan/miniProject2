@@ -150,5 +150,19 @@
         "name": "mytest",
         "payment": 0,
         "phoneNum": "0"
+    },
+    {
+        "ID": "testdev",
+        "PW": "testdev",
+        "coins": {
+            "krw-btc": 0,
+            "krw-doge": 0,
+            "krw-eth": 0,
+            "krw-xrp": 0
+        },
+        "money": 10000000,
+        "name": "testdev",
+        "payment": 0,
+        "phoneNum": "01012341234"
     }
 ]

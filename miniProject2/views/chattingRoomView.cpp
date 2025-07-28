@@ -78,7 +78,7 @@ ChattingRoomView::ChattingRoomView(const QString& name, QWidget *parent)
     //    서버로 메세지 전송
     //==========================
     connect(pushButton_2, &QPushButton::pressed,this,[this](){
-        QString message = lineEdit->text();
+        QString message = lineEdit->text()+"\n";
         if (!message.isEmpty()) { // 빈 메시지는 전송하지 않음
             lineEdit->clear();
             sendingManage::instance()->sendMessage(chatViewName, message);
@@ -206,6 +206,7 @@ void ChattingRoomView::setupUI()
     
     // 텍스트 브라우저
     textBrowser = new QTextBrowser();
+    textBrowser->setOpenLinks(false);  // 링크 자동 열기 비활성화 (채팅 내용 유지)
     verticalLayout->addWidget(textBrowser);
     
     // 하단 수평 레이아웃

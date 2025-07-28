@@ -48,15 +48,19 @@ void sendingManage::sendSignUp(QString& Name, QString& ID, QString& PW, QString&
 //==========================
 //      채팅메세지 전송
 //==========================
-void sendingManage::sendMessage(QString& chatViewName, QString& textMessage){
+void sendingManage::sendMessage(const QString& chatViewName, const QString& textMessage){
+    
     QJsonObject sendingObj;
     sendingObj["type"] = "messagesend";
     sendingObj["chatViewName"] = chatViewName;
     sendingObj["senderName"] = senderName;
     sendingObj["textMessage"] = textMessage;
+    
     QJsonDocument doc(sendingObj);
+    
     QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
     sendingArray.append('\n');
+    
     QTcpSocket* socket = SocketManage::instance().socket();
 
     qDebug() << "현재 소켓 : " << socket;
@@ -71,7 +75,7 @@ void sendingManage::sendFile(QStringList filePaths, QString& chatViewName){
     qDebug() << "sendingManage.cpp sendFile";
     QTcpSocket* socket = SocketManage::instance().socket();
     FileSendManager *fileSendManager = new FileSendManager();
-    fileSendManager->sendFile(socket, "filesend", chatViewName, filePaths, senderName);  // ← senderName 추가
+    fileSendManager->sendFile(socket, "filesend", chatViewName, filePaths, senderName);
 }
 
 //==========================

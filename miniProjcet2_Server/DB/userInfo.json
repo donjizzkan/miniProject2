@@ -105,13 +105,13 @@
         "PW": "test123",
         "coins": {
             "krw-btc": 0,
-            "krw-doge": 10,
+            "krw-doge": 40,
             "krw-eth": 0,
             "krw-xrp": 0
         },
-        "money": 9996770,
+        "money": 9986840,
         "name": "테스트",
-        "payment": 3230,
+        "payment": 13160,
         "phoneNum": "01012345678",
         "tradingHis": [
             {
@@ -120,6 +120,27 @@
                 "coin": "krw-doge",
                 "datetime": "2025-07-26T11:53:39",
                 "price": 323
+            },
+            {
+                "action": "buy",
+                "amount": 10,
+                "coin": "krw-doge",
+                "datetime": "2025-07-28T16:43:18",
+                "price": 331
+            },
+            {
+                "action": "buy",
+                "amount": 10,
+                "coin": "krw-doge",
+                "datetime": "2025-07-28T16:43:29",
+                "price": 331
+            },
+            {
+                "action": "buy",
+                "amount": 10,
+                "coin": "krw-doge",
+                "datetime": "2025-07-28T16:43:32",
+                "price": 331
             }
         ]
     },

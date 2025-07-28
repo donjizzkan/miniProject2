@@ -48,15 +48,19 @@ void sendingManage::sendSignUp(QString& Name, QString& ID, QString& PW, QString&
 //==========================
 //      채팅메세지 전송
 //==========================
-void sendingManage::sendMessage(QString& chatViewName, QString& textMessage){
+void sendingManage::sendMessage(const QString& chatViewName, const QString& textMessage){
+    
     QJsonObject sendingObj;
     sendingObj["type"] = "messagesend";
     sendingObj["chatViewName"] = chatViewName;
     sendingObj["senderName"] = senderName;
     sendingObj["textMessage"] = textMessage;
+    
     QJsonDocument doc(sendingObj);
+    
     QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
     sendingArray.append('\n');
+    
     QTcpSocket* socket = SocketManage::instance().socket();
 
     qDebug() << "현재 소켓 : " << socket;
@@ -71,7 +75,27 @@ void sendingManage::sendFile(QStringList filePaths, QString& chatViewName){
     qDebug() << "sendingManage.cpp sendFile";
     QTcpSocket* socket = SocketManage::instance().socket();
     FileSendManager *fileSendManager = new FileSendManager();
-    fileSendManager->sendFile(socket, "filesend", chatViewName, filePaths);
+    fileSendManager->sendFile(socket, "filesend", chatViewName, filePaths, senderName);
+}
+
+//==========================
+//    파일 다운로드 요청
+//==========================
+void sendingManage::requestFileDownload(const QString& fileId){
+    qDebug() << "sendingManage.cpp requestFileDownload";
+    QTcpSocket* socket = SocketManage::instance().socket();
+    QJsonObject sendingObj;
+    sendingObj["type"] = "filedownload";
+    sendingObj["fileId"] = fileId;
+    sendingObj["requesterName"] = senderName;
+    
+    QJsonDocument doc(sendingObj);
+    QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
+    sendingArray.append('\n');
+    
+    socket->write(sendingArray);
+    socket->flush();
+    qDebug() << "서버로 파일 다운로드 요청:" << fileId;
 }
 
 //==========================
@@ -107,6 +131,38 @@ void sendingManage::sendTrade(const QString& action, const QString& coin, double
     QTcpSocket* socket = SocketManage::instance().socket();
     socket->write(sendingArray);
 }
+
+//==========================
+//  이메일 확인 신호 전달
+//==========================
+void sendingManage::sendEmailCheck(QString email){
+    QTcpSocket* socket = SocketManage::instance().socket();
+    QJsonObject sendingObj;
+    sendingObj["type"] = "emailcheck";
+    sendingObj["email"] = email;
+
+    QJsonDocument doc(sendingObj);
+    QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
+    sendingArray.append('\n');
+    socket->write(sendingArray);
+}
+
+//==========================
+//  이메일 코드 확인 신호 전달
+//==========================
+void sendingManage::sendCodeEmailCheck(QString code){
+    QTcpSocket* socket = SocketManage::instance().socket();
+    QJsonObject sendingObj;
+    sendingObj["type"] = "emailcodecheck";
+    sendingObj["code"] = code;
+
+    QJsonDocument doc(sendingObj);
+    QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
+    sendingArray.append('\n');
+    socket->write(sendingArray);
+}
+
+
 
 sendingManage* sendingManage::m_instance = nullptr;
 sendingManage::sendingManage(){

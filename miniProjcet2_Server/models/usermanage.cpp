@@ -56,12 +56,10 @@ userManage::~userManage(){
 //                  로그인
 //=========================================
 bool userManage::signIn(QString& ID, QString& PW, QString& nameOut){
-    //QString dbPath = getDBPath();
-    //QFile file(dbPath);                        // userInfo 파일 가져오기
-    //qDebug() << "Current working directory:" << QDir::currentPath();
-    //qDebug() << "DB 파일 경로:" << dbPath;
-
-    QFile file("../../DB/userInfo.json");
+    QString dbPath = getDBPath();
+    QFile file(dbPath);                        // userInfo 파일 가져오기
+    qDebug() << "Current working directory:" << QDir::currentPath();
+    qDebug() << "DB 파일 경로:" << dbPath;
 
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning() << "파일 열기 실패:" << file.errorString();
@@ -96,22 +94,20 @@ bool userManage::signIn(QString& ID, QString& PW, QString& nameOut){
 //                 회원 가입
 //=========================================
 void userManage::signUp(userInfo& info){
-    // QString dbPath = getDBPath();
-    // QFile file(dbPath);        // userInfo 파일 가져오기
-    // qDebug() << "Signup - DB 파일 경로:" << dbPath;
+    QString dbPath = getDBPath();
+    QFile file(dbPath);        // userInfo 파일 가져오기
+    qDebug() << "Signup - DB 파일 경로:" << dbPath;
     // DB 디렉토리가 없을 경우 생성
-    // QFileInfo fileInfo(file);
-    // QDir dir = fileInfo.absoluteDir();
-    // if (!dir.exists()) {
-    //     if (dir.mkpath(dir.absolutePath())) {
-    //         qDebug() << "DB 디렉토리 생성됨:" << dir.absolutePath();
-    //     } else {
-    //         qWarning() << "DB 디렉토리 생성 실패:" << dir.absolutePath();
-    //         return;
-    //     }
-    // }
-
-    QFile file("../../DB/userInfo.json");
+    QFileInfo fileInfo(file);
+    QDir dir = fileInfo.absoluteDir();
+    if (!dir.exists()) {
+        if (dir.mkpath(dir.absolutePath())) {
+            qDebug() << "DB 디렉토리 생성됨:" << dir.absolutePath();
+        } else {
+            qWarning() << "DB 디렉토리 생성 실패:" << dir.absolutePath();
+            return;
+        }
+    }
     // userInfo 파일이 없을 경우 생성
     if(!file.exists()){
         if(file.open(QIODevice::WriteOnly)){
@@ -188,7 +184,8 @@ QJsonObject userManage::getUserDetailByName(const QString &name) {
 }
 
 void userManage::increaseReport(const QString& name, const QString& reason) {
-    QFile file("../../DB/report.json");
+    QString reportPath = getDBPath().replace("userInfo.json", "report.json");
+    QFile file(reportPath);
     QJsonArray arr;
 
     // 파일 읽기
@@ -228,7 +225,8 @@ void userManage::increaseReport(const QString& name, const QString& reason) {
 
 
 bool userManage::isBanned(const QString& name) {
-    QFile file("../../DB/report.json");
+    QString reportPath = getDBPath().replace("userInfo.json", "report.json");
+    QFile file(reportPath);
     if (file.open(QIODevice::ReadOnly)) {
         QJsonArray arr = QJsonDocument::fromJson(file.readAll()).array();
         file.close();

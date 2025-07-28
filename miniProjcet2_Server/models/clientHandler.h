@@ -5,6 +5,7 @@
 #include <QTcpSocket>
 #include <QThread>
 #include <QList>
+#include <QString>
 #include "usermanage.h"
 
 class ClientHandler : public QObject {
@@ -28,6 +29,10 @@ private:
     qintptr socketDescriptor;
     QByteArray readBuffer;
     userManage* usermanage;
+    
+    // 이메일 인증 관련 클라이언트별 변수들
+    QString pendingEmail;        // 현재 인증 진행 중인 이메일
+    QString savedCode;    // 해당 클라이언트의 인증 코드
 
 };
 

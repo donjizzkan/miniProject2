@@ -24,10 +24,13 @@ public:
     void sendSignUp(QString& Name, QString& ID, QString& PW, QString& PhoneNum);
 
     // 채팅창이름과 메세지내용을 전달
-    void sendMessage(QString& chatViewName, QString& textMessage);
+    void sendMessage(const QString& chatViewName, const QString& textMessage);
 
     // 파일 전달
     void sendFile(QStringList filePaths, QString& chatViewName);
+
+    // 파일 다운로드 요청
+    void requestFileDownload(const QString& fileId);
 
     // 로그를 달라는 신호 전달
     void giveMeLog(QString& chatViewName);
@@ -37,6 +40,13 @@ public:
 
     // 이용자 신고
     void sendReport(const QString& name, const QString& reason);
+
+    // 이메일 확인
+    void sendEmailCheck(QString email);
+
+    // 이메일 코드 확인
+    void sendCodeEmailCheck(QString code);
+
 
 
     static sendingManage* m_instance;

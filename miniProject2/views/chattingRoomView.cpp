@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QIcon>
+#include <QTimer> // QTimer 추가
 
 //==================================
 //        채팅방 기능 구현
@@ -28,7 +29,18 @@ ChattingRoomView::ChattingRoomView(const QString& name, QWidget *parent)
         if (chatLog["exist"]=="yes"){
             for (const QJsonValue& v : logArray) {
                 QString line = v.toString();
-                textBrowser->append(line);
+                
+                // HTML 링크인지 일반 텍스트인지 구분하여 처리
+                if (line.contains("<a href=")) {
+                    // 파일 링크는 HTML로 그대로 표시
+                    textBrowser->append(line);
+                    qDebug() << "로그 파일 링크 표시:" << line;
+                } else {
+                    // 일반 텍스트는 HTML 이스케이프 처리
+                    QString escapedLine = line.toHtmlEscaped();
+                    textBrowser->append(escapedLine);
+                    qDebug() << "로그 일반 텍스트 표시:" << escapedLine;
+                }
             }
             qDebug() << "로그 불러옴";
         }
@@ -49,7 +61,19 @@ ChattingRoomView::ChattingRoomView(const QString& name, QWidget *parent)
             QString chatName = message["chatViewName"].toString();
             QString text = message["textMessage"].toString();
             if(chatName == this->chatViewName){ // 현재 채팅방 이름과 일치하는 메시지만 표시
-                textBrowser->append(text);
+                
+                // HTML 링크인지 일반 텍스트인지 구분하여 처리
+                if (text.contains("<a href=")) {
+                    // 파일 링크는 HTML로 그대로 표시
+                    textBrowser->append(text);
+                    qDebug() << "파일 링크 메시지 표시:" << text;
+                } else {
+                    // 일반 텍스트는 HTML 이스케이프 처리
+                    QString escapedText = text.toHtmlEscaped();
+                    textBrowser->append(escapedText);
+                    qDebug() << "일반 텍스트 메시지 표시:" << escapedText;
+                }
+                
                 qDebug() << chatName<<"으로 메세지 띄움";
             }
         }
@@ -79,12 +103,47 @@ ChattingRoomView::ChattingRoomView(const QString& name, QWidget *parent)
     //==========================
     connect(pushButton_2, &QPushButton::pressed,this,[this](){
         QString message = lineEdit->text();
+        
         if (!message.isEmpty()) { // 빈 메시지는 전송하지 않음
             lineEdit->clear();
-            sendingManage::instance()->sendMessage(chatViewName, message);
-            qDebug() << "메시지 전송 시도: " << message;
+            
+            // 메시지 복사본 생성 (참조 문제 방지)
+            QString messageCopy = QString(message);
+
+            sendingManage::instance()->sendMessage(chatViewName, messageCopy);
+            qDebug() << "메시지 전송 시도: " << messageCopy;
         }
     });
+
+    //==========================
+    //    Enter 키로 메세지 전송
+    //==========================
+    connect(lineEdit, &QLineEdit::returnPressed, this, [this](){
+        QString message = lineEdit->text();
+        
+        if (!message.isEmpty()) {
+            lineEdit->clear();
+            QString messageCopy = QString(message);
+            sendingManage::instance()->sendMessage(chatViewName, messageCopy);
+            qDebug() << "[Enter] 메시지 전송 시도: " << messageCopy;
+        }
+    });
+
+    //==========================
+    //    지연 전송 (한글 조합 완료 대기)
+    //==========================
+    auto sendMessageDelayed = [this]() {
+        QTimer::singleShot(50, this, [this]() {  // 50ms 지연 후 전송
+            QString message = lineEdit->text();
+            
+            if (!message.isEmpty()) {
+                lineEdit->clear();
+                QString messageCopy = QString(message);
+                sendingManage::instance()->sendMessage(chatViewName, messageCopy);
+                qDebug() << "[지연] 메시지 전송 시도: " << messageCopy;
+            }
+        });
+    };
 
     //==========================
     //   버튼 클릭시 파일 - devwooms
@@ -122,6 +181,77 @@ ChattingRoomView::ChattingRoomView(const QString& name, QWidget *parent)
         sendingManage::instance()->sendFile(filePaths, chatViewName);
         qDebug() << "파일 전송 요청 완료";
     });
+
+    //==========================
+    //   파일 다운로드 링크 클릭 처리
+    //==========================
+    connect(textBrowser, &QTextBrowser::anchorClicked, this, [this](const QUrl& url) {
+        qDebug() << "링크 클릭됨:" << url.toString();
+        
+        if (url.scheme() == "download") {
+            QString fileId = url.host(); // download://fileId 에서 fileId 추출
+            qDebug() << "파일 다운로드 요청:" << fileId;
+            
+            // 파일 저장 경로 선택
+            QString fileName = QString("downloaded_file_%1").arg(fileId); // 기본 파일명
+            QString savePath = QFileDialog::getSaveFileName(this, "파일 저장", fileName, "모든 파일 (*)");
+            
+            if (!savePath.isEmpty()) {
+                qDebug() << "저장 경로 선택됨:" << savePath;
+                // 서버에 파일 다운로드 요청
+                requestFileDownload(fileId, savePath);
+            } else {
+                qDebug() << "파일 저장 취소됨";
+            }
+        }
+    });
+
+    //==========================
+    //   파일 다운로드 응답 처리
+    //==========================
+    connect(&SocketManage::instance(), &SocketManage::fileDownloadReceived, this, [this](const QJsonObject& response) {
+        qDebug() << "파일 다운로드 응답 받음";
+        
+        QString fileId = response["fileId"].toString();
+        QString fileName = response["fileName"].toString();
+        QString base64Data = response["fileData"].toString();
+        bool success = response["success"].toBool();
+        
+        if (success && !base64Data.isEmpty()) {
+            // Base64 데이터를 바이너리로 디코딩
+            QByteArray fileData = QByteArray::fromBase64(base64Data.toUtf8());
+            
+            // 저장 경로 가져오기 (미리 저장해둔 경로 사용)
+            QString savePath = pendingDownloads.value(fileId);
+            
+            if (!savePath.isEmpty() && !fileData.isEmpty()) {
+                QFile file(savePath);
+                if (file.open(QIODevice::WriteOnly)) {
+                    qint64 writtenBytes = file.write(fileData);
+                    file.close();
+                    
+                    if (writtenBytes == fileData.size()) {
+                        qDebug() << "파일 다운로드 완료:" << savePath;
+                        QMessageBox::information(this, "다운로드 완료", 
+                                               QString("파일이 성공적으로 다운로드되었습니다.\n%1").arg(savePath));
+                    } else {
+                        qWarning() << "파일 쓰기 실패";
+                        QMessageBox::warning(this, "다운로드 실패", "파일 저장 중 오류가 발생했습니다.");
+                    }
+                } else {
+                    qWarning() << "파일 열기 실패:" << savePath;
+                    QMessageBox::warning(this, "다운로드 실패", "파일을 저장할 수 없습니다.");
+                }
+                
+                // 대기 중인 다운로드에서 제거
+                pendingDownloads.remove(fileId);
+            }
+        } else {
+            qWarning() << "파일 다운로드 실패:" << fileId;
+            QMessageBox::warning(this, "다운로드 실패", "파일을 다운로드할 수 없습니다.");
+            pendingDownloads.remove(fileId);
+        }
+    });
 }
 
 void ChattingRoomView::setupUI()
@@ -135,6 +265,7 @@ void ChattingRoomView::setupUI()
     
     // 텍스트 브라우저
     textBrowser = new QTextBrowser();
+    textBrowser->setOpenLinks(false);  // 링크 자동 열기 비활성화 (채팅 내용 유지)
     verticalLayout->addWidget(textBrowser);
     
     // 하단 수평 레이아웃
@@ -164,4 +295,17 @@ void ChattingRoomView::setupUI()
 
 ChattingRoomView::~ChattingRoomView()
 {
+}
+
+void ChattingRoomView::requestFileDownload(const QString& fileId, const QString& savePath)
+{
+    qDebug() << "requestFileDownload 호출:" << fileId << savePath;
+    
+    // 대기 중인 다운로드 목록에 추가
+    pendingDownloads.insert(fileId, savePath);
+    
+    // sendingManage를 통해 서버에 파일 다운로드 요청
+    sendingManage::instance()->requestFileDownload(fileId);
+    
+    qDebug() << "파일 다운로드 요청 전송 완료:" << fileId;
 }

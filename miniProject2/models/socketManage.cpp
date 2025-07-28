@@ -74,6 +74,10 @@ void SocketManage::onSocketReadyRead() {
         else if (type == "traderesponse"){
             emit tradeResponseReceived(obj);
         }
+        else if (type == "filedownload"){  // 파일 다운로드 응답
+            qDebug() << "SocketManage: fileDownloadReceived 시그널 방출";
+            emit fileDownloadReceived(obj);
+        }
         else if (type == "yourebanned"){
             qDebug() << "신고로 인한 채팅 정지 상태 안내";
             QMessageBox::warning(nullptr, "채팅 정지", "신고로 인한 채팅 정지 상태입니다.");

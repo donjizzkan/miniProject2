@@ -270,7 +270,8 @@ void ClientHandler::onReadyRead() {
                 }
                 
                 // 채팅 메시지로 파일 공유 알림 추가 (전송자 이름 포함)
-                QString fileMessage = QString("[%1] [파일] %2 (%3 bytes) - 업로드 완료").arg(senderName).arg(fileName).arg(fileSize);
+                QString fileMessage = QString("<a href='download://%1'>[%2] [파일] %3 (%4 bytes) - 클릭하여 다운로드</a>")
+                                        .arg(fileId).arg(senderName).arg(fileName).arg(fileSize);
                 QString chatPath = usermanage->getDBPath().replace("userInfo.json", chatViewName + ".json");
                 QFile chatFile(chatPath);
                 
@@ -315,18 +316,91 @@ void ClientHandler::onReadyRead() {
                 
                 ServerManager::getInstance().broadcastMessage(broadcastData);
                 qDebug() << "파일 업로드 완료 알림 브로드캐스트 완료:" << senderName;
+
+                //==========================
+                //       파일 다운로드 요청 처리
+                //==========================
+            } else if (type == "filedownload") {
+                qDebug() << "파일 다운로드 요청 받음";
                 
-                // 클라이언트에게 파일 업로드 성공 응답
+                QString fileId = obj.value("fileId").toString();
+                QString requesterName = obj.value("requesterName").toString();
+                
+                qDebug() << "요청자:" << requesterName << "| 파일ID:" << fileId;
+                
+                // chatFiles.json에서 파일 정보 찾기
+                QString chatFilesPath = usermanage->getDBPath().replace("userInfo.json", "chatFiles.json");
+                QFile chatFilesFile(chatFilesPath);
+                
+                QJsonObject fileInfo;
+                bool fileFound = false;
+                
+                if (chatFilesFile.exists() && chatFilesFile.open(QIODevice::ReadOnly)) {
+                    QByteArray readData = chatFilesFile.readAll();
+                    QJsonDocument dataDoc = QJsonDocument::fromJson(readData);
+                    
+                    if (dataDoc.isArray()) {
+                        QJsonArray fileArray = dataDoc.array();
+                        
+                        // 파일 ID로 파일 정보 검색
+                        for (const QJsonValue& value : fileArray) {
+                            QJsonObject file = value.toObject();
+                            if (file["fileId"].toString() == fileId) {
+                                fileInfo = file;
+                                fileFound = true;
+                                break;
+                            }
+                        }
+                    }
+                    chatFilesFile.close();
+                }
+                
                 QJsonObject response;
-                response["type"] = "fileupload_response";
-                response["result"] = "success";
+                response["type"] = "filedownload";
                 response["fileId"] = fileId;
-                response["message"] = "파일이 성공적으로 업로드되었습니다.";
                 
-                QJsonDocument respDoc(response);
-                QByteArray respData = respDoc.toJson(QJsonDocument::Compact);
-                respData.append('\n');
-                socket->write(respData);
+                if (fileFound) {
+                    QString serverPath = fileInfo["serverPath"].toString();
+                    QString fileName = fileInfo["fileName"].toString();
+                    
+                    // 서버에서 파일 읽기
+                    QFile serverFile(serverPath);
+                    if (serverFile.exists() && serverFile.open(QIODevice::ReadOnly)) {
+                        QByteArray fileData = serverFile.readAll();
+                        serverFile.close();
+                        
+                        // Base64로 인코딩
+                        QString base64Data = fileData.toBase64();
+                        
+                        response["success"] = true;
+                        response["fileName"] = fileName;
+                        response["fileData"] = base64Data;
+                        response["fileSize"] = fileData.size();
+                        
+                        qDebug() << "파일 다운로드 준비 완료:" << fileName << "(" << fileData.size() << "bytes)";
+                        
+                    } else {
+                        qWarning() << "서버 파일 읽기 실패:" << serverPath;
+                        response["success"] = false;
+                        response["error"] = "파일을 읽을 수 없습니다";
+                    }
+                } else {
+                    qWarning() << "파일 ID를 찾을 수 없음:" << fileId;
+                    response["success"] = false;
+                    response["error"] = "파일을 찾을 수 없습니다";
+                }
+                
+                // 요청한 클라이언트에게만 응답 전송
+                QJsonDocument responseDoc(response);
+                QByteArray responseData = responseDoc.toJson(QJsonDocument::Compact);
+                responseData.append('\n');
+                
+                socket->write(responseData);
+                socket->flush();
+                qDebug() << "파일 다운로드 응답 전송 완료";
+                
+                //==========================
+                //       이메일 인증 요청 처리
             }
             //==========================
             //      채팅 로그 전송

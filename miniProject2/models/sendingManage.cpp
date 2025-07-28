@@ -75,6 +75,26 @@ void sendingManage::sendFile(QStringList filePaths, QString& chatViewName){
 }
 
 //==========================
+//    파일 다운로드 요청
+//==========================
+void sendingManage::requestFileDownload(const QString& fileId){
+    qDebug() << "sendingManage.cpp requestFileDownload";
+    QTcpSocket* socket = SocketManage::instance().socket();
+    QJsonObject sendingObj;
+    sendingObj["type"] = "filedownload";
+    sendingObj["fileId"] = fileId;
+    sendingObj["requesterName"] = senderName;
+    
+    QJsonDocument doc(sendingObj);
+    QByteArray sendingArray(doc.toJson(QJsonDocument::Compact));
+    sendingArray.append('\n');
+    
+    socket->write(sendingArray);
+    socket->flush();
+    qDebug() << "서버로 파일 다운로드 요청:" << fileId;
+}
+
+//==========================
 //  채팅 로그 달라는 신호 전달
 //==========================
 void sendingManage::giveMeLog(QString& chatViewName){

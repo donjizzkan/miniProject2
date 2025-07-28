@@ -63,5 +63,19 @@
         "serverPath": "/Users/wooms/Desktop/WorkSpace/DevWooms/miniProject2/miniProjcet2_Server/DB/files/file_20250728_084729_8247_스크린샷 2025-07-27 오후 11.54.33.png",
         "timestamp": "2025-07-28T08:47:29",
         "uploadTime": "2025-07-28T08:47:29"
+    },
+    {
+        "chatViewName": "test",
+        "checksum": "c47db274837c5411bc350d92c1eed30c",
+        "fileExtension": "png",
+        "fileId": "file_20250728_085833_7358",
+        "fileName": "test.png",
+        "fileSize": 137963,
+        "mimeType": "image/png",
+        "originalPath": "/Users/wooms/Desktop/test.png",
+        "senderName": "mytest",
+        "serverPath": "/Users/wooms/Desktop/WorkSpace/DevWooms/miniProject2/miniProjcet2_Server/DB/files/file_20250728_085833_7358_test.png",
+        "timestamp": "2025-07-28T08:58:33",
+        "uploadTime": "2025-07-28T08:58:33"
     }
 ]

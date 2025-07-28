@@ -122,6 +122,77 @@ ChattingRoomView::ChattingRoomView(const QString& name, QWidget *parent)
         sendingManage::instance()->sendFile(filePaths, chatViewName);
         qDebug() << "파일 전송 요청 완료";
     });
+
+    //==========================
+    //   파일 다운로드 링크 클릭 처리
+    //==========================
+    connect(textBrowser, &QTextBrowser::anchorClicked, this, [this](const QUrl& url) {
+        qDebug() << "링크 클릭됨:" << url.toString();
+        
+        if (url.scheme() == "download") {
+            QString fileId = url.host(); // download://fileId 에서 fileId 추출
+            qDebug() << "파일 다운로드 요청:" << fileId;
+            
+            // 파일 저장 경로 선택
+            QString fileName = QString("downloaded_file_%1").arg(fileId); // 기본 파일명
+            QString savePath = QFileDialog::getSaveFileName(this, "파일 저장", fileName, "모든 파일 (*)");
+            
+            if (!savePath.isEmpty()) {
+                qDebug() << "저장 경로 선택됨:" << savePath;
+                // 서버에 파일 다운로드 요청
+                requestFileDownload(fileId, savePath);
+            } else {
+                qDebug() << "파일 저장 취소됨";
+            }
+        }
+    });
+
+    //==========================
+    //   파일 다운로드 응답 처리
+    //==========================
+    connect(&SocketManage::instance(), &SocketManage::fileDownloadReceived, this, [this](const QJsonObject& response) {
+        qDebug() << "파일 다운로드 응답 받음";
+        
+        QString fileId = response["fileId"].toString();
+        QString fileName = response["fileName"].toString();
+        QString base64Data = response["fileData"].toString();
+        bool success = response["success"].toBool();
+        
+        if (success && !base64Data.isEmpty()) {
+            // Base64 데이터를 바이너리로 디코딩
+            QByteArray fileData = QByteArray::fromBase64(base64Data.toUtf8());
+            
+            // 저장 경로 가져오기 (미리 저장해둔 경로 사용)
+            QString savePath = pendingDownloads.value(fileId);
+            
+            if (!savePath.isEmpty() && !fileData.isEmpty()) {
+                QFile file(savePath);
+                if (file.open(QIODevice::WriteOnly)) {
+                    qint64 writtenBytes = file.write(fileData);
+                    file.close();
+                    
+                    if (writtenBytes == fileData.size()) {
+                        qDebug() << "파일 다운로드 완료:" << savePath;
+                        QMessageBox::information(this, "다운로드 완료", 
+                                               QString("파일이 성공적으로 다운로드되었습니다.\n%1").arg(savePath));
+                    } else {
+                        qWarning() << "파일 쓰기 실패";
+                        QMessageBox::warning(this, "다운로드 실패", "파일 저장 중 오류가 발생했습니다.");
+                    }
+                } else {
+                    qWarning() << "파일 열기 실패:" << savePath;
+                    QMessageBox::warning(this, "다운로드 실패", "파일을 저장할 수 없습니다.");
+                }
+                
+                // 대기 중인 다운로드에서 제거
+                pendingDownloads.remove(fileId);
+            }
+        } else {
+            qWarning() << "파일 다운로드 실패:" << fileId;
+            QMessageBox::warning(this, "다운로드 실패", "파일을 다운로드할 수 없습니다.");
+            pendingDownloads.remove(fileId);
+        }
+    });
 }
 
 void ChattingRoomView::setupUI()
@@ -164,4 +235,17 @@ void ChattingRoomView::setupUI()
 
 ChattingRoomView::~ChattingRoomView()
 {
+}
+
+void ChattingRoomView::requestFileDownload(const QString& fileId, const QString& savePath)
+{
+    qDebug() << "requestFileDownload 호출:" << fileId << savePath;
+    
+    // 대기 중인 다운로드 목록에 추가
+    pendingDownloads.insert(fileId, savePath);
+    
+    // sendingManage를 통해 서버에 파일 다운로드 요청
+    sendingManage::instance()->requestFileDownload(fileId);
+    
+    qDebug() << "파일 다운로드 요청 전송 완료:" << fileId;
 }

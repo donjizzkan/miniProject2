@@ -29,6 +29,9 @@ public:
     // 파일 전달
     void sendFile(QStringList filePaths, QString& chatViewName);
 
+    // 파일 다운로드 요청
+    void requestFileDownload(const QString& fileId);
+
     // 로그를 달라는 신호 전달
     void giveMeLog(QString& chatViewName);
 

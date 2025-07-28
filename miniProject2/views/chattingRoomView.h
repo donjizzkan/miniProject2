@@ -13,6 +13,10 @@
 #include <QTextBrowser>
 #include <QPushButton>
 #include <QLineEdit>
+#include <QUrl>             // QUrl 사용을 위해 추가
+#include <QFileDialog>      // QFileDialog 사용을 위해 추가
+#include <QHash>            // QHash 사용을 위해 추가
+#include <QMessageBox>      // QMessageBox 사용을 위해 추가
 #include "models/socketManage.h"
 #include "models/sendingManage.h"
 
@@ -31,8 +35,10 @@ private:
     QPushButton *pushButton;
     QLineEdit *lineEdit;
     QPushButton *pushButton_2;
+    QHash<QString, QString> pendingDownloads;  // fileId -> savePath 매핑
     
     void setupUI();
+    void requestFileDownload(const QString& fileId, const QString& savePath);  // 파일 다운로드 요청 함수 추가
 };
 
 #endif // CHATTINGROOMVIEW_H

@@ -4,23 +4,29 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
 
+INCLUDEPATH += views networks models DB
+
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    models/clientHandler.cpp \
     main.cpp \
-    mainwindow.cpp \
-    servermanager.cpp \
-    usermanage.cpp
+    views/mainwindow.cpp \
+    networks/clientsetup.cpp \
+    networks/servermanager.cpp \
+    models/usermanage.cpp
 
 HEADERS += \
-    mainwindow.h \
-    servermanager.h \
-    usermanage.h
+    models/clientHandler.h \
+    views/mainwindow.h \
+    networks/clientsetup.h \
+    networks/servermanager.h \
+    models/usermanage.h
 
 FORMS += \
-    mainwindow.ui
+    views/mainwindow.ui
 
 TRANSLATIONS += \
     miniProjcet2_Server_ko_KR.ts

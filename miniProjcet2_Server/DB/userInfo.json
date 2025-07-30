@@ -1,0 +1,189 @@
+[
+    {
+        "ID": "test",
+        "PW": "test",
+        "coins": {
+            "krw-btc": 0,
+            "krw-doge": 0,
+            "krw-eth": 0,
+            "krw-pepe": 135,
+            "krw-xrp": 0
+        },
+        "money": 9999997.783700002,
+        "name": "test",
+        "payment": 2.2163000000000004,
+        "phoneNum": "01012345678",
+        "tradingHis": [
+            {
+                "action": "buy",
+                "amount": 7,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-24T15:02:54",
+                "price": 0.0166
+            },
+            {
+                "action": "buy",
+                "amount": 6,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T11:29:46",
+                "price": 0.0166
+            },
+            {
+                "action": "buy",
+                "amount": 8,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T12:35:24",
+                "price": 0.0161
+            },
+            {
+                "action": "buy",
+                "amount": 2,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T13:00:25",
+                "price": 0.0163
+            },
+            {
+                "action": "buy",
+                "amount": 10,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T14:13:12",
+                "price": 0.0165
+            },
+            {
+                "action": "buy",
+                "amount": 1,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T14:20:00",
+                "price": 0.0165
+            },
+            {
+                "action": "buy",
+                "amount": 1,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T14:21:58",
+                "price": 0.0165
+            },
+            {
+                "action": "buy",
+                "amount": 4,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T14:30:08",
+                "price": 0.0165
+            },
+            {
+                "action": "buy",
+                "amount": 4,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T15:06:00",
+                "price": 0.0165
+            },
+            {
+                "action": "sell",
+                "amount": 5,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T15:07:29",
+                "price": 0.0164
+            },
+            {
+                "action": "sell",
+                "amount": 3,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T15:09:20",
+                "price": 0.0163
+            },
+            {
+                "action": "buy",
+                "amount": 100,
+                "coin": "krw-pepe",
+                "datetime": "2025-07-25T15:12:27",
+                "price": 0.0164
+            }
+        ]
+    },
+    {
+        "ID": "test123",
+        "PW": "test123",
+        "coins": {
+            "krw-btc": 0,
+            "krw-doge": 40,
+            "krw-eth": 0,
+            "krw-xrp": 0
+        },
+        "money": 9986840,
+        "name": "테스트",
+        "payment": 13160,
+        "phoneNum": "01012345678",
+        "tradingHis": [
+            {
+                "action": "buy",
+                "amount": 10,
+                "coin": "krw-doge",
+                "datetime": "2025-07-26T11:53:39",
+                "price": 323
+            },
+            {
+                "action": "buy",
+                "amount": 10,
+                "coin": "krw-doge",
+                "datetime": "2025-07-28T16:43:18",
+                "price": 331
+            },
+            {
+                "action": "buy",
+                "amount": 10,
+                "coin": "krw-doge",
+                "datetime": "2025-07-28T16:43:29",
+                "price": 331
+            },
+            {
+                "action": "buy",
+                "amount": 10,
+                "coin": "krw-doge",
+                "datetime": "2025-07-28T16:43:32",
+                "price": 331
+            }
+        ]
+    },
+    {
+        "ID": "qwerty",
+        "PW": "qwerty",
+        "coins": {
+            "krw-btc": 0,
+            "krw-doge": 0,
+            "krw-eth": 0,
+            "krw-xrp": 0
+        },
+        "money": 10000000,
+        "name": "qwerty",
+        "payment": 1,
+        "phoneNum": "0101928"
+    },
+    {
+        "ID": "mytest",
+        "PW": "mytest",
+        "coins": {
+            "krw-btc": 0,
+            "krw-doge": 0,
+            "krw-eth": 0,
+            "krw-xrp": 0
+        },
+        "money": 10000000,
+        "name": "mytest",
+        "payment": 0,
+        "phoneNum": "0"
+    },
+    {
+        "ID": "testdev",
+        "PW": "testdev",
+        "coins": {
+            "krw-btc": 0,
+            "krw-doge": 0,
+            "krw-eth": 0,
+            "krw-xrp": 0
+        },
+        "money": 10000000,
+        "name": "testdev",
+        "payment": 0,
+        "phoneNum": "01012341234"
+    }
+]

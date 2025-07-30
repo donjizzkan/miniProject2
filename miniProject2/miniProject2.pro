@@ -9,37 +9,65 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    chartstoolbox.cpp \
-    chattinglistmanager.cpp \
-    chattingwindow.cpp \
-    loginview.cpp \
+    data/candledata.cpp \
+    data/linedata.cpp \
     main.cpp \
-    mainview.cpp \
     mainwindow.cpp \
-    sendingManage.cpp \
-    signupview.cpp \
-    userManage.cpp \
-    splashview.cpp
+    models/filesendmanager.cpp \
+    models/smtpemailsender.cpp \
+    services/chartdatamanager.cpp \
+    views/chattingRoomView.cpp \
+    views/coinsearchlineedit.cpp \
+    views/coinsearchwidget.cpp \
+    views/homeview.cpp \
+    views/linechartview.cpp \
+    views/splashview.cpp \
+    views/loginview.cpp \
+    views/candlechart.cpp \
+    views/chartstoolbox.cpp \
+    views/signupview.cpp \
+    views/dropwidget.cpp \
+    models/mainmodel.cpp \
+    models/candlechartdatamanager.cpp \
+    models/chattinglistmanager.cpp \
+    models/linechartdatamanager.cpp \
+    models/sendingManage.cpp \
+    models/socketManage.cpp \
+    models/userManage.cpp \
+    networks/socketnetwork.cpp
 
 HEADERS += \
-    chartstoolbox.h \
-    chattinglistmanager.h \
-    chattingwindow.h \
-    loginview.h \
-    mainview.h \
+    data/candledata.h \
+    data/linedata.h \
     mainwindow.h \
-    sendingManage.h \
-    signupview.h \
-    socketManage.h \
-    userManage.h \
-    splashview.h
+    models/filesendmanager.h \
+    models/smtpemailsender.h \
+    services/chartdatamanager.h \
+    views/chattingRoomView.h \
+    views/coinsearchlineedit.h \
+    views/coinsearchwidget.h \
+    views/homeview.h \
+    views/linechartview.h \
+    views/splashview.h \
+    views/loginview.h \
+    views/candlechart.h \
+    views/chartstoolbox.h \
+    views/dropwidget.h \
+    views/signupview.h \
+    models/candlechartdatamanager.h \
+    models/mainmodel.h \
+    models/chattinglistmanager.h \
+    models/linechartdatamanager.h \
+    models/sendingManage.h \
+    models/socketManage.h \
+    models/userManage.h
 
-FORMS += \
-    chattingwindow.ui \
-    loginview.ui \
-    mainview.ui \
-    mainwindow.ui \
-    signupview.ui
+# FORMS += \
+#     views/homeview.ui \
+#     views/mainwindow.ui \
+#     views/loginview.ui \
+#     views/signupview.ui \
+#     views/chattingRoomView.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -48,3 +76,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     resource.qrc
+
+ICON = assets/Bitcoin.icns
